@@ -43,11 +43,11 @@ export default function CartaoMeusJogos({ time, jogos, previa, onCheguei }: Prop
         </div>
         {previa ? (
           <span className={styles.botao} aria-hidden="true">
-            Viva a história
+            Eternize a história
           </span>
         ) : (
           <button type="button" className={styles.botao} onClick={onCheguei}>
-            Viva a história
+            Eternize a história
           </button>
         )}
       </div>

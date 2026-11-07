@@ -26,7 +26,6 @@ function useCorDaTela(cor: string | null) {
 export default function Inicio() {
   const router = useRouter();
   const [time, setTime] = useState<Time | null>(null);
-  const [aviso, setAviso] = useState(false);
 
   useEffect(() => {
     const salvo = carregarTime();
@@ -63,13 +62,8 @@ export default function Inicio() {
       <p className={styles.sobretitulo}>{time.nome}</p>
       <h1 className={styles.titulo}>Seu time está com você.</h1>
 
-      <CartaoMeusJogos time={time} jogos={jogos} onCheguei={() => setAviso(true)} />
-
-      {aviso && (
-        <p className={styles.aviso} role="status">
-          Protótipo: o check-in com fotos, setor e a frase do jogo é o próximo passo.
-        </p>
-      )}
+      {/* "Eternize a história": a porta de entrada do app. */}
+      <CartaoMeusJogos time={time} jogos={jogos} onCheguei={() => router.push("/meus-jogos")} />
 
       {proximo && (
         <p className={styles.nivel}>
