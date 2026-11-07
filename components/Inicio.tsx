@@ -73,6 +73,8 @@ export default function Inicio() {
 
       {proximo && (
         <p className={styles.nivel}>
+          Escreva essa história a partir de agora.
+          <br />
           Seu primeiro jogo no estádio te faz <strong>{proximo.nome}</strong>.
         </p>
       )}
