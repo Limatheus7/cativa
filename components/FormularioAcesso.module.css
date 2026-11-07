@@ -1,0 +1,139 @@
+.tela {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 16px) 24px calc(env(safe-area-inset-bottom) + 32px);
+  background: var(--papel);
+  color: var(--tinta);
+  display: flex;
+  flex-direction: column;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+}
+
+.voltar {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  margin-left: -10px;
+  border-radius: 12px;
+  color: var(--verde);
+}
+
+.cadeira {
+  width: 30px;
+  height: auto;
+}
+
+.espaco {
+  width: 34px;
+}
+
+.titulo {
+  margin: 36px 0 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.15;
+  color: var(--verde);
+}
+
+.subtitulo {
+  margin: 10px 0 0;
+  font-size: 1rem;
+  line-height: 1.45;
+  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+}
+
+.formulario {
+  margin-top: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.875rem;
+  font-weight: 700;
+}
+
+.campo input {
+  height: 52px;
+  padding: 0 16px;
+  border: 1.5px solid var(--linha);
+  border-radius: 14px;
+  background: var(--cartao);
+  color: var(--tinta);
+  font: 400 1rem var(--font-texto);
+  transition: border-color 120ms ease;
+}
+
+.campo input::placeholder {
+  color: #8a8a7c;
+}
+
+.campo input:focus {
+  outline: none;
+  border-color: var(--verde);
+  box-shadow: 0 0 0 3px rgba(31, 77, 58, 0.15);
+}
+
+.esqueci {
+  align-self: flex-end;
+  margin-top: -6px;
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  color: var(--verde);
+  font: 500 0.875rem var(--font-texto);
+  cursor: pointer;
+}
+
+.botao {
+  height: 56px;
+  margin-top: 8px;
+  border: 0;
+  border-radius: 16px;
+  background: var(--verde);
+  color: var(--papel);
+  font: 700 1.0625rem var(--font-texto);
+  cursor: pointer;
+  transition: transform 120ms ease;
+}
+
+.botao:active {
+  transform: scale(0.98);
+}
+
+.aviso {
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--cartao);
+  border: 1px solid var(--linha);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.rodape {
+  margin: auto 0 0;
+  padding-top: 32px;
+  text-align: center;
+  font-size: 0.9375rem;
+}
+
+.rodape a {
+  color: var(--verde);
+  font-weight: 700;
+  text-underline-offset: 3px;
+}

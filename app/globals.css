@@ -1,0 +1,47 @@
+:root {
+  --verde: #1f4d3a;
+  --verde-escuro: #12301f;
+  --papel: #f4ebd9;
+  --ouro: #e6c46b;
+  --ouro-profundo: #a9791a;
+  --tinta: #1e2a22;
+  --cartao: #fbf5e8;
+  --linha: #d9cdb4;
+  --font-titulo: var(--font-fraunces), Georgia, serif;
+  --font-texto: var(--font-dm-sans), system-ui, sans-serif;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  min-height: 100%;
+}
+
+body {
+  background: var(--verde-escuro);
+  color: var(--tinta);
+  font-family: var(--font-texto);
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+a {
+  color: inherit;
+}
+
+img {
+  display: block;
+  max-width: 100%;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ouro);
+  outline-offset: 3px;
+}
