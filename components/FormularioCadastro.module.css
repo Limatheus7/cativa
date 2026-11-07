@@ -1,0 +1,155 @@
+.senha {
+  position: relative;
+  display: flex;
+  border-radius: 14px;
+  transition: box-shadow 200ms ease;
+}
+
+.senha input {
+  flex: 1;
+  min-width: 0;
+  padding-right: 96px;
+}
+
+.senhaOk input,
+.senhaOk input:focus {
+  border-color: #2f7a4f;
+}
+
+.senhaErro input,
+.senhaErro input:focus {
+  border-color: #b3412f;
+}
+
+.olho {
+  position: absolute;
+  right: 6px;
+  top: 50%;
+  transform: translateY(-50%);
+  height: 40px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  background: none;
+  color: var(--verde);
+  font: 500 0.8125rem var(--font-texto);
+  cursor: pointer;
+}
+
+.regras {
+  list-style: none;
+  margin: -6px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+}
+
+.regras li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: color 200ms ease;
+}
+
+.regras li.cumprida {
+  color: var(--verde);
+  font-weight: 500;
+}
+
+.marca {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  flex: none;
+  border-radius: 50%;
+  border: 1.5px solid var(--linha);
+  background: var(--cartao);
+  color: transparent;
+  transition: background 200ms ease, border-color 200ms ease, color 200ms ease;
+}
+
+.marca path {
+  stroke-dasharray: 20;
+  stroke-dashoffset: 20;
+}
+
+.marcaOk {
+  border-color: var(--verde);
+  background: var(--verde);
+  color: var(--papel);
+  animation: estalo 360ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.marcaOk path {
+  animation: tracar 320ms 80ms ease-out forwards;
+}
+
+.erro {
+  margin: -8px 0 0;
+  font-size: 0.8125rem;
+  color: #b3412f;
+}
+
+.sucesso {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--verde);
+  color: var(--papel);
+  font-weight: 700;
+  font-size: 0.9375rem;
+  animation: subir 420ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  overflow: hidden;
+  position: relative;
+}
+
+.sucesso img {
+  animation: pulo 600ms 200ms ease-out both;
+}
+
+.sucesso::after {
+  /* Brilho dourado que passa uma vez */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 30%, rgba(230, 196, 107, 0.45) 50%, transparent 70%);
+  transform: translateX(-100%);
+  animation: brilho 900ms 250ms ease-out forwards;
+}
+
+@keyframes estalo {
+  0% { transform: scale(0.6); }
+  100% { transform: scale(1); }
+}
+
+@keyframes tracar {
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes subir {
+  from { opacity: 0; transform: translateY(10px) scale(0.96); }
+}
+
+@keyframes pulo {
+  0% { transform: translateY(0) rotate(0); }
+  35% { transform: translateY(-8px) rotate(-6deg); }
+  70% { transform: translateY(0) rotate(3deg); }
+  100% { transform: translateY(0) rotate(0); }
+}
+
+@keyframes brilho {
+  to { transform: translateX(100%); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .marcaOk, .marcaOk path, .sucesso, .sucesso img, .sucesso::after {
+    animation: none;
+  }
+  .marca path { stroke-dashoffset: 0; }
+}

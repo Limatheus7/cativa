@@ -111,8 +111,13 @@
   transition: transform 120ms ease;
 }
 
-.botao:active {
+.botao:active:not(:disabled) {
   transform: scale(0.98);
+}
+
+.botao:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
 }
 
 .aviso {
