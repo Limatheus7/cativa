@@ -86,9 +86,10 @@ export default function CriarTime() {
     else setEtapa("lista");
   }
 
-  function concluir() {
+  /** Salva o time. "Vestir o app" mostra a tela do time; o CTA do cartão já entra no app. */
+  function concluir(destino: "/inicio" | "/meus-jogos" = "/inicio") {
     salvarTime({ nome: nome.trim(), iniciais: iniciais.trim(), corPrincipal, corSegunda, padrao, faixas, clube });
-    router.push("/inicio");
+    router.push(destino);
   }
 
   return (
@@ -215,7 +216,7 @@ export default function CriarTime() {
           <p className={base.subtitulo}>O app veste o seu time.</p>
 
           <div className={styles.previa}>
-            <CartaoMeusJogos time={camisa} jogos={0} previa />
+            <CartaoMeusJogos time={camisa} jogos={0} onCheguei={() => concluir("/meus-jogos")} />
           </div>
 
           {!clube && (
@@ -245,7 +246,7 @@ export default function CriarTime() {
             </>
           )}
 
-          <button type="button" className={`${base.botao} ${styles.botaoFinal}`} onClick={concluir}>
+          <button type="button" className={`${base.botao} ${styles.botaoFinal}`} onClick={() => concluir()}>
             Vestir o app
           </button>
           {clube && (
