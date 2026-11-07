@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { carregarTime } from "@/lib/time";
 import styles from "./FormularioAcesso.module.css";
 
 export default function FormularioAcesso() {
-  const [enviado, setEnviado] = useState(false);
+  const router = useRouter();
 
   return (
     <main className={styles.tela}>
@@ -26,7 +27,9 @@ export default function FormularioAcesso() {
         className={styles.formulario}
         onSubmit={(e) => {
           e.preventDefault();
-          setEnviado(true);
+          // Protótipo: sem autenticação real ainda (Supabase). Quem já
+          // escolheu o time neste aparelho vai direto para o início.
+          router.push(carregarTime() ? "/inicio" : "/meu-time");
         }}
       >
         <label className={styles.campo}>
@@ -45,12 +48,6 @@ export default function FormularioAcesso() {
         <button type="submit" className={styles.botao}>
           Entrar
         </button>
-
-        {enviado && (
-          <p className={styles.aviso} role="status">
-            Protótipo: o login de verdade chega quando ligarmos o Supabase.
-          </p>
-        )}
       </form>
 
       <p className={styles.rodape}>

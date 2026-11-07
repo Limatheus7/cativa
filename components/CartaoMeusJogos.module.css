@@ -1,0 +1,73 @@
+.cartao {
+  overflow: hidden;
+  border-radius: 22px;
+  background: var(--papel);
+  box-shadow: 0 0 0 1px var(--linha), 0 10px 30px -12px rgba(30, 42, 34, 0.35);
+}
+
+.cabecalho {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 18px;
+  background: var(--time-principal, var(--verde));
+  color: var(--time-sobre-principal, var(--papel));
+  font-weight: 700;
+  font-size: 1.0625rem;
+  transition: background 200ms ease, color 200ms ease;
+}
+
+.corpo {
+  padding: 18px 18px 20px;
+}
+
+.numero {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.75rem;
+  line-height: 1;
+  color: var(--time-destaque, var(--verde));
+  transition: color 200ms ease;
+}
+
+.legenda {
+  margin: 8px 0 14px;
+  font-size: 0.9375rem;
+  color: color-mix(in srgb, var(--tinta) 80%, transparent);
+}
+
+.barra {
+  height: 8px;
+  border-radius: 999px;
+  background: var(--linha);
+  overflow: hidden;
+}
+
+.barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--time-destaque, var(--verde));
+  transition: width 400ms ease, background 200ms ease;
+}
+
+.botao {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 50px;
+  margin-top: 16px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--time-destaque, var(--verde));
+  color: var(--time-sobre-destaque, var(--papel));
+  font: 700 1rem var(--font-texto);
+  cursor: pointer;
+  transition: background 200ms ease, transform 120ms ease;
+}
+
+button.botao:active {
+  transform: scale(0.98);
+}

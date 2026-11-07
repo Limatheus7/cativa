@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import base from "./FormularioAcesso.module.css";
 import styles from "./FormularioCadastro.module.css";
@@ -54,7 +55,7 @@ function CampoSenha(props: {
 export default function FormularioCadastro() {
   const [senha, setSenha] = useState("");
   const [confirmacao, setConfirmacao] = useState("");
-  const [enviado, setEnviado] = useState(false);
+  const router = useRouter();
 
   const status = regras.map((r) => r.ok(senha));
   const iguais = confirmacao.length > 0 && confirmacao === senha;
@@ -80,7 +81,9 @@ export default function FormularioCadastro() {
         className={base.formulario}
         onSubmit={(e) => {
           e.preventDefault();
-          if (tudoCerto) setEnviado(true);
+          // Protótipo: sem cadastro real ainda (Supabase). Conta criada,
+          // o próximo passo é escolher o time.
+          if (tudoCerto) router.push("/meu-time");
         }}
       >
         <label className={base.campo}>
@@ -136,12 +139,6 @@ export default function FormularioCadastro() {
         <button type="submit" className={base.botao} disabled={!tudoCerto}>
           Criar conta
         </button>
-
-        {enviado && (
-          <p className={base.aviso} role="status">
-            Protótipo: o cadastro de verdade chega quando ligarmos o Supabase.
-          </p>
-        )}
       </form>
 
       <p className={base.rodape}>

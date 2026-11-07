@@ -1,0 +1,83 @@
+/* A tela inteira veste o time: fundo na cor principal, marca e textos em contraste. */
+.tela {
+  min-height: 100dvh;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: calc(env(safe-area-inset-top) + 16px) 24px calc(env(safe-area-inset-bottom) + 32px);
+  background: var(--inicio-fundo, var(--papel));
+  color: var(--inicio-texto, var(--tinta));
+  display: flex;
+  flex-direction: column;
+  transition: background 400ms ease, color 400ms ease;
+}
+
+/* Logotipo oficial usado como máscara: a forma é a da marca, a cor é a do time. */
+.logotipo {
+  display: block;
+  width: 84px;
+  aspect-ratio: 762 / 185;
+  background: currentColor;
+  -webkit-mask: url(/marca/logotipo-cativa-verde.svg) center / contain no-repeat;
+  mask: url(/marca/logotipo-cativa-verde.svg) center / contain no-repeat;
+}
+
+.topo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 48px;
+}
+
+.trocar {
+  padding: 8px 0;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: inherit;
+  text-underline-offset: 3px;
+}
+
+.sobretitulo {
+  margin: 32px 0 0;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.85;
+}
+
+.titulo {
+  margin: 8px 0 24px;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.15;
+}
+
+.aviso {
+  margin: 14px 0 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  background: var(--cartao);
+  color: var(--tinta);
+  border: 1px solid var(--linha);
+  font-size: 0.875rem;
+  line-height: 1.4;
+}
+
+.nivel {
+  margin: 20px 0 0;
+  text-align: center;
+  font-size: 0.9375rem;
+  opacity: 0.9;
+}
+
+.nivel strong {
+  font-weight: 700;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tela {
+    transition: none;
+  }
+}
