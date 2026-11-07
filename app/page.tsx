@@ -26,16 +26,21 @@ export default function BoasVindas() {
         <div className={styles.acoes}>
           <BotaoGoogle className={`${styles.botao} ${styles.botaoClaro}`} />
           <Link href="/telefone" className={`${styles.botao} ${styles.botaoClaro}`}>
-            <svg width="20" height="20" viewBox="0 0 24 24" aria-hidden="true">
+            <svg width="18" height="18" viewBox="0 0 24 24" aria-hidden="true">
               <rect x="6" y="2.5" width="12" height="19" rx="3" fill="none" stroke="currentColor" strokeWidth="2" />
               <path d="M10.5 18h3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
             </svg>
             Continuar com telefone
           </Link>
-          <Link href="/entrar" className={`${styles.botao} ${styles.botaoVazado}`}>
-            Continuar com e-mail
+          <Link href="/criar-conta" className={`${styles.botao} ${styles.botaoVazado}`}>
+            <img src="/marca/cadeira-papel.svg" alt="" width={16} height={17} />
+            Cadastro Cativa
           </Link>
         </div>
+
+        <p className={styles.jaTem}>
+          Já tem cadastro? <Link href="/entrar">Entrar</Link>
+        </p>
 
         <p className={styles.termos}>
           Ao continuar, você concorda com os <a href="#">Termos de uso</a> e a <a href="#">Política de privacidade</a> da Cativa.

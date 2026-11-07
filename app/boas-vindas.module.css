@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);
+  padding: calc(env(safe-area-inset-top) + 20px) 28px calc(env(safe-area-inset-bottom) + 20px);
   overflow: hidden;
   background: var(--verde);
   color: var(--papel);
@@ -58,14 +58,14 @@
 }
 
 .logotipo {
-  width: 96px;
+  width: 84px;
   height: auto;
 }
 
 .conteudo {
   display: flex;
   flex-direction: column;
-  gap: 28px;
+  gap: 22px;
   animation: surgir 600ms ease-out both;
 }
 
@@ -75,7 +75,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-weight: 700;
-  font-size: clamp(1.625rem, 7vw, 2rem);
+  font-size: clamp(1.375rem, 6vw, 1.625rem);
   line-height: 1.15;
   letter-spacing: -0.01em;
   text-wrap: balance;
@@ -84,19 +84,19 @@
 .acoes {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .botao {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: 8px;
   width: 100%;
-  height: 54px;
+  height: 46px;
   border-radius: 999px;
   border: 0;
-  font: 700 1rem var(--font-texto);
+  font: 500 0.9375rem var(--font-texto);
   text-decoration: none;
   cursor: pointer;
   transition: transform 120ms ease, filter 120ms ease;
@@ -121,7 +121,7 @@
 .termos {
   margin: 0;
   text-align: center;
-  font-size: 0.8125rem;
+  font-size: 0.75rem;
   line-height: 1.5;
   color: rgba(244, 235, 217, 0.72);
 }
@@ -142,4 +142,17 @@
   .conteudo {
     animation: none;
   }
+}
+
+.jaTem {
+  margin: -8px 0 0;
+  text-align: center;
+  font-size: 0.875rem;
+  color: rgba(244, 235, 217, 0.8);
+}
+
+.jaTem a {
+  color: var(--papel);
+  font-weight: 700;
+  text-underline-offset: 3px;
 }
