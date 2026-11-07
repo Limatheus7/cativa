@@ -137,3 +137,24 @@
   font-weight: 700;
   text-underline-offset: 3px;
 }
+
+.telefone {
+  display: flex;
+  gap: 8px;
+}
+
+.ddi {
+  display: grid;
+  place-items: center;
+  height: 52px;
+  padding: 0 14px;
+  border: 1.5px solid var(--linha);
+  border-radius: 14px;
+  background: var(--cartao);
+  font: 500 1rem var(--font-texto);
+}
+
+.telefone input {
+  flex: 1;
+  min-width: 0;
+}

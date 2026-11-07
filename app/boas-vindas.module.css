@@ -6,91 +6,99 @@
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: calc(env(safe-area-inset-top) + 15dvh) 28px calc(env(safe-area-inset-bottom) + 40px);
+  padding: calc(env(safe-area-inset-top) + 20px) 24px calc(env(safe-area-inset-bottom) + 24px);
   overflow: hidden;
+  background: var(--verde);
   color: var(--papel);
   isolation: isolate;
 }
 
-.fundo {
+/* Formas suaves ao fundo: lembram assentos de arquibancada vistos de cima */
+.formas {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background:
-    linear-gradient(
-      180deg,
-      rgba(18, 48, 31, 0.55) 0%,
-      rgba(31, 77, 58, 0.35) 35%,
-      rgba(18, 48, 31, 0.6) 62%,
-      rgba(10, 28, 18, 0.94) 100%
-    ),
-    url("/img/estadio.jpg") center 40% / cover no-repeat;
+  pointer-events: none;
 }
 
-.fundo::after {
-  /* Tinge a foto de verde Cativa */
-  content: "";
+.formas span {
   position: absolute;
-  inset: 0;
-  background: var(--verde);
-  mix-blend-mode: color;
-  opacity: 0.55;
+  border-radius: 28%;
+  background: rgba(244, 235, 217, 0.05);
 }
 
-.marca {
+.forma1 {
+  width: 150px;
+  height: 150px;
+  top: 13%;
+  right: -40px;
+  transform: rotate(14deg);
+}
+
+.forma2 {
+  width: 120px;
+  height: 120px;
+  top: 30%;
+  left: -48px;
+  transform: rotate(-16deg);
+}
+
+.forma3 {
+  width: 130px;
+  height: 130px;
+  top: 41%;
+  right: -36px;
+  transform: rotate(8deg);
+}
+
+.topo {
   display: flex;
-  flex-direction: column;
   align-items: center;
-  text-align: center;
-  animation: surgir 700ms ease-out both;
-}
-
-.cadeira {
-  width: 76px;
-  height: auto;
-  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.35));
-}
-
-.titulo {
-  margin: 20px 0 0;
-  line-height: 0;
+  height: 44px;
 }
 
 .logotipo {
-  width: min(64vw, 240px);
+  width: 96px;
   height: auto;
-  filter: drop-shadow(0 4px 18px rgba(0, 0, 0, 0.35));
 }
 
-.slogan {
-  margin: 22px 0 0;
-  font-size: 1.125rem;
-  line-height: 1.4;
-  font-weight: 500;
-  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.5);
+.conteudo {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+  animation: surgir 600ms ease-out both;
+}
+
+.titulo {
+  margin: 0;
+  text-align: center;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: clamp(1.625rem, 7vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-wrap: balance;
 }
 
 .acoes {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 22px;
-  animation: surgir 700ms 150ms ease-out both;
+  gap: 12px;
 }
 
 .botao {
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 10px;
   width: 100%;
-  height: 56px;
-  border-radius: 16px;
-  background: var(--ouro);
-  color: var(--tinta);
-  font-size: 1.0625rem;
-  font-weight: 700;
+  height: 54px;
+  border-radius: 999px;
+  border: 0;
+  font: 700 1rem var(--font-texto);
   text-decoration: none;
-  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.35);
+  cursor: pointer;
   transition: transform 120ms ease, filter 120ms ease;
 }
 
@@ -99,10 +107,28 @@
   filter: brightness(0.95);
 }
 
-.link {
-  font-weight: 500;
-  text-underline-offset: 4px;
-  padding: 6px 12px;
+.botaoClaro {
+  background: var(--papel);
+  color: var(--tinta);
+}
+
+.botaoVazado {
+  background: rgba(244, 235, 217, 0.1);
+  color: var(--papel);
+  box-shadow: inset 0 0 0 1.5px rgba(244, 235, 217, 0.28);
+}
+
+.termos {
+  margin: 0;
+  text-align: center;
+  font-size: 0.8125rem;
+  line-height: 1.5;
+  color: rgba(244, 235, 217, 0.72);
+}
+
+.termos a {
+  color: var(--papel);
+  text-underline-offset: 2px;
 }
 
 @keyframes surgir {
@@ -113,8 +139,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .marca,
-  .acoes {
+  .conteudo {
     animation: none;
   }
 }

@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "icones": "node scripts/gerar-icones.cjs",
-    "estadio": "python3 scripts/gerar-estadio.py public/img/estadio.jpg"
+    "icones": "node scripts/gerar-icones.cjs"
   },
   "dependencies": {
     "next": "^15.5.29",
