@@ -16,8 +16,8 @@ const textos = {
     rodapeHref: "/criar-conta",
   },
   criar: {
-    titulo: "Cadastro Cativa",
-    subtitulo: "Pegue sua cadeira. Cada jogo que você vê no estádio fica guardado aqui.",
+    titulo: "Pegue sua cadeira.",
+    subtitulo: "Cada jogo que você vê no estádio fica guardado aqui.",
     botao: "Criar conta",
     rodape: "Já tem conta?",
     rodapeLink: "Entrar",
