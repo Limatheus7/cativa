@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next";
-import { DM_Sans, Fraunces } from "next/font/google";
+import { DM_Sans, Fraunces, Jost } from "next/font/google";
 import { SCRIPT_TEMA } from "@/lib/tema-script";
 import "./globals.css";
 
@@ -11,9 +11,16 @@ const dmSans = DM_Sans({
 
 const fraunces = Fraunces({
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["600", "700"],
   style: ["italic"],
   variable: "--font-fraunces",
+});
+
+// Fonte do ingresso de presença (kit de design dos ingressos).
+const jost = Jost({
+  subsets: ["latin"],
+  weight: ["400", "500", "600"],
+  variable: "--font-jost",
 });
 
 export const metadata: Metadata = {
@@ -36,7 +43,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${dmSans.variable} ${fraunces.variable}`} suppressHydrationWarning>
+    <html lang="pt-BR" className={`${dmSans.variable} ${fraunces.variable} ${jost.variable}`} suppressHydrationWarning>
       <head>
         {/* Aplica o modo claro/escuro antes da primeira pintura. */}
         <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />

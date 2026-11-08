@@ -1,13 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { estiloDoIngresso, formatarData, numeroPresenca, placar } from "@/lib/dados/formato";
+import { formatarData, placar } from "@/lib/dados/formato";
 import type { StatusConquista } from "@/lib/dados/conquistas";
 import type { Estadio, Presenca } from "@/lib/dados/tipos";
 import { IdentidadeTime, Progresso, SeloPresenca } from "./Basicos";
 import { IconeCadeira, IconeEstrela } from "./Icones";
-import TacaMarcaDagua from "./TacaMarcaDagua";
-import TacaTraco from "./TacaTraco";
 import s from "./ui.module.css";
 
 // ------------------------------------------------------------ MatchCard
@@ -46,42 +44,10 @@ export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: s
   );
 }
 
-// ------------------------------------------------------------ Ingresso (slide 15)
+// ------------------------------------------------------------ Ingresso
 
-export function Ingresso({ presenca }: { presenca: Presenca }) {
-  const l = presenca.lugar ?? {};
-  const estilo = estiloDoIngresso(presenca.partida.competicao);
-  return (
-    <div className={s.ingresso} data-estilo={estilo}>
-      <div className={s.ingressoCorpo}>
-        {estilo === "libertadores" && <TacaMarcaDagua className={s.ingressoMarcaDagua} />}
-        {estilo === "brasileirao" && <TacaTraco className={s.ingressoTraco} />}
-        <img src="/marca/logotipo-cativa-papel.svg" alt="Cativa" width={762} height={185} className={s.ingressoLogo} />
-        <p className={s.ingressoJogo}>{placar(presenca).texto}</p>
-        <div className={s.ingressoLugar}>
-          <div>
-            <span>Setor</span>
-            <strong>{l.setor || "—"}</strong>
-          </div>
-          <div>
-            <span>Fila</span>
-            <strong>{l.fila || "—"}</strong>
-          </div>
-          <div>
-            <span>Cadeira</span>
-            <strong>{l.cadeira || "—"}</strong>
-          </div>
-        </div>
-        <p className={s.ingressoRodape}>Você estava lá · {formatarData(presenca.partida.data)}</p>
-      </div>
-      <div className={s.ingressoCanhoto}>
-        <IconeCadeira tamanho={30} />
-        <span>Presença</span>
-        <strong>{numeroPresenca(presenca.numero)}</strong>
-      </div>
-    </div>
-  );
-}
+/** Ingresso de presença: um único componente (Ticket), com tema por competição. */
+export { default as Ingresso } from "./Ticket";
 
 // ------------------------------------------------------------ StadiumSticker
 

@@ -1,0 +1,144 @@
+/* Ingresso de presença: medidas do kit (748 × 276), escalado pela caixa. */
+
+.caixa {
+  position: relative;
+  display: block;
+  width: 100%;
+  overflow: hidden;
+  text-decoration: none;
+  filter: drop-shadow(0 10px 18px rgba(30, 42, 34, 0.25));
+}
+
+.ingresso {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 748px;
+  height: 276px;
+  transform-origin: 0 0;
+  font-family: var(--font-jost), var(--font-texto), sans-serif;
+}
+
+.camada {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: block;
+}
+
+/* Furos do picote: cor do fundo da página (papel ou verde escuro). */
+.furo {
+  fill: var(--fundo);
+}
+
+.recorteTaca {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 596px;
+  height: 276px;
+  border-radius: 24px 0 0 24px;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.recorteTaca img {
+  position: absolute;
+  max-width: none;
+  transform-origin: center;
+}
+
+.escudo {
+  position: absolute;
+  top: calc(100px - 26px);
+  display: grid;
+  border-radius: 50%;
+}
+
+.abs {
+  position: absolute;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+
+.nomeTime {
+  top: 140px;
+  width: 140px;
+  overflow: hidden;
+  text-align: center;
+  text-overflow: ellipsis;
+  font-size: 18px;
+}
+
+.placar {
+  left: 220px;
+  top: 66px;
+  width: 160px;
+  display: flex;
+  justify-content: center;
+  align-items: baseline;
+  gap: 12px;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+}
+
+.gol {
+  font-size: 62px;
+  line-height: 1;
+}
+
+.vezes {
+  font-size: 22px;
+  line-height: 1;
+}
+
+.resultado {
+  left: 220px;
+  top: 138px;
+  width: 160px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+}
+
+.rotulo {
+  top: 197px;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.valor {
+  top: 216px;
+  font-size: 20px;
+}
+
+/* Estádio com nome longo não invade a coluna do setor. */
+.estadio {
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.presenca {
+  left: 596px;
+  top: 134px;
+  width: 152px;
+  text-align: center;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+}
+
+.numero {
+  left: 596px;
+  top: 152px;
+  width: 152px;
+  text-align: center;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 600;
+  font-size: 30px;
+}

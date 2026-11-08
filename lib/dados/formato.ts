@@ -32,18 +32,6 @@ export function placar(p: Presenca) {
   return { casa, fora, texto: `${casa.sigla} ${casa.gols} × ${fora.gols} ${fora.sigla}` };
 }
 
-/**
- * Visual do ingresso conforme a competição. Hoje: Libertadores (preto e ouro)
- * e o padrão (verde Cativa) para o resto. Novas competições entram aqui.
- */
-export type EstiloIngresso = "padrao" | "brasileirao" | "libertadores";
-
-export function estiloDoIngresso(competicao: string): EstiloIngresso {
-  if (/libertadores/i.test(competicao)) return "libertadores";
-  if (/brasileir|s[ée]rie [abc]/i.test(competicao)) return "brasileirao";
-  return "padrao";
-}
-
 /** "no Maracanã", "na Arena MRV", "na Vila Belmiro". */
 export function noEstadio(nome: string) {
   const feminino = /^(arena|fonte|ilha|vila|ressacada|baixada)\b/i.test(nome.trim());

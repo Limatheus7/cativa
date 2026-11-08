@@ -3,18 +3,16 @@
 import Link from "next/link";
 import { useTime } from "@/components/app/TimeProvider";
 import Monograma from "@/components/Monograma";
-import { EstadoVazio, IdentidadeTime, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
+import { EstadoVazio, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
 import { IconeCadeira, IconeSino } from "@/components/cativa/Icones";
 import { ItemFeed } from "@/components/cativa/Social";
 import { autorDoItem } from "@/components/cativa/autores";
 import { estadioDeCasa } from "@/lib/dados/estadios";
-import { NIVEIS, NOME_RESULTADO, estatisticas } from "@/lib/dados/estatisticas";
-import { estiloDoIngresso, formatarData, noEstadio, numeroPresenca, placar } from "@/lib/dados/formato";
-import TacaMarcaDagua from "@/components/cativa/TacaMarcaDagua";
-import TacaTraco from "@/components/cativa/TacaTraco";
+import { NIVEIS, estatisticas } from "@/lib/dados/estatisticas";
+import { noEstadio } from "@/lib/dados/formato";
+import Ticket from "@/components/cativa/Ticket";
 import { alternarCurtida, comentar, montarFeed, resumoDoTorcedor } from "@/lib/dados/loja";
-import type { Presenca } from "@/lib/dados/tipos";
 import s from "@/components/cativa/ui.module.css";
 import FotoDoCabecalho from "./FotoDoCabecalho";
 import v from "./inicio.module.css";
@@ -122,7 +120,7 @@ export default function Inicio() {
               {ultimo ? (
                 <section>
                   <TituloSecao titulo="Seu último jogo" acao={{ rotulo: "Ver coleção", href: "/colecao" }} />
-                  <UltimoJogo presenca={ultimo} />
+                  <Ticket presenca={ultimo} href={`/colecao/partida/${ultimo.id}`} />
                 </section>
               ) : (
                 <Link href="/presenca" className={s.chamadaPresenca}>
@@ -170,62 +168,5 @@ export default function Inicio() {
         );
       }}
     </ComDados>
-  );
-}
-
-/** Último jogo como ingresso: placar grande, data, estádio e setor; canhoto com o Nº da presença. */
-function UltimoJogo({ presenca: p }: { presenca: Presenca }) {
-  const pl = placar(p);
-  const timeCasa = p.partida.mando !== "fora" ? p.time : p.partida.adversario;
-  const timeFora = p.partida.mando !== "fora" ? p.partida.adversario : p.time;
-  const mando = p.partida.mando === "casa" ? "Em casa" : p.partida.mando === "fora" ? "Fora" : "Campo neutro";
-
-  const estilo = estiloDoIngresso(p.partida.competicao);
-
-  return (
-    <Link href={`/colecao/partida/${p.id}`} className={v.ingresso} data-estilo={estilo}>
-      <div className={v.ingressoCorpo}>
-        {estilo === "libertadores" && <TacaMarcaDagua className={v.marcaDagua} />}
-        {estilo === "brasileirao" && <TacaTraco className={v.marcaTraco} />}
-        <span className={v.rotuloOuro}>
-          {p.partida.competicao} · {mando}
-        </span>
-        <div className={v.confronto}>
-          <div className={v.lado}>
-            <IdentidadeTime time={timeCasa} tamanho={34} />
-            <span>{timeCasa.nome}</span>
-          </div>
-          <div className={v.placarGrande}>
-            <strong>
-              {pl.casa.gols} <span>×</span> {pl.fora.gols}
-            </strong>
-            <span>{NOME_RESULTADO[p.resultado]}</span>
-          </div>
-          <div className={v.lado}>
-            <IdentidadeTime time={timeFora} tamanho={34} />
-            <span>{timeFora.nome}</span>
-          </div>
-        </div>
-        <dl className={v.dados}>
-          <div>
-            <dt>Data</dt>
-            <dd>{formatarData(p.partida.data)}</dd>
-          </div>
-          <div>
-            <dt>Estádio</dt>
-            <dd>{p.estadio.nome}</dd>
-          </div>
-          <div>
-            <dt>Setor</dt>
-            <dd>{p.lugar?.setor || "—"}</dd>
-          </div>
-        </dl>
-      </div>
-      <div className={v.canhoto}>
-        <IconeCadeira tamanho={28} />
-        <span>Presença</span>
-        <strong>{numeroPresenca(p.numero)}</strong>
-      </div>
-    </Link>
   );
 }
