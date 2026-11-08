@@ -128,6 +128,15 @@ function legivelSobrePapel(cor: string): string {
   return hexDe(atual);
 }
 
+/** Clareia a cor (mistura com branco) até ler bem sobre o cartão verde escuro do modo escuro. */
+function legivelSobreEscuro(cor: string, fundo = "#1B3A2C"): string {
+  let atual = rgb(cor);
+  for (let i = 0; i < 20 && contraste(hexDe(atual), fundo) < 3; i++) {
+    atual = atual.map((v) => v + (255 - v) * 0.12) as [number, number, number];
+  }
+  return hexDe(atual);
+}
+
 /** Variáveis CSS que vestem o app com as cores do time. */
 /**
  * Cor do nome no cabeçalho: a segunda cor do time, se for fácil de ler sobre a
@@ -157,6 +166,9 @@ export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda" | "fai
     // Texto do cabeçalho do Início: em camisas claras, preto desbotado (tinta misturada à cor do time)
     // em vez de preto puro; em camisas escuras, papel.
     "--time-nome": corDoNome(corPrincipal, corSegunda, time.faixas),
+    // Números em destaque no modo escuro (cartão verde escuro): a cor do time que ler bem ali.
+    // No escuro, camisa preta usa a segunda cor (o branco do Vasco); as demais, a principal clareada.
+    "--time-numero-escuro": legivelSobreEscuro(luminancia(corPrincipal) < 0.03 ? corSegunda : corPrincipal),
     "--time-texto-cabecalho":
       textoSobre(corPrincipal) === TINTA ? `color-mix(in srgb, ${TINTA} 72%, ${corPrincipal})` : PAPEL,
     // Detalhe dourado sobre a cor do time; em camisas claras o ouro some, então vira a cor do texto.

@@ -180,7 +180,9 @@
   font-style: italic;
   font-size: 3.5rem;
   line-height: 0.9;
-  color: var(--titulo);
+  /* Cor do time, na versão que lê bem sobre o cartão claro. */
+  color: var(--time-destaque);
+  transition: color 300ms ease;
 }
 
 .destaque div {
@@ -582,4 +584,9 @@
   background: transparent;
   color: var(--papel);
   box-shadow: inset 0 0 0 1.5px rgba(244, 235, 217, 0.4);
+}
+
+/* No modo escuro o cartão é verde escuro: o número usa a cor do time que lê bem ali. */
+:global(:root[data-tema="escuro"]) .destaque > strong {
+  color: var(--time-numero-escuro);
 }
