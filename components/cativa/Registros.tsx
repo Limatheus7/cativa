@@ -7,6 +7,7 @@ import type { Estadio, Presenca } from "@/lib/dados/tipos";
 import { IdentidadeTime, Progresso, SeloPresenca } from "./Basicos";
 import { IconeCadeira, IconeEstrela } from "./Icones";
 import TacaMarcaDagua from "./TacaMarcaDagua";
+import TacaTraco from "./TacaTraco";
 import s from "./ui.module.css";
 
 // ------------------------------------------------------------ MatchCard
@@ -54,6 +55,7 @@ export function Ingresso({ presenca }: { presenca: Presenca }) {
     <div className={s.ingresso} data-estilo={estilo}>
       <div className={s.ingressoCorpo}>
         {estilo === "libertadores" && <TacaMarcaDagua className={s.ingressoMarcaDagua} />}
+        {estilo === "brasileirao" && <TacaTraco className={s.ingressoTraco} />}
         <img src="/marca/logotipo-cativa-papel.svg" alt="Cativa" width={762} height={185} className={s.ingressoLogo} />
         <p className={s.ingressoJogo}>{placar(presenca).texto}</p>
         <div className={s.ingressoLugar}>

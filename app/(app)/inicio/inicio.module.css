@@ -633,3 +633,24 @@
   color: var(--tinta);
   opacity: 0.75;
 }
+
+/* ---------- Ingresso por competição: Brasileirão (taça em traço ao fundo) ---------- */
+
+.marcaTraco {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 250px;
+  height: auto;
+  transform: translate(-50%, -46%);
+  color: #12301f;
+  opacity: 0.55;
+  pointer-events: none;
+}
+
+/* Setor em maiúsculas, como no ingresso impresso. */
+.dados div:last-child dd {
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}

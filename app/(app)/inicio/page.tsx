@@ -12,6 +12,7 @@ import { estadioDeCasa } from "@/lib/dados/estadios";
 import { NIVEIS, NOME_RESULTADO, estatisticas } from "@/lib/dados/estatisticas";
 import { estiloDoIngresso, formatarData, noEstadio, numeroPresenca, placar } from "@/lib/dados/formato";
 import TacaMarcaDagua from "@/components/cativa/TacaMarcaDagua";
+import TacaTraco from "@/components/cativa/TacaTraco";
 import { alternarCurtida, comentar, montarFeed, resumoDoTorcedor } from "@/lib/dados/loja";
 import type { Presenca } from "@/lib/dados/tipos";
 import s from "@/components/cativa/ui.module.css";
@@ -185,6 +186,7 @@ function UltimoJogo({ presenca: p }: { presenca: Presenca }) {
     <Link href={`/colecao/partida/${p.id}`} className={v.ingresso} data-estilo={estilo}>
       <div className={v.ingressoCorpo}>
         {estilo === "libertadores" && <TacaMarcaDagua className={v.marcaDagua} />}
+        {estilo === "brasileirao" && <TacaTraco className={v.marcaTraco} />}
         <span className={v.rotuloOuro}>
           {p.partida.competicao} · {mando}
         </span>
