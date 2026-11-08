@@ -2423,3 +2423,33 @@
 .feedConquista span {
   opacity: 0.85;
 }
+
+/* ================================================================ Ingresso: Libertadores */
+
+.ingressoCorpo {
+  position: relative;
+  isolation: isolate;
+}
+
+.ingressoMarcaDagua {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  right: 12px;
+  width: 96px;
+  height: auto;
+  transform: translateY(-50%);
+  color: var(--ouro);
+  opacity: 0.1;
+  pointer-events: none;
+}
+
+.ingresso[data-estilo="libertadores"] {
+  background: #141414;
+}
+
+.ingresso[data-estilo="libertadores"] .ingressoCanhoto {
+  background: var(--ouro);
+  color: var(--tinta);
+  border-left-color: rgba(30, 42, 34, 0.35);
+}

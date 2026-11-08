@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { formatarData, numeroPresenca, placar } from "@/lib/dados/formato";
+import { estiloDoIngresso, formatarData, numeroPresenca, placar } from "@/lib/dados/formato";
 import type { StatusConquista } from "@/lib/dados/conquistas";
 import type { Estadio, Presenca } from "@/lib/dados/tipos";
 import { IdentidadeTime, Progresso, SeloPresenca } from "./Basicos";
 import { IconeCadeira, IconeEstrela } from "./Icones";
+import TacaMarcaDagua from "./TacaMarcaDagua";
 import s from "./ui.module.css";
 
 // ------------------------------------------------------------ MatchCard
@@ -48,9 +49,11 @@ export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: s
 
 export function Ingresso({ presenca }: { presenca: Presenca }) {
   const l = presenca.lugar ?? {};
+  const estilo = estiloDoIngresso(presenca.partida.competicao);
   return (
-    <div className={s.ingresso}>
+    <div className={s.ingresso} data-estilo={estilo}>
       <div className={s.ingressoCorpo}>
+        {estilo === "libertadores" && <TacaMarcaDagua className={s.ingressoMarcaDagua} />}
         <img src="/marca/logotipo-cativa-papel.svg" alt="Cativa" width={762} height={185} className={s.ingressoLogo} />
         <p className={s.ingressoJogo}>{placar(presenca).texto}</p>
         <div className={s.ingressoLugar}>

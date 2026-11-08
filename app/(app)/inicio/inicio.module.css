@@ -590,3 +590,46 @@
 :global(:root[data-tema="escuro"]) .destaque > strong {
   color: var(--time-numero-escuro);
 }
+
+/* ---------- Ingresso por competição: Libertadores (preto e ouro) ---------- */
+
+.ingressoCorpo {
+  position: relative;
+  isolation: isolate;
+}
+
+.marcaDagua {
+  position: absolute;
+  z-index: -1;
+  top: 50%;
+  left: 50%;
+  width: 92px;
+  height: auto;
+  transform: translate(-50%, -50%);
+  color: var(--ouro);
+  opacity: 0.09;
+  pointer-events: none;
+}
+
+.ingresso[data-estilo="libertadores"] {
+  background: #141414;
+}
+
+.ingresso[data-estilo="libertadores"] .placarGrande strong {
+  color: var(--papel);
+}
+
+.ingresso[data-estilo="libertadores"] .dados {
+  border-top-color: rgba(230, 196, 107, 0.3);
+}
+
+.ingresso[data-estilo="libertadores"] .canhoto {
+  background: var(--ouro);
+  color: var(--tinta);
+  border-left-color: rgba(30, 42, 34, 0.35);
+}
+
+.ingresso[data-estilo="libertadores"] .canhoto span {
+  color: var(--tinta);
+  opacity: 0.75;
+}
