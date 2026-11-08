@@ -36,7 +36,7 @@ export default function DetalheEstadio() {
             <main className={s.pagina}>
               {estadio.arte && (
                 <figure className={`${s.poster} ${jogos.length > 0 ? "" : s.posterTrancado}`} style={{ margin: 0 }}>
-                  <img src={estadio.arte} alt={`Pôster ilustrado do ${estadio.nome}`} width={495} height={728} />
+                  <img src={estadio.arte} alt={`Pôster ilustrado do ${estadio.nome}`} />
                 </figure>
               )}
               <section className={s.estadioTopo}>

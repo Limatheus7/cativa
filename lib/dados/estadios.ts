@@ -4,7 +4,7 @@ import type { Estadio } from "./tipos";
 // Cada um vira um sticker na Coleção quando o torcedor registra uma presença lá.
 export const ESTADIOS: Estadio[] = [
   { id: "maracana", nome: "Maracanã", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/maracana.png" },
-  { id: "nilton-santos", nome: "Nilton Santos", apelido: "Engenhão", cidade: "Rio de Janeiro", uf: "RJ" },
+  { id: "nilton-santos", nome: "Nilton Santos", apelido: "Engenhão", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/nilton-santos.png" },
   { id: "sao-januario", nome: "São Januário", cidade: "Rio de Janeiro", uf: "RJ" },
   { id: "morumbis", nome: "Morumbis", cidade: "São Paulo", uf: "SP" },
   { id: "allianz", nome: "Allianz Parque", cidade: "São Paulo", uf: "SP" },
