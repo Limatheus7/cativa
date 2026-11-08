@@ -2,10 +2,9 @@
 
 import Link from "next/link";
 import { useTime } from "@/components/app/TimeProvider";
-import Monograma from "@/components/Monograma";
-import { EstadoVazio, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
+import { Avatar, EstadoVazio, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
-import { IconeCadeira, IconeEngrenagem, IconeSino } from "@/components/cativa/Icones";
+import { IconeCadeira, IconeCamera, IconeEngrenagem, IconeSino } from "@/components/cativa/Icones";
 import { CartaoPartida } from "@/components/cativa/Registros";
 import { ItemFeed } from "@/components/cativa/Social";
 import { autorDoItem } from "@/components/cativa/autores";
@@ -31,8 +30,18 @@ export default function Inicio() {
             {/* Cabeçalho na cor do time: muda sozinho quando o torcedor troca de time. */}
             <header className={v.topo}>
               <div className={v.topoLinha}>
-                <Link href="/perfil" className={v.escudo} aria-label="Seu perfil">
-                  <Monograma time={time} tamanho={52} />
+                {/* Foto de perfil; sem foto, as iniciais levam para adicionar uma. */}
+                <Link
+                  href={dados.perfil.foto ? "/perfil" : "/perfil/editar"}
+                  className={v.escudo}
+                  aria-label={dados.perfil.foto ? "Seu perfil" : "Adicionar foto de perfil"}
+                >
+                  <Avatar nome={dados.perfil.nome || "Torcedor"} foto={dados.perfil.foto} tamanho={52} />
+                  {!dados.perfil.foto && (
+                    <span className={v.semFoto} aria-hidden="true">
+                      <IconeCamera tamanho={12} />
+                    </span>
+                  )}
                 </Link>
                 <div className={v.quem}>
                   <div className={v.nomeLinha}>
