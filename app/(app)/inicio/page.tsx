@@ -14,6 +14,7 @@ import { formatarData, noEstadio, numeroPresenca, placar } from "@/lib/dados/for
 import { alternarCurtida, comentar, montarFeed, resumoDoTorcedor } from "@/lib/dados/loja";
 import type { Presenca } from "@/lib/dados/tipos";
 import s from "@/components/cativa/ui.module.css";
+import FotoDoCabecalho from "./FotoDoCabecalho";
 import v from "./inicio.module.css";
 
 function saudacao() {
@@ -47,12 +48,17 @@ export default function Inicio() {
                   {naoLidas > 0 && <span className={v.ponto} />}
                 </Link>
               </div>
-              <p className={v.saudacao}>{saudacao()}</p>
-              <h1 className={v.nome}>{dados.perfil.nome || "Torcedor"}</h1>
-              <div className={v.timeLinha}>
-                <Monograma time={time} tamanho={22} contorno="color-mix(in srgb, var(--time-sobre-principal) 55%, transparent)" />
-                <span>{time.nome}</span>
-                <span className={v.nivel}>{est.nivel?.nome ?? "Estreante"}</span>
+              <div className={v.identidade}>
+                <FotoDoCabecalho nome={dados.perfil.nome} foto={dados.perfil.foto} />
+                <div className={v.identidadeTexto}>
+                  <p className={v.saudacao}>{saudacao()}</p>
+                  <h1 className={v.nome}>{dados.perfil.nome || "Torcedor"}</h1>
+                  <div className={v.timeLinha}>
+                    <Monograma time={time} tamanho={22} contorno="color-mix(in srgb, var(--time-sobre-principal) 55%, transparent)" />
+                    <span>{time.nome}</span>
+                    <span className={v.nivel}>{est.nivel?.nome ?? "Estreante"}</span>
+                  </div>
+                </div>
               </div>
             </header>
 

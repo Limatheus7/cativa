@@ -81,7 +81,7 @@
 }
 
 .saudacao {
-  margin: 26px 0 0;
+  margin: 0;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.18em;
@@ -97,7 +97,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-weight: 700;
-  font-size: 2rem;
+  font-size: 1.75rem;
   line-height: 1.1;
   text-wrap: balance;
 }
@@ -436,4 +436,150 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.0625rem;
+}
+
+/* ---------- Foto de perfil no cabeçalho ---------- */
+
+.identidade {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 24px;
+}
+
+.identidadeTexto {
+  flex: 1;
+  min-width: 0;
+}
+
+.foto {
+  position: relative;
+  flex: none;
+  display: grid;
+  place-items: center;
+  width: 68px;
+  height: 68px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--time-texto-cabecalho) 14%, transparent);
+  box-shadow: 0 0 0 2.5px color-mix(in srgb, var(--time-texto-cabecalho) 35%, transparent);
+  color: var(--time-texto-cabecalho);
+  cursor: pointer;
+}
+
+.foto img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.fotoVazia {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.375rem;
+  opacity: 0.8;
+}
+
+.fotoCamera {
+  position: absolute;
+  right: -2px;
+  bottom: -2px;
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--ouro);
+  color: var(--verde);
+  box-shadow: 0 0 0 2.5px var(--time-principal);
+}
+
+.fotoErro {
+  margin: 8px 0 0;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* Visor da foto */
+.visor {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  background: rgba(12, 20, 16, 0.92);
+  animation: aparecer 160ms ease-out both;
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+}
+
+.visorConteudo {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  width: 100%;
+  max-width: 340px;
+  color: var(--papel);
+}
+
+.visorFechar {
+  align-self: flex-end;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 0;
+  border-radius: 50%;
+  background: rgba(244, 235, 217, 0.14);
+  color: var(--papel);
+  cursor: pointer;
+}
+
+.visorFoto {
+  width: 100%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  object-fit: cover;
+  box-shadow: 0 0 0 4px var(--papel), 0 20px 40px -20px rgba(0, 0, 0, 0.8);
+}
+
+.visorNome {
+  margin: 4px 0 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.5rem;
+}
+
+.visorAcoes {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+}
+
+.visorAcoes button {
+  min-height: 48px;
+  border: 0;
+  border-radius: 10px;
+  background: var(--ouro);
+  color: var(--tinta);
+  font: 700 0.9375rem var(--font-texto);
+  cursor: pointer;
+}
+
+.visorAcoes .visorRemover {
+  background: transparent;
+  color: var(--papel);
+  box-shadow: inset 0 0 0 1.5px rgba(244, 235, 217, 0.4);
 }
