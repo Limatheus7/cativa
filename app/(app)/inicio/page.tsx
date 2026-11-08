@@ -11,10 +11,10 @@ import { autorDoItem } from "@/components/cativa/autores";
 import { estadioDeCasa } from "@/lib/dados/estadios";
 import { NIVEIS, estatisticas } from "@/lib/dados/estatisticas";
 import { noEstadio } from "@/lib/dados/formato";
-import Ticket from "@/components/cativa/Ticket";
 import { alternarCurtida, comentar, montarFeed, resumoDoTorcedor } from "@/lib/dados/loja";
 import s from "@/components/cativa/ui.module.css";
 import FotoDoCabecalho from "./FotoDoCabecalho";
+import UltimoJogoRecolhivel from "./UltimoJogoRecolhivel";
 import v from "./inicio.module.css";
 
 function saudacao() {
@@ -118,10 +118,7 @@ export default function Inicio() {
 
               {/* Seu último jogo */}
               {ultimo ? (
-                <section>
-                  <TituloSecao titulo="Seu último jogo" acao={{ rotulo: "Ver coleção", href: "/colecao" }} />
-                  <Ticket presenca={ultimo} href={`/colecao/partida/${ultimo.id}`} />
-                </section>
+                <UltimoJogoRecolhivel presenca={ultimo} />
               ) : (
                 <Link href="/presenca" className={s.chamadaPresenca}>
                   <span className={s.chamadaIcone}>

@@ -441,3 +441,85 @@
   color: var(--time-numero-escuro);
 }
 
+
+/* ---------- Seu último jogo: abrir e fechar ---------- */
+
+.recolhivelTopo {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.recolhivelTopo > a {
+  flex: none;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--acento);
+  text-underline-offset: 3px;
+}
+
+.recolhivelBotao {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--titulo);
+  cursor: pointer;
+}
+
+.recolhivelBotao h2 {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.25rem;
+}
+
+.seta {
+  transition: transform 200ms ease;
+}
+
+.seta[data-aberto="false"] {
+  transform: rotate(-90deg);
+}
+
+/* Altura animada sem medir: grade de 0fr para 1fr. */
+.recolhivelCorpo {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows 220ms ease, opacity 220ms ease;
+}
+
+.recolhivelCorpo > div {
+  min-height: 0;
+  overflow: hidden;
+  /* Espaço para a sombra do ingresso não ser cortada. */
+  padding: 6px 0 18px;
+  margin-bottom: -18px;
+}
+
+.recolhivelCorpo[data-aberto="false"] {
+  grid-template-rows: 0fr;
+  opacity: 0;
+  visibility: hidden;
+  transition: grid-template-rows 220ms ease, opacity 220ms ease, visibility 0s 220ms;
+}
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .recolhivelCorpo,
+  .seta {
+    transition: none;
+  }
+}
