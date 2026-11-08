@@ -144,8 +144,12 @@ export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda">): Rec
     "--time-destaque": destaque,
     "--time-sobre-destaque": textoSobre(destaque),
     "--time-contorno": contraste(corPrincipal, corSegunda) < 1.6 ? textoSobre(corPrincipal) : "transparent",
+    // Texto do cabeçalho do Início: em camisas claras, preto desbotado (tinta misturada à cor do time)
+    // em vez de preto puro; em camisas escuras, papel.
+    "--time-texto-cabecalho":
+      textoSobre(corPrincipal) === TINTA ? `color-mix(in srgb, ${TINTA} 72%, ${corPrincipal})` : PAPEL,
     // Detalhe dourado sobre a cor do time; em camisas claras o ouro some, então vira a cor do texto.
-    "--time-acento": contraste(corPrincipal, "#E6C46B") >= 2.2 ? "#E6C46B" : textoSobre(corPrincipal),
+    "--time-acento": contraste(corPrincipal, "#E6C46B") >= 2.2 ? "#E6C46B" : textoSobre(corPrincipal) === TINTA ? `color-mix(in srgb, ${TINTA} 72%, ${corPrincipal})` : PAPEL,
   };
 }
 

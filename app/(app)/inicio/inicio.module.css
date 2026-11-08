@@ -7,7 +7,7 @@
   overflow: hidden;
   padding: calc(env(safe-area-inset-top) + 16px) 20px 64px;
   background: var(--time-principal);
-  color: var(--time-sobre-principal);
+  color: var(--time-texto-cabecalho);
   isolation: isolate;
   transition: background 300ms ease, color 300ms ease;
   /* Camisas claras: uma linha para o cabeçalho não se misturar com o papel. */
