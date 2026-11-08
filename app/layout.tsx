@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from "next";
 import { DM_Sans, Fraunces } from "next/font/google";
+import { SCRIPT_TEMA } from "@/lib/tema-script";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -35,7 +36,11 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="pt-BR" className={`${dmSans.variable} ${fraunces.variable}`}>
+    <html lang="pt-BR" className={`${dmSans.variable} ${fraunces.variable}`} suppressHydrationWarning>
+      <head>
+        {/* Aplica o modo claro/escuro antes da primeira pintura. */}
+        <script dangerouslySetInnerHTML={{ __html: SCRIPT_TEMA }} />
+      </head>
       <body>{children}</body>
     </html>
   );

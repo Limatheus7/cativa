@@ -9,6 +9,29 @@
   --linha: #d9cdb4;
   --font-titulo: var(--font-fraunces), Georgia, serif;
   --font-texto: var(--font-dm-sans), system-ui, sans-serif;
+
+  /* Cores por função, usadas nas telas do app. O modo escuro troca só estas. */
+  --fundo: var(--papel);
+  --superficie: var(--cartao);
+  --superficie-forte: #ffffff;
+  --texto: var(--tinta);
+  --borda: var(--linha);
+  --titulo: var(--verde);
+  --acento: var(--ouro-profundo);
+  --erro: #9c3524;
+}
+
+/* Modo escuro: o verde profundo da marca (como as páginas verdes da apresentação). */
+:root[data-tema="escuro"] {
+  --fundo: #0f2219;
+  --superficie: #163025;
+  --superficie-forte: #1b3a2c;
+  --texto: #ede4d0;
+  --borda: #2a4a3a;
+  --titulo: #f4ebd9;
+  --acento: #e6c46b;
+  --erro: #e8917b;
+  color-scheme: dark;
 }
 
 *,

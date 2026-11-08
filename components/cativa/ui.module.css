@@ -37,19 +37,19 @@
   gap: 12px;
   padding: 16px;
   border-radius: 12px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .textoSuave {
   margin: 0;
   font-size: 0.875rem;
   line-height: 1.5;
-  color: color-mix(in srgb, var(--tinta) 72%, transparent);
+  color: color-mix(in srgb, var(--texto) 72%, transparent);
 }
 
 .textoSuave a {
-  color: var(--verde);
+  color: var(--titulo);
   font-weight: 700;
 }
 
@@ -59,7 +59,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .somenteLeitor {
@@ -75,14 +75,14 @@
   margin: 4px 0 0;
   text-align: center;
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--tinta) 55%, transparent);
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 
 .etiqueta {
   padding: 3px 8px;
   border-radius: 4px;
   background: color-mix(in srgb, var(--ouro) 35%, transparent);
-  color: var(--tinta);
+  color: var(--texto);
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -93,7 +93,7 @@
   margin: 0;
   font-size: 0.875rem;
   font-weight: 500;
-  color: #9c3524;
+  color: var(--erro);
 }
 
 /* ================================================================ Botões */
@@ -127,8 +127,8 @@
 
 .botaoVazado {
   background: transparent;
-  color: var(--verde);
-  box-shadow: inset 0 0 0 1.5px var(--verde);
+  color: var(--titulo);
+  box-shadow: inset 0 0 0 1.5px var(--titulo);
 }
 
 .botaoOuro {
@@ -141,7 +141,7 @@
   padding: 10px 12px;
   border: 0;
   background: none;
-  color: var(--verde);
+  color: var(--titulo);
   font: 700 0.9375rem var(--font-texto);
   text-decoration: underline;
   text-underline-offset: 3px;
@@ -170,7 +170,7 @@
   padding: 0 16px;
   border: 0;
   border-radius: 10px;
-  background: #9c3524;
+  background: var(--erro);
   color: var(--papel);
   font: 700 0.9375rem var(--font-texto);
   cursor: pointer;
@@ -183,7 +183,7 @@
   width: 40px;
   height: 40px;
   border-radius: 10px;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .contador {
@@ -208,8 +208,8 @@
   gap: 8px;
   padding: 14px;
   border-radius: 10px;
-  background: #f5e1d9;
-  box-shadow: inset 0 0 0 1px #e2bfb2;
+  background: color-mix(in srgb, #b8432f 14%, var(--superficie));
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, #b8432f 40%, transparent);
 }
 
 .confirmar p {
@@ -250,10 +250,10 @@
   width: 100%;
   min-height: 48px;
   padding: 0 14px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 10px;
-  background: var(--cartao);
-  color: var(--tinta);
+  background: var(--superficie);
+  color: var(--texto);
   font: 400 1rem var(--font-texto);
 }
 
@@ -268,14 +268,14 @@
 .campo textarea:focus,
 .linhaCampo input:focus {
   outline: none;
-  border-color: var(--verde);
+  border-color: var(--titulo);
   box-shadow: 0 0 0 3px rgba(31, 77, 58, 0.15);
 }
 
 .contagem {
   align-self: flex-end;
   font-weight: 400;
-  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
 .linhaCampo {
@@ -317,7 +317,7 @@
 .alternar small {
   font-size: 0.8125rem;
   line-height: 1.4;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .alternar input {
@@ -327,7 +327,7 @@
   height: 28px;
   margin: 0;
   border-radius: 999px;
-  background: var(--linha);
+  background: var(--borda);
   position: relative;
   cursor: pointer;
   transition: background 150ms ease;
@@ -341,7 +341,7 @@
   width: 22px;
   height: 22px;
   border-radius: 50%;
-  background: var(--cartao);
+  background: var(--superficie);
   box-shadow: 0 1px 3px rgba(30, 42, 34, 0.3);
   transition: transform 150ms ease;
 }
@@ -360,7 +360,7 @@
   position: sticky;
   top: 0;
   z-index: 10;
-  background: var(--papel);
+  background: var(--fundo);
   padding-top: env(safe-area-inset-top);
 }
 
@@ -378,7 +378,7 @@
   width: 40px;
   height: 40px;
   margin-left: -10px;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .cabecalhoTitulo {
@@ -393,7 +393,7 @@
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .cabecalhoTitulo h1 {
@@ -404,7 +404,7 @@
   font-weight: 700;
   font-size: 1.5rem;
   line-height: 1.15;
-  color: var(--verde);
+  color: var(--titulo);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -437,8 +437,8 @@
   grid-template-columns: repeat(5, 1fr);
   align-items: end;
   padding: 6px 4px calc(env(safe-area-inset-bottom) + 6px);
-  background: var(--cartao);
-  box-shadow: 0 -1px 0 var(--linha);
+  background: var(--superficie);
+  box-shadow: 0 -1px 0 var(--borda);
 }
 
 .barraItem,
@@ -452,12 +452,12 @@
   font-size: 0.6875rem;
   font-weight: 500;
   text-decoration: none;
-  color: color-mix(in srgb, var(--tinta) 58%, transparent);
+  color: color-mix(in srgb, var(--texto) 58%, transparent);
   transition: color 150ms ease;
 }
 
 .barraItem[aria-current="page"] {
-  color: var(--verde);
+  color: var(--titulo);
   font-weight: 700;
 }
 
@@ -471,7 +471,7 @@
 }
 
 .barraCentral {
-  color: var(--tinta);
+  color: var(--texto);
   font-weight: 700;
 }
 
@@ -484,7 +484,7 @@
   border-radius: 50%;
   background: var(--ouro);
   color: var(--verde);
-  box-shadow: 0 0 0 4px var(--cartao), 0 6px 16px -6px rgba(30, 42, 34, 0.55);
+  box-shadow: 0 0 0 4px var(--superficie), 0 6px 16px -6px rgba(30, 42, 34, 0.55);
   transition: transform 120ms ease;
 }
 
@@ -512,14 +512,14 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.25rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .tituloSecao a {
   flex: none;
   font-size: 0.8125rem;
   font-weight: 700;
-  color: var(--ouro-profundo);
+  color: var(--acento);
   text-underline-offset: 3px;
 }
 
@@ -535,7 +535,7 @@
   padding: 26px 20px;
   text-align: center;
   border-radius: 12px;
-  border: 1.5px dashed var(--linha);
+  border: 1.5px dashed var(--borda);
 }
 
 .vazio img {
@@ -554,7 +554,7 @@
   font-style: italic;
   font-size: 1.3125rem;
   line-height: 1.2;
-  color: var(--verde);
+  color: var(--titulo);
   text-wrap: balance;
 }
 
@@ -562,13 +562,13 @@
   margin: 0 0 4px;
   font-size: 0.9375rem;
   line-height: 1.45;
-  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+  color: color-mix(in srgb, var(--texto) 75%, transparent);
   text-wrap: pretty;
 }
 
 .vazioErro {
-  border-color: #e2bfb2;
-  background: #fbefe9;
+  border-color: color-mix(in srgb, #b8432f 40%, transparent);
+  background: color-mix(in srgb, #b8432f 10%, var(--superficie));
 }
 
 .carregando {
@@ -580,7 +580,7 @@
 .carregando span {
   height: 76px;
   border-radius: 12px;
-  background: linear-gradient(90deg, var(--cartao) 0%, #efe4cf 50%, var(--cartao) 100%) 0 0 / 200% 100%;
+  background: linear-gradient(90deg, var(--superficie) 0%, color-mix(in srgb, var(--borda) 60%, var(--superficie)) 50%, var(--superficie) 100%) 0 0 / 200% 100%;
   animation: brilho 1.2s ease-in-out infinite;
 }
 
@@ -634,7 +634,7 @@
   bottom: -4px;
   display: grid;
   border-radius: 50%;
-  box-shadow: 0 0 0 2.5px var(--papel);
+  box-shadow: 0 0 0 2.5px var(--fundo);
 }
 
 .seloWrap {
@@ -653,7 +653,7 @@
   font-style: italic;
   font-weight: 700;
   line-height: 1;
-  box-shadow: 0 0 0 2px var(--papel), 0 0 0 3px color-mix(in srgb, var(--tinta) 15%, transparent);
+  box-shadow: 0 0 0 2px var(--fundo), 0 0 0 3px color-mix(in srgb, var(--texto) 15%, transparent);
 }
 
 /* Tintas do selo: fixas, não mudam com o time (slide 11). */
@@ -682,7 +682,7 @@
   gap: 4px;
   padding: 4px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--linha) 55%, transparent);
+  background: color-mix(in srgb, var(--borda) 55%, transparent);
 }
 
 .aba {
@@ -695,7 +695,7 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   font: 700 0.875rem var(--font-texto);
   cursor: pointer;
 }
@@ -707,15 +707,15 @@
 }
 
 .aba[aria-selected="true"] {
-  background: var(--cartao);
-  color: var(--verde);
+  background: var(--superficie);
+  color: var(--titulo);
   box-shadow: 0 1px 3px rgba(30, 42, 34, 0.12);
 }
 
 .progresso {
   height: 6px;
   border-radius: 999px;
-  background: var(--linha);
+  background: var(--borda);
   overflow: hidden;
 }
 
@@ -732,7 +732,7 @@
 .saudacao p {
   margin: 0;
   font-size: 0.9375rem;
-  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+  color: color-mix(in srgb, var(--texto) 75%, transparent);
 }
 
 .saudacao h2 {
@@ -741,7 +741,7 @@
   font-style: italic;
   font-size: 2rem;
   line-height: 1.1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .trajetoria {
@@ -797,7 +797,7 @@
   flex-direction: column;
   gap: 6px;
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+  color: color-mix(in srgb, var(--texto) 75%, transparent);
 }
 
 .chamadaPresenca {
@@ -806,9 +806,9 @@
   gap: 14px;
   padding: 16px;
   border-radius: 12px;
-  background: var(--cartao);
+  background: var(--superficie);
   box-shadow: inset 0 0 0 1.5px var(--ouro);
-  color: var(--tinta);
+  color: var(--texto);
   text-decoration: none;
 }
 
@@ -822,13 +822,13 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.125rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .chamadaPresenca span span {
   font-size: 0.875rem;
   line-height: 1.4;
-  color: color-mix(in srgb, var(--tinta) 75%, transparent);
+  color: color-mix(in srgb, var(--texto) 75%, transparent);
 }
 
 .chamadaIcone {
@@ -850,14 +850,14 @@
   gap: 12px;
   padding: 12px 14px;
   border-radius: 10px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
-  color: var(--tinta);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
+  color: var(--texto);
   text-decoration: none;
 }
 
 .partidaLink:active {
-  background: #f6eedd;
+  background: var(--borda);
 }
 
 .partidaCorpo {
@@ -878,14 +878,14 @@
 }
 
 .partidaPlacar strong span {
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .partidaMeta {
   margin: 3px 0 0;
   overflow: hidden;
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
@@ -974,9 +974,9 @@
   justify-content: center;
   gap: 4px;
   width: 98px;
-  background: var(--cartao);
-  color: var(--verde);
-  border-left: 2px dashed color-mix(in srgb, var(--verde) 35%, transparent);
+  background: var(--superficie);
+  color: var(--titulo);
+  border-left: 2px dashed color-mix(in srgb, var(--titulo) 35%, transparent);
 }
 
 /* Picotes do canhoto */
@@ -988,7 +988,7 @@
   width: 16px;
   height: 16px;
   border-radius: 50%;
-  background: var(--papel);
+  background: var(--fundo);
 }
 
 .ingressoCanhoto::before {
@@ -1026,7 +1026,7 @@
   align-items: center;
   gap: 6px;
   min-width: 0;
-  color: var(--tinta);
+  color: var(--texto);
   text-align: center;
   text-decoration: none;
 }
@@ -1039,7 +1039,7 @@
   aspect-ratio: 1;
   padding: 5px;
   border-radius: 14px;
-  background: #fffdf7;
+  background: var(--superficie-forte);
   box-shadow: 0 1px 0 rgba(30, 42, 34, 0.08), 0 6px 12px -8px rgba(30, 42, 34, 0.55);
 }
 
@@ -1071,7 +1071,7 @@
   max-width: 320px;
   padding: 8px;
   border-radius: 6px;
-  background: #fffdf7;
+  background: var(--superficie-forte);
   box-shadow: 0 1px 0 rgba(30, 42, 34, 0.08), 0 14px 28px -16px rgba(30, 42, 34, 0.6);
   transform: rotate(-1.2deg);
 }
@@ -1111,23 +1111,23 @@
   font-weight: 700;
   font-size: 0.875rem;
   line-height: 1.15;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .adesivoLocal {
   font-size: 0.6875rem;
-  color: color-mix(in srgb, var(--tinta) 65%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 
 .adesivoTrancado .adesivoArte {
   background: transparent;
   box-shadow: none;
-  outline: 1.5px dashed var(--linha);
+  outline: 1.5px dashed var(--borda);
   outline-offset: -1px;
 }
 
 .adesivoTrancado .adesivoNome {
-  color: color-mix(in srgb, var(--tinta) 50%, transparent);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
 }
 
 .albumTopo {
@@ -1141,12 +1141,12 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.5rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .albumTopo span {
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .albumTopo .progresso {
@@ -1186,8 +1186,8 @@
   gap: 12px;
   padding: 12px 14px;
   border-radius: 10px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .conquistaMedalha {
@@ -1199,7 +1199,7 @@
   border-radius: 50%;
   background: var(--verde);
   color: var(--ouro);
-  box-shadow: 0 0 0 2px var(--cartao), 0 0 0 3.5px var(--ouro);
+  box-shadow: 0 0 0 2px var(--superficie), 0 0 0 3.5px var(--ouro);
 }
 
 .conquistaCompacta .conquistaMedalha {
@@ -1219,12 +1219,12 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.0625rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .conquistaTexto > span {
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 72%, transparent);
+  color: color-mix(in srgb, var(--texto) 72%, transparent);
 }
 
 .conquistaProgresso {
@@ -1242,12 +1242,12 @@
 
 .conquistaTrancada .conquistaMedalha {
   background: transparent;
-  color: var(--linha);
-  box-shadow: inset 0 0 0 1.5px var(--linha);
+  color: var(--borda);
+  box-shadow: inset 0 0 0 1.5px var(--borda);
 }
 
 .conquistaTrancada .conquistaTexto strong {
-  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
 .favoritar {
@@ -1259,12 +1259,12 @@
   border: 0;
   border-radius: 8px;
   background: none;
-  color: var(--linha);
+  color: var(--borda);
   cursor: pointer;
 }
 
 .favoritarAtiva {
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .niveis {
@@ -1277,11 +1277,11 @@
   display: flex;
   justify-content: space-between;
   padding: 10px 0;
-  color: color-mix(in srgb, var(--tinta) 50%, transparent);
+  color: color-mix(in srgb, var(--texto) 50%, transparent);
 }
 
 .niveis li + li {
-  border-top: 1px solid var(--linha);
+  border-top: 1px solid var(--borda);
 }
 
 .niveis li strong {
@@ -1293,11 +1293,11 @@
 }
 
 .niveis .nivelAlcancado {
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .niveis .nivelAlcancado:last-child {
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 /* ================================================================ Torcida */
@@ -1308,8 +1308,8 @@
   gap: 10px;
   padding: 12px;
   border-radius: 10px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .resumoLink {
@@ -1336,14 +1336,14 @@
 .resumoTexto span {
   overflow: hidden;
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .resumoTexto .resumoNumeros {
   margin-top: 3px;
-  color: var(--verde);
+  color: var(--titulo);
   font-weight: 700;
 }
 
@@ -1365,8 +1365,8 @@
 
 .seguindo {
   background: transparent;
-  color: var(--verde);
-  box-shadow: inset 0 0 0 1.5px var(--linha);
+  color: var(--titulo);
+  box-shadow: inset 0 0 0 1.5px var(--borda);
 }
 
 .identidadePerfil {
@@ -1383,13 +1383,13 @@
   font-style: italic;
   font-size: 1.75rem;
   line-height: 1.1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .identidadePerfil > p {
   margin: 0;
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .identidadePerfil .seguir {
@@ -1419,9 +1419,9 @@
   gap: 2px;
   padding: 14px 16px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--ouro) 28%, var(--cartao));
+  background: color-mix(in srgb, var(--ouro) 28%, var(--superficie));
   box-shadow: inset 0 0 0 1px var(--ouro);
-  color: var(--tinta);
+  color: var(--texto);
   text-decoration: none;
 }
 
@@ -1437,8 +1437,8 @@
   display: grid;
   grid-template-columns: 1.2fr repeat(3, 1fr) 1.2fr;
   border-radius: 12px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .placarGeral > div {
@@ -1451,7 +1451,7 @@
 }
 
 .placarGeral > div + div {
-  box-shadow: inset 1px 0 0 var(--linha);
+  box-shadow: inset 1px 0 0 var(--borda);
 }
 
 .placarGeral strong {
@@ -1459,12 +1459,12 @@
   font-style: italic;
   font-size: 1.5rem;
   line-height: 1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .placarGeral span:not([role]) {
   font-size: 0.6875rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .nivelLinha {
@@ -1490,12 +1490,12 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.5rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .comparacao span {
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 /* ================================================================ Feed */
@@ -1506,8 +1506,8 @@
   gap: 12px;
   padding: 14px;
   border-radius: 12px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .feedTopo {
@@ -1530,7 +1530,7 @@
 .feedQuando {
   display: block;
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
 .feedPresenca {
@@ -1549,13 +1549,13 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.25rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .feedMeta {
   margin: 0;
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .feedFrase {
@@ -1566,7 +1566,7 @@
   font-style: italic;
   font-size: 1.0625rem;
   line-height: 1.35;
-  color: var(--tinta);
+  color: var(--texto);
 }
 
 .feedFotos {
@@ -1600,7 +1600,7 @@
   gap: 12px;
   padding: 12px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--ouro) 18%, var(--cartao));
+  background: color-mix(in srgb, var(--ouro) 18%, var(--superficie));
 }
 
 .feedConquista div {
@@ -1613,7 +1613,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.0625rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .feedConquista span {
@@ -1635,7 +1635,7 @@
   border: 0;
   border-radius: 8px;
   background: none;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   font: 500 0.875rem var(--font-texto);
   cursor: pointer;
 }
@@ -1649,7 +1649,7 @@
   flex-direction: column;
   gap: 8px;
   padding-top: 10px;
-  border-top: 1px solid var(--linha);
+  border-top: 1px solid var(--borda);
 }
 
 .comentarios p {
@@ -1668,9 +1668,9 @@
   min-width: 0;
   min-height: 40px;
   padding: 0 12px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 8px;
-  background: var(--papel);
+  background: var(--fundo);
   font: 400 0.9375rem var(--font-texto);
 }
 
@@ -1700,16 +1700,16 @@
   width: 100%;
   min-height: 40px;
   padding: 0 10px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 8px;
-  background: var(--cartao);
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  background: var(--superficie);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   font: 500 0.875rem var(--font-texto);
 }
 
 .filtro select[data-ativo] {
-  border-color: var(--verde);
-  color: var(--verde);
+  border-color: var(--titulo);
+  color: var(--titulo);
   font-weight: 700;
 }
 
@@ -1732,13 +1732,13 @@
   font-style: italic;
   font-size: 2.75rem;
   line-height: 1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .placarGrande p {
   margin: 0;
   font-size: 0.875rem;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
 .fraseGrande {
@@ -1748,7 +1748,7 @@
   font-style: italic;
   font-size: 1.375rem;
   line-height: 1.3;
-  color: var(--verde);
+  color: var(--titulo);
   text-wrap: balance;
 }
 
@@ -1781,12 +1781,12 @@
   justify-content: space-between;
   gap: 16px;
   padding: 10px 0;
-  border-bottom: 1px solid var(--linha);
+  border-bottom: 1px solid var(--borda);
   font-size: 0.875rem;
 }
 
 .resumoLista dt {
-  color: color-mix(in srgb, var(--tinta) 65%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 
 .resumoLista dd {
@@ -1796,7 +1796,7 @@
 }
 
 .resumoLista a {
-  color: var(--verde);
+  color: var(--titulo);
   font-weight: 700;
 }
 
@@ -1823,7 +1823,7 @@
   flex: 1;
   height: 4px;
   border-radius: 999px;
-  background: var(--linha);
+  background: var(--borda);
   transition: background 200ms ease;
 }
 
@@ -1837,7 +1837,7 @@
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
 .checkinTitulo {
@@ -1846,7 +1846,7 @@
   font-style: italic;
   font-size: 1.75rem;
   line-height: 1.1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .checkinTitulo + .textoSuave {
@@ -1875,7 +1875,7 @@
   padding-left: 4px;
   font-size: 0.75rem;
   font-weight: 700;
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .escolhido {
@@ -1885,12 +1885,12 @@
   gap: 10px;
   padding: 12px 14px;
   border-radius: 10px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1.5px var(--verde);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1.5px var(--titulo);
 }
 
 .escolhido > span:not([class]) {
-  color: color-mix(in srgb, var(--tinta) 65%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 
 .escolhido .botaoTexto {
@@ -1912,7 +1912,7 @@
   padding: 4px 0;
   border: 0;
   background: none;
-  color: var(--tinta);
+  color: var(--texto);
   font: 500 0.75rem var(--font-texto);
   cursor: pointer;
 }
@@ -1922,7 +1922,7 @@
   gap: 4px;
   padding: 4px;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--linha) 55%, transparent);
+  background: color-mix(in srgb, var(--borda) 55%, transparent);
 }
 
 .segmentado button {
@@ -1931,14 +1931,14 @@
   border: 0;
   border-radius: 7px;
   background: transparent;
-  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
   font: 700 0.875rem var(--font-texto);
   cursor: pointer;
 }
 
 .segmentado button[aria-pressed="true"] {
-  background: var(--cartao);
-  color: var(--verde);
+  background: var(--superficie);
+  color: var(--titulo);
   box-shadow: 0 1px 3px rgba(30, 42, 34, 0.12);
 }
 
@@ -1953,7 +1953,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.5rem;
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .contador2 {
@@ -1982,16 +1982,16 @@
   font-style: italic;
   font-size: 2.5rem;
   line-height: 1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .contador2 button {
   width: 40px;
   height: 40px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 50%;
-  background: var(--cartao);
-  color: var(--verde);
+  background: var(--superficie);
+  color: var(--titulo);
   font: 700 1.25rem var(--font-texto);
   cursor: pointer;
 }
@@ -2000,9 +2000,9 @@
   padding: 12px 14px;
   border: 0;
   border-radius: 10px;
-  background: color-mix(in srgb, var(--ouro) 28%, var(--cartao));
+  background: color-mix(in srgb, var(--ouro) 28%, var(--superficie));
   box-shadow: inset 0 0 0 1px var(--ouro);
-  color: var(--tinta);
+  color: var(--texto);
   text-align: left;
   font: 400 0.9375rem var(--font-texto);
   cursor: pointer;
@@ -2012,8 +2012,8 @@
   display: flex;
   flex-direction: column;
   border-radius: 10px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .listaSimples button {
@@ -2025,14 +2025,14 @@
   padding: 12px 14px;
   border: 0;
   background: none;
-  color: var(--tinta);
+  color: var(--texto);
   text-align: left;
   font: inherit;
   cursor: pointer;
 }
 
 .listaSimples button + button {
-  border-top: 1px solid var(--linha);
+  border-top: 1px solid var(--borda);
 }
 
 .listaSimples strong {
@@ -2042,7 +2042,7 @@
 .listaSimples span {
   flex: none;
   font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--tinta) 65%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 
 .chips {
@@ -2057,16 +2057,16 @@
   gap: 6px;
   min-height: 38px;
   padding: 0 14px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 999px;
-  background: var(--cartao);
-  color: var(--tinta);
+  background: var(--superficie);
+  color: var(--texto);
   font: 500 0.875rem var(--font-texto);
   cursor: pointer;
 }
 
 .chips button[aria-pressed="true"] {
-  border-color: var(--verde);
+  border-color: var(--titulo);
   background: var(--verde);
   color: var(--papel);
 }
@@ -2111,9 +2111,9 @@
   justify-content: center;
   gap: 4px;
   aspect-ratio: 1;
-  border: 1.5px dashed var(--linha);
+  border: 1.5px dashed var(--borda);
   border-radius: 8px;
-  color: var(--verde);
+  color: var(--titulo);
   font-size: 0.75rem;
   font-weight: 700;
   cursor: pointer;
@@ -2138,19 +2138,19 @@
   align-items: center;
   gap: 8px;
   padding: 14px 0 12px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 10px;
-  background: var(--cartao);
-  color: var(--tinta);
+  background: var(--superficie);
+  color: var(--texto);
   font: 700 0.875rem var(--font-texto);
   cursor: pointer;
   opacity: 0.55;
 }
 
 .resultados button[aria-pressed="true"] {
-  border-color: var(--verde);
+  border-color: var(--titulo);
   opacity: 1;
-  box-shadow: 0 0 0 2px color-mix(in srgb, var(--verde) 20%, transparent);
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--titulo) 20%, transparent);
 }
 
 .checkinAcoes {
@@ -2159,7 +2159,7 @@
   display: flex;
   gap: 8px;
   padding-top: 8px;
-  background: linear-gradient(to top, var(--papel) 70%, transparent);
+  background: linear-gradient(to top, var(--fundo) 70%, transparent);
 }
 
 .botaoVoltar {
@@ -2168,10 +2168,10 @@
   place-items: center;
   width: 50px;
   min-height: 50px;
-  border: 1.5px solid var(--linha);
+  border: 1.5px solid var(--borda);
   border-radius: 10px;
-  background: var(--cartao);
-  color: var(--verde);
+  background: var(--superficie);
+  color: var(--titulo);
   cursor: pointer;
 }
 
@@ -2190,7 +2190,7 @@
   font-style: italic;
   font-size: 2.25rem;
   line-height: 1;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .celebracao .ingresso,
@@ -2205,7 +2205,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.125rem;
-  color: var(--ouro-profundo);
+  color: var(--acento);
 }
 
 .novidades {
@@ -2214,7 +2214,7 @@
   gap: 10px;
   padding: 16px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--ouro) 18%, var(--cartao));
+  background: color-mix(in srgb, var(--ouro) 18%, var(--superficie));
   box-shadow: inset 0 0 0 1px var(--ouro);
 }
 
@@ -2223,7 +2223,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.25rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .novoAdesivo {
@@ -2262,7 +2262,7 @@
   padding: 10px 0;
   border: 0;
   background: none;
-  color: var(--verde);
+  color: var(--titulo);
   text-align: left;
   text-decoration: none;
   font: 700 0.9375rem var(--font-texto);
@@ -2272,16 +2272,16 @@
 .linhaLink span {
   font-size: 0.8125rem;
   font-weight: 400;
-  color: color-mix(in srgb, var(--tinta) 65%, transparent);
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
 }
 
 .linhaLink + .linhaLink,
 .linhaLink + .confirmar {
-  border-top: 1px solid var(--linha);
+  border-top: 1px solid var(--borda);
 }
 
 .linhaPerigo {
-  color: #9c3524;
+  color: var(--erro);
 }
 
 /* ================================================================ Notificações */
@@ -2291,12 +2291,12 @@
   margin: 0;
   padding: 0;
   border-radius: 12px;
-  background: var(--cartao);
-  box-shadow: inset 0 0 0 1px var(--linha);
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
 }
 
 .notificacoes li + li {
-  border-top: 1px solid var(--linha);
+  border-top: 1px solid var(--borda);
 }
 
 .notificacoes a {
@@ -2304,7 +2304,7 @@
   flex-direction: column;
   gap: 2px;
   padding: 14px 16px;
-  color: var(--tinta);
+  color: var(--texto);
   text-decoration: none;
 }
 
@@ -2312,7 +2312,7 @@
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.0625rem;
-  color: var(--verde);
+  color: var(--titulo);
 }
 
 .notificacoes span {
@@ -2321,7 +2321,7 @@
 
 .notificacoes small {
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
 .naoLida a {
@@ -2339,4 +2339,15 @@
   .filtros {
     grid-template-columns: repeat(4, 1fr);
   }
+}
+
+/* ================================================================ Modo escuro */
+
+/* A cadeira dos estados vazios fica em papel para não sumir no verde escuro. */
+:global(:root[data-tema="escuro"]) .vazio img {
+  content: url(/marca/cadeira-papel.svg);
+}
+
+:global(:root[data-tema="escuro"]) .avatar {
+  box-shadow: inset 0 0 0 1px rgba(244, 235, 217, 0.18);
 }

@@ -2,6 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
+import { useTema } from "@/lib/tema";
 import { carregarTime, temaDoTime, type Time } from "@/lib/time";
 import styles from "./app.module.css";
 
@@ -31,15 +32,17 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
   // Barra do navegador/celular combinando com o cabeçalho da tela:
   // no Início o cabeçalho é na cor do time; nas outras telas, papel.
   const caminho = usePathname();
+  const tema = useTema();
   useEffect(() => {
     if (!time) return;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
-    if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : "#F4EBD9";
+    const fundo = tema === "escuro" ? "#0F2219" : "#F4EBD9";
+    if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : fundo;
     return () => {
       if (meta && antes) meta.content = antes;
     };
-  }, [time, caminho]);
+  }, [time, caminho, tema]);
 
   if (!time) return <div className={styles.app} />;
 

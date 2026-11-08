@@ -4,7 +4,8 @@ import Link from "next/link";
 import { useTime } from "@/components/app/TimeProvider";
 import { Avatar, EstadoVazio, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
-import { IconeCadeira, IconeCamera, IconeEngrenagem, IconeSino } from "@/components/cativa/Icones";
+import { IconeCadeira, IconeCamera, IconeLua, IconeSino, IconeSol } from "@/components/cativa/Icones";
+import { alternarTema, useTema } from "@/lib/tema";
 import { CartaoPartida } from "@/components/cativa/Registros";
 import { ItemFeed } from "@/components/cativa/Social";
 import { autorDoItem } from "@/components/cativa/autores";
@@ -16,6 +17,7 @@ import v from "./inicio.module.css";
 
 export default function Inicio() {
   const time = useTime();
+  const tema = useTema();
   const meuTime = paraIdentidade(time);
   const casa = estadioDeCasa(time.clube ?? time.iniciais);
 
@@ -51,9 +53,14 @@ export default function Inicio() {
                   <span className={v.time}>{time.nome}</span>
                 </div>
                 <div className={v.acoes}>
-                  <Link href="/perfil/configuracoes" className={v.acao} aria-label="Configurações">
-                    <IconeEngrenagem />
-                  </Link>
+                  <button
+                    type="button"
+                    className={v.acao}
+                    onClick={alternarTema}
+                    aria-label={tema === "escuro" ? "Ativar modo claro" : "Ativar modo escuro"}
+                  >
+                    {tema === "escuro" ? <IconeSol /> : <IconeLua />}
+                  </button>
                   <Link href="/notificacoes" className={v.acao} aria-label={`Notificações${naoLidas ? `, ${naoLidas} novas` : ""}`}>
                     <IconeSino />
                     {naoLidas > 0 && <span className={v.ponto} />}

@@ -7,6 +7,7 @@ import ComDados from "@/components/cativa/ComDados";
 import { CabecalhoApp } from "@/components/cativa/Navegacao";
 import { apagarTudo, atualizarConfig } from "@/lib/dados/loja";
 import type { Configuracoes } from "@/lib/dados/tipos";
+import { definirTema, useTema } from "@/lib/tema";
 import s from "@/components/cativa/ui.module.css";
 
 const NOTIFICACOES: { chave: keyof Configuracoes["notificacoes"]; rotulo: string; texto: string }[] = [
@@ -18,6 +19,7 @@ const NOTIFICACOES: { chave: keyof Configuracoes["notificacoes"]; rotulo: string
 
 export default function Configuracoes() {
   const router = useRouter();
+  const tema = useTema();
   const [confirmando, setConfirmando] = useState(false);
 
   return (
@@ -48,6 +50,16 @@ export default function Configuracoes() {
                     onChange={(v) => atualizarConfig({ notificacoes: { ...dados.config.notificacoes, [n.chave]: v } })}
                   />
                 ))}
+              </section>
+
+              <section className={s.cartao}>
+                <h2 className={s.rotulo}>Aparência</h2>
+                <Alternar
+                  rotulo="Modo escuro"
+                  texto="Também dá para trocar pela lua no topo do Início."
+                  ligado={tema === "escuro"}
+                  onChange={(v) => definirTema(v ? "escuro" : "claro")}
+                />
               </section>
 
               <section className={s.cartao}>
