@@ -61,9 +61,7 @@ const LIBERTADORES: TemaIngresso = {
   divider: "#D4AF37",
   dividerOpacity: 0.3,
   crestRing: "#D4AF37",
-  // Valores do kit: { src: "/ingressos/silhueta-libertadores.png", left: 212, top: 5, width: 176, height: 400, rotate: 24, opacity: 0.18 }
-  // O PNG da Libertadores não veio no export; quando chegar, coloque em public/ingressos/ e troque null pelo objeto acima.
-  taca: null,
+  taca: { src: "/ingressos/silhueta-libertadores.png", left: 212, top: 5, width: 176, height: 400, rotate: 24, opacity: 0.18 },
 };
 
 /** Competição desconhecida: visual do Brasileirão, sem taça (o kit pede tema padrão sem taça). */

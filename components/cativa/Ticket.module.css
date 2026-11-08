@@ -45,6 +45,8 @@
 .recorteTaca img {
   position: absolute;
   max-width: none;
+  /* A imagem cabe na caixa do kit sem distorcer, mesmo com proporção diferente. */
+  object-fit: contain;
   transform-origin: center;
 }
 
