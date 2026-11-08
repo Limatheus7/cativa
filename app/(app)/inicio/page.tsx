@@ -2,81 +2,105 @@
 
 import Link from "next/link";
 import { useTime } from "@/components/app/TimeProvider";
-import { Avatar, EstadoVazio, Progresso, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
+import Monograma from "@/components/Monograma";
+import { EstadoVazio, TituloSecao, paraIdentidade } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
-import { IconeCadeira, IconeSino } from "@/components/cativa/Icones";
-import { CabecalhoApp } from "@/components/cativa/Navegacao";
+import { IconeCadeira, IconeEngrenagem, IconeSino } from "@/components/cativa/Icones";
 import { CartaoPartida } from "@/components/cativa/Registros";
 import { ItemFeed } from "@/components/cativa/Social";
 import { autorDoItem } from "@/components/cativa/autores";
+import { estadioDeCasa } from "@/lib/dados/estadios";
 import { alternarCurtida, comentar, montarFeed, resumoDoTorcedor } from "@/lib/dados/loja";
+import { noEstadio } from "@/lib/dados/formato";
 import s from "@/components/cativa/ui.module.css";
-
-function saudacao() {
-  const h = new Date().getHours();
-  return h < 5 ? "Boa noite" : h < 12 ? "Bom dia" : h < 18 ? "Boa tarde" : "Boa noite";
-}
+import v from "./inicio.module.css";
 
 export default function Inicio() {
   const time = useTime();
   const meuTime = paraIdentidade(time);
+  const casa = estadioDeCasa(time.clube ?? time.iniciais);
 
   return (
     <ComDados>
       {(dados) => {
         const { est, recentes, naoLidas } = resumoDoTorcedor(dados);
         const feed = montarFeed(dados);
-        const primeiroNome = dados.perfil.nome.split(" ")[0];
 
         return (
           <>
-            <CabecalhoApp
-              assinatura
-              direita={
-                <>
-                  <Link href="/notificacoes" className={s.botaoIcone} aria-label={`Notificações${naoLidas ? `, ${naoLidas} novas` : ""}`}>
+            {/* Cabeçalho na cor do time: muda sozinho quando o torcedor troca de time. */}
+            <header className={v.topo}>
+              <div className={v.topoLinha}>
+                <Link href="/perfil" className={v.escudo} aria-label="Seu perfil">
+                  <Monograma time={time} tamanho={52} />
+                </Link>
+                <div className={v.quem}>
+                  <div className={v.nomeLinha}>
+                    <span className={v.nome}>{dados.perfil.nome || "Torcedor"}</span>
+                    <span className={v.etiqueta}>{est.nivel?.nome ?? "Estreante"}</span>
+                  </div>
+                  <span className={v.time}>{time.nome}</span>
+                </div>
+                <div className={v.acoes}>
+                  <Link href="/perfil/configuracoes" className={v.acao} aria-label="Configurações">
+                    <IconeEngrenagem />
+                  </Link>
+                  <Link href="/notificacoes" className={v.acao} aria-label={`Notificações${naoLidas ? `, ${naoLidas} novas` : ""}`}>
                     <IconeSino />
-                    {naoLidas > 0 && <span className={s.contador}>{naoLidas}</span>}
-                  </Link>
-                  <Link href="/perfil" aria-label="Seu perfil">
-                    <Avatar nome={dados.perfil.nome || "Você"} foto={dados.perfil.foto} tamanho={36} />
-                  </Link>
-                </>
-              }
-            />
-
-            <main className={s.pagina}>
-              <section className={s.saudacao}>
-                <p>
-                  {saudacao()}
-                  {primeiroNome ? `, ${primeiroNome}` : ""}.
-                </p>
-                <h2>{est.total > 0 ? "Você estava lá." : "Sua cadeira está guardada."}</h2>
-              </section>
-
-              <section className={s.trajetoria} aria-label="Sua trajetória">
-                <div className={s.numeros}>
-                  <Link href="/colecao" className={s.numero}>
-                    <strong>{est.total}</strong>
-                    <span>{est.total === 1 ? "partida" : "partidas"}</span>
-                  </Link>
-                  <Link href="/colecao?aba=estadios" className={s.numero}>
-                    <strong>{est.estadios}</strong>
-                    <span>{est.estadios === 1 ? "estádio" : "estádios"}</span>
-                  </Link>
-                  <Link href="/colecao?aba=conquistas" className={s.numero}>
-                    <strong className={s.numeroNivel}>{est.nivel?.nome ?? "—"}</strong>
-                    <span>nível</span>
+                    {naoLidas > 0 && <span className={v.ponto} />}
                   </Link>
                 </div>
-                {est.proximo && (
-                  <div className={s.proximoNivel}>
-                    <Progresso valor={est.progresso} rotulo={`Progresso até ${est.proximo.nome}`} />
-                    <span>
-                      Faltam {est.proximo.jogos - est.total} para <strong>{est.proximo.nome}</strong>
-                    </span>
+              </div>
+            </header>
+
+            <main className={s.pagina}>
+              <section>
+                <div className={v.secaoTopo}>
+                  <div>
+                    <h2>Meus jogos</h2>
+                    <p>{casa ? `Histórico ${noEstadio(casa.nome)} e fora` : "Seu histórico em casa e fora"}</p>
                   </div>
-                )}
+                  <span className={v.salvos}>
+                    {est.total} {est.total === 1 ? "jogo salvo" : "jogos salvos"}
+                  </span>
+                </div>
+
+                <div className={v.placar}>
+                  <Link href="/colecao" className={v.coluna}>
+                    <strong>{est.total}</strong>
+                    <span>Ao vivo</span>
+                  </Link>
+                  {(["V", "E", "D"] as const).map((r) => (
+                    <Link
+                      key={r}
+                      href={`/colecao`}
+                      className={`${v.coluna} ${v[r.toLowerCase()]}`}
+                      aria-label={`${est[r]} ${r === "V" ? "vitórias" : r === "E" ? "empates" : "derrotas"}`}
+                    >
+                      <strong>{est[r]}</strong>
+                      <span className={v.pilula}>{r}</span>
+                    </Link>
+                  ))}
+                </div>
+
+                <div className={v.rodapePlacar}>
+                  {est.proximo ? (
+                    <>
+                      <div className={v.barra} aria-hidden="true">
+                        <span style={{ width: `${Math.max(est.progresso, 0.03) * 100}%` }} />
+                      </div>
+                      <span>
+                        {est.estadios} {est.estadios === 1 ? "estádio" : "estádios"} ·{" "}
+                        {est.total === 0 ? "seu primeiro jogo te faz " : `faltam ${est.proximo.jogos - est.total} para `}
+                        <strong>{est.proximo.nome}</strong>
+                      </span>
+                    </>
+                  ) : (
+                    <span>
+                      {est.estadios} estádios · você é <strong>Cadeira Cativa</strong>
+                    </span>
+                  )}
+                </div>
               </section>
 
               {est.total === 0 ? (

@@ -1,0 +1,211 @@
+/* Início: cabeçalho na cor do time (variáveis do TimeProvider) e placar em cartão branco. */
+
+.topo {
+  position: relative;
+  padding: calc(env(safe-area-inset-top) + 18px) 18px 22px;
+  border-radius: 0 0 26px 26px;
+  background: var(--time-principal);
+  color: var(--time-sobre-principal);
+  /* Times de camisa clara: uma linha para o cabeçalho não sumir no papel. */
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--time-sobre-principal) 12%, transparent);
+  transition: background 300ms ease, color 300ms ease;
+}
+
+.topoLinha {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.escudo {
+  flex: none;
+  display: grid;
+  text-decoration: none;
+  border-radius: 50%;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--time-sobre-principal) 22%, transparent);
+}
+
+.quem {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.nomeLinha {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+}
+
+.nome {
+  overflow: hidden;
+  font-size: 1.0625rem;
+  font-weight: 700;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.etiqueta {
+  flex: none;
+  padding: 2px 7px;
+  border-radius: 6px;
+  background: color-mix(in srgb, var(--time-sobre-principal) 18%, transparent);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-sobre-principal) 35%, transparent);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.time {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  opacity: 0.85;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.acoes {
+  flex: none;
+  display: flex;
+  gap: 8px;
+}
+
+.acao {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--time-sobre-principal) 16%, transparent);
+  color: inherit;
+}
+
+.acao svg {
+  width: 20px;
+  height: 20px;
+}
+
+.ponto {
+  position: absolute;
+  top: 8px;
+  right: 9px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--ouro);
+  box-shadow: 0 0 0 2px var(--time-principal);
+}
+
+/* ---------- Meus jogos ---------- */
+
+.secaoTopo {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.secaoTopo h2 {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--tinta);
+}
+
+.secaoTopo p {
+  margin: 2px 0 0;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--tinta) 62%, transparent);
+}
+
+.salvos {
+  flex: none;
+  padding: 5px 10px;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--time-destaque) 8%, white);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-destaque) 45%, transparent);
+  color: var(--time-destaque);
+  font-size: 0.75rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.placar {
+  display: grid;
+  grid-template-columns: 1.3fr repeat(3, 1fr);
+  margin-top: 14px;
+  padding: 16px 6px;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.06), 0 8px 24px -16px rgba(30, 42, 34, 0.35);
+}
+
+.coluna {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  color: inherit;
+}
+
+.coluna + .coluna {
+  box-shadow: inset 1px 0 0 #ece4d3;
+}
+
+.coluna strong {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.coluna span {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--tinta) 60%, transparent);
+}
+
+/* Tintas dos selos (fixas, não mudam com o time). */
+.pilula {
+  min-width: 22px;
+  padding: 2px 6px;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 0.6875rem !important;
+  font-weight: 700;
+}
+
+.v strong { color: #2e8b57; }
+.v .pilula { background: #e3f2e8; color: #2e8b57 !important; }
+.e strong { color: #c98a1c; }
+.e .pilula { background: #fbf0d9; color: #b07612 !important; }
+.d strong { color: #b8432f; }
+.d .pilula { background: #f8e3df; color: #b8432f !important; }
+
+.rodapePlacar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 12px;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--tinta) 70%, transparent);
+}
+
+.rodapePlacar .barra {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--linha);
+  overflow: hidden;
+}
+
+.rodapePlacar .barra span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--time-destaque);
+  transition: width 400ms ease;
+}

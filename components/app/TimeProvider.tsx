@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { carregarTime, temaDoTime, type Time } from "@/lib/time";
 import styles from "./app.module.css";
@@ -28,16 +28,18 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
     else router.replace("/meu-time");
   }, [router]);
 
-  // Barra do navegador/celular combinando com o cabeçalho em papel.
+  // Barra do navegador/celular combinando com o cabeçalho da tela:
+  // no Início o cabeçalho é na cor do time; nas outras telas, papel.
+  const caminho = usePathname();
   useEffect(() => {
     if (!time) return;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
-    if (meta) meta.content = "#F4EBD9"; // papel: o cabeçalho do app é claro
+    if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : "#F4EBD9";
     return () => {
       if (meta && antes) meta.content = antes;
     };
-  }, [time]);
+  }, [time, caminho]);
 
   if (!time) return <div className={styles.app} />;
 
