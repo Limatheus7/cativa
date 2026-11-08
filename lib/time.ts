@@ -129,7 +129,17 @@ function legivelSobrePapel(cor: string): string {
 }
 
 /** Variáveis CSS que vestem o app com as cores do time. */
-export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda">): Record<string, string> {
+/**
+ * Cor do nome no cabeçalho: a segunda cor do time, se for fácil de ler sobre a
+ * principal; senão outra cor da camisa (ex.: o branco do Fluminense); senão
+ * papel ou tinta.
+ */
+function corDoNome(corPrincipal: string, corSegunda: string, faixas: string[] = []) {
+  const candidatas = [corSegunda, ...faixas].filter((c) => c.toLowerCase() !== corPrincipal.toLowerCase());
+  return candidatas.find((c) => contraste(c, corPrincipal) >= 3) ?? textoSobre(corPrincipal);
+}
+
+export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda" | "faixas">): Record<string, string> {
   const { corPrincipal, corSegunda } = time;
   // Time de cor principal clara (ex.: branco) usa a segunda cor nos destaques.
   const baseDestaque = luminancia(corPrincipal) > 0.8 ? corSegunda : corPrincipal;
@@ -146,6 +156,7 @@ export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda">): Rec
     "--time-contorno": contraste(corPrincipal, corSegunda) < 1.6 ? textoSobre(corPrincipal) : "transparent",
     // Texto do cabeçalho do Início: em camisas claras, preto desbotado (tinta misturada à cor do time)
     // em vez de preto puro; em camisas escuras, papel.
+    "--time-nome": corDoNome(corPrincipal, corSegunda, time.faixas),
     "--time-texto-cabecalho":
       textoSobre(corPrincipal) === TINTA ? `color-mix(in srgb, ${TINTA} 72%, ${corPrincipal})` : PAPEL,
     // Detalhe dourado sobre a cor do time; em camisas claras o ouro some, então vira a cor do texto.

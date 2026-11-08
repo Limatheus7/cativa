@@ -91,6 +91,9 @@
 
 .nome {
   margin: 4px 0 0;
+  /* Segunda cor do time (ou outra cor da camisa que leia bem). */
+  color: var(--time-nome);
+  transition: color 300ms ease;
   font-family: var(--font-titulo);
   font-style: italic;
   font-weight: 700;
