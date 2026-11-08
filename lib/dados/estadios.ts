@@ -6,7 +6,7 @@ export const ESTADIOS: Estadio[] = [
   { id: "maracana", nome: "Maracanã", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/maracana.png" },
   { id: "nilton-santos", nome: "Nilton Santos", apelido: "Engenhão", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/nilton-santos.png" },
   { id: "sao-januario", nome: "São Januário", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/sao-januario.png" },
-  { id: "morumbis", nome: "Morumbis", cidade: "São Paulo", uf: "SP" },
+  { id: "morumbis", nome: "Morumbis", cidade: "São Paulo", uf: "SP", arte: "/estadios/morumbis.png" },
   { id: "allianz", nome: "Allianz Parque", cidade: "São Paulo", uf: "SP" },
   { id: "arena-corinthians", nome: "Arena Corinthians", cidade: "São Paulo", uf: "SP" },
   { id: "pacaembu", nome: "Pacaembu", cidade: "São Paulo", uf: "SP" },
