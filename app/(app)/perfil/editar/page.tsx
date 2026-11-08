@@ -5,6 +5,7 @@ import { useState } from "react";
 import { Avatar } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
 import { CabecalhoApp } from "@/components/cativa/Navegacao";
+import RecorteFoto from "@/components/cativa/RecorteFoto";
 import { reduzirFoto } from "@/lib/dados/imagens";
 import { atualizarPerfil, slugUsuario } from "@/lib/dados/loja";
 import type { Perfil } from "@/lib/dados/tipos";
@@ -27,13 +28,20 @@ function Formulario({ inicial }: { inicial: Perfil }) {
   const router = useRouter();
   const [p, setP] = useState<Perfil>(inicial);
   const [erro, setErro] = useState("");
+  const [recortando, setRecortando] = useState<string | null>(null);
 
-  async function trocarFoto(arquivo?: File) {
+  async function trocarFoto(entrada: HTMLInputElement) {
+    const arquivo = entrada.files?.[0];
     if (!arquivo) return;
     try {
-      setP({ ...p, foto: await reduzirFoto(arquivo, 400, 0.8) });
+      // Guarda o original reduzido (para reenquadrar depois) e abre o enquadramento.
+      const original = await reduzirFoto(arquivo, 1200, 0.82);
+      setP((atual) => ({ ...atual, fotoOriginal: original }));
+      setRecortando(original);
     } catch {
       setErro("Não conseguimos abrir essa imagem.");
+    } finally {
+      entrada.value = "";
     }
   }
 
@@ -54,14 +62,29 @@ function Formulario({ inicial }: { inicial: Perfil }) {
         <Avatar nome={p.nome || "Você"} foto={p.foto} tamanho={88} />
         <label className={s.botaoTexto}>
           {p.foto ? "Trocar foto" : "Adicionar foto"}
-          <input type="file" accept="image/*" className={s.somenteLeitor} onChange={(e) => trocarFoto(e.target.files?.[0])} />
+          <input type="file" accept="image/*" className={s.somenteLeitor} onChange={(e) => trocarFoto(e.currentTarget)} />
         </label>
         {p.foto && (
-          <button type="button" className={s.botaoTexto} onClick={() => setP({ ...p, foto: undefined })}>
+          <button type="button" className={s.botaoTexto} onClick={() => setRecortando(p.fotoOriginal ?? p.foto!)}>
+            Ajustar enquadramento
+          </button>
+        )}
+        {p.foto && (
+          <button type="button" className={s.botaoTexto} onClick={() => setP({ ...p, foto: undefined, fotoOriginal: undefined })}>
             Remover foto
           </button>
         )}
       </div>
+      {recortando && (
+        <RecorteFoto
+          src={recortando}
+          onCancelar={() => setRecortando(null)}
+          onSalvar={(foto) => {
+            setP((atual) => ({ ...atual, foto }));
+            setRecortando(null);
+          }}
+        />
+      )}
 
       <label className={s.campo}>
         <span>Nome</span>

@@ -66,7 +66,10 @@ export type Perfil = {
   usuario: string;
   cidade?: string;
   uf?: string;
+  /** Foto de perfil já enquadrada (quadrada). */
   foto?: string;
+  /** Foto original (reduzida), para reenquadrar sem perder qualidade. */
+  fotoOriginal?: string;
   bio?: string;
 };
 

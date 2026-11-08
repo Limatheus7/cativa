@@ -130,7 +130,9 @@ export function Avatar({
   return (
     <span className={s.avatar} style={{ width: tamanho, height: tamanho }}>
       {foto ? (
-        <img src={foto} alt="" />
+        <span className={s.avatarFoto}>
+          <img src={foto} alt="" />
+        </span>
       ) : (
         <span className={s.avatarIniciais} style={{ fontSize: tamanho * 0.36 }}>
           {iniciaisDoNome(nome)}

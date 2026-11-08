@@ -49,7 +49,7 @@ export default function Inicio() {
                 </Link>
               </div>
               <div className={v.identidade}>
-                <FotoDoCabecalho nome={dados.perfil.nome} foto={dados.perfil.foto} />
+                <FotoDoCabecalho nome={dados.perfil.nome} foto={dados.perfil.foto} fotoOriginal={dados.perfil.fotoOriginal} />
                 <div className={v.identidadeTexto}>
                   <p className={v.saudacao}>{saudacao()}</p>
                   <h1 className={v.nome}>{dados.perfil.nome || "Torcedor"}</h1>
