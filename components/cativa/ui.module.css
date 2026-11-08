@@ -1050,6 +1050,48 @@
   border-radius: 10px;
 }
 
+.adesivoPoster {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border-radius: 10px;
+  object-fit: cover;
+  object-position: 50% 30%;
+}
+
+.adesivoTrancado .adesivoPoster {
+  filter: grayscale(1) sepia(0.15);
+  opacity: 0.4;
+}
+
+/* Pôster inteiro na página do estádio, como um cartaz colado no álbum. */
+.poster {
+  align-self: center;
+  width: 100%;
+  max-width: 320px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #fffdf7;
+  box-shadow: 0 1px 0 rgba(30, 42, 34, 0.08), 0 14px 28px -16px rgba(30, 42, 34, 0.6);
+  transform: rotate(-1.2deg);
+}
+
+.poster img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 2px;
+}
+
+.posterTrancado img {
+  filter: grayscale(1) sepia(0.15);
+  opacity: 0.45;
+}
+
+.posterTrancado {
+  transform: none;
+}
+
 .adesivoVisitas {
   position: absolute;
   top: -6px;
@@ -1124,6 +1166,11 @@
 .estadioTopo > div {
   flex: 1;
   min-width: 0;
+}
+
+/* Com pôster, as informações ficam sozinhas na linha e ocupam a largura toda. */
+.estadioTopo > div:first-child:last-child {
+  flex: 1 1 auto;
 }
 
 .estadioTopo p {

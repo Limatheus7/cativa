@@ -101,6 +101,10 @@ export function AdesivoEstadio({
   const conteudo = (
     <>
       <span className={s.adesivoArte} style={{ transform: desbloqueado ? `rotate(${giro}deg)` : undefined }}>
+        {estadio.arte ? (
+          // Pôster ilustrado do estádio; antes da primeira presença aparece apagado.
+          <img src={estadio.arte} alt="" className={s.adesivoPoster} />
+        ) : (
         <svg viewBox="0 0 100 100" aria-hidden="true">
           <rect width="100" height="100" fill={desbloqueado ? "#FBF5E8" : "transparent"} />
           {desbloqueado && <circle cx="74" cy="26" r="11" fill="#E6C46B" opacity="0.85" />}
@@ -112,6 +116,7 @@ export function AdesivoEstadio({
           <path d="M14 76h72l8 14H6z" fill={desbloqueado ? "#3C7A4E" : "none"} stroke={desbloqueado ? "none" : "#C9BC9F"} strokeWidth="2" />
           {desbloqueado && <path d="M50 76v14M38 83h24" stroke="#F4EBD9" strokeWidth="1.2" opacity="0.8" />}
         </svg>
+        )}
         {desbloqueado && visitas > 1 && <span className={s.adesivoVisitas}>×{visitas}</span>}
       </span>
       <span className={s.adesivoNome}>{estadio.nome}</span>

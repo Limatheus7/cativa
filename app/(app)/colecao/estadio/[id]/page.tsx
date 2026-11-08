@@ -34,8 +34,15 @@ export default function DetalheEstadio() {
           <>
             <CabecalhoApp titulo={estadio.nome} sobretitulo="Estádio" voltar="/colecao?aba=estadios" />
             <main className={s.pagina}>
+              {estadio.arte && (
+                <figure className={`${s.poster} ${jogos.length > 0 ? "" : s.posterTrancado}`} style={{ margin: 0 }}>
+                  <img src={estadio.arte} alt={`Pôster ilustrado do ${estadio.nome}`} width={495} height={728} />
+                </figure>
+              )}
               <section className={s.estadioTopo}>
-                <AdesivoEstadio estadio={estadio} desbloqueado={jogos.length > 0} visitas={jogos.length} indice={ESTADIOS.indexOf(estadio)} />
+                {!estadio.arte && (
+                  <AdesivoEstadio estadio={estadio} desbloqueado={jogos.length > 0} visitas={jogos.length} indice={ESTADIOS.indexOf(estadio)} />
+                )}
                 <div>
                   <p>
                     {estadio.apelido ? `${estadio.apelido} · ` : ""}

@@ -22,6 +22,8 @@ export type Estadio = {
   apelido?: string;
   cidade: string;
   uf: string;
+  /** Pôster ilustrado do estádio (public/estadios). Sem ele, o sticker usa o desenho padrão. */
+  arte?: string;
 };
 
 /** Estádio informado na presença: do catálogo (id) ou digitado à mão. */

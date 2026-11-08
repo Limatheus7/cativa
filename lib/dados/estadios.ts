@@ -3,7 +3,7 @@ import type { Estadio } from "./tipos";
 // Catálogo de estádios brasileiros (dado de referência, não do torcedor).
 // Cada um vira um sticker na Coleção quando o torcedor registra uma presença lá.
 export const ESTADIOS: Estadio[] = [
-  { id: "maracana", nome: "Maracanã", cidade: "Rio de Janeiro", uf: "RJ" },
+  { id: "maracana", nome: "Maracanã", cidade: "Rio de Janeiro", uf: "RJ", arte: "/estadios/maracana.png" },
   { id: "nilton-santos", nome: "Nilton Santos", apelido: "Engenhão", cidade: "Rio de Janeiro", uf: "RJ" },
   { id: "sao-januario", nome: "São Januário", cidade: "Rio de Janeiro", uf: "RJ" },
   { id: "morumbis", nome: "Morumbis", cidade: "São Paulo", uf: "SP" },
