@@ -30,7 +30,7 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
   }, [router]);
 
   // Barra do navegador/celular combinando com o cabeçalho da tela:
-  // no Início o cabeçalho é na cor do time; nas outras telas, papel.
+  // no Início o cabeçalho é verde Cativa; nas outras telas, o fundo da tela.
   const caminho = usePathname();
   const tema = useTema();
   useEffect(() => {
@@ -38,7 +38,7 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
     const fundo = tema === "escuro" ? "#0F2219" : "#F4EBD9";
-    if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : fundo;
+    if (meta) meta.content = caminho === "/inicio" ? "#1F4D3A" : fundo;
     return () => {
       if (meta && antes) meta.content = antes;
     };

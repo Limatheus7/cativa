@@ -1,111 +1,63 @@
-/* Início: cabeçalho na cor do time (variáveis do TimeProvider) e placar em cartão branco. */
+/* Início: cabeçalho verde Cativa, cartão da temporada sobreposto, último jogo como ingresso. */
+
+/* ---------- Cabeçalho ---------- */
 
 .topo {
   position: relative;
-  padding: calc(env(safe-area-inset-top) + 18px) 18px 22px;
-  border-radius: 0 0 26px 26px;
-  background: var(--time-principal);
-  color: var(--time-sobre-principal);
-  /* Times de camisa clara: uma linha para o cabeçalho não sumir no papel. */
-  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--time-sobre-principal) 12%, transparent);
-  transition: background 300ms ease, color 300ms ease;
+  overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 16px) 20px 64px;
+  background: var(--verde);
+  color: var(--papel);
+  isolation: isolate;
+}
+
+/* Arcos concêntricos discretos: a arquibancada vista de cima. */
+.topo::before,
+.topo::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  border: 1.5px solid rgba(244, 235, 217, 0.07);
+  pointer-events: none;
+}
+
+.topo::before {
+  width: 320px;
+  height: 320px;
+  top: -150px;
+  right: -110px;
+  box-shadow: 0 0 0 40px rgba(244, 235, 217, 0.025), 0 0 0 41.5px rgba(244, 235, 217, 0.06);
+}
+
+.topo::after {
+  width: 150px;
+  height: 150px;
+  top: -65px;
+  right: -25px;
 }
 
 .topoLinha {
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
 }
 
-.escudo {
-  position: relative;
-  flex: none;
-  display: grid;
-  text-decoration: none;
-  border-radius: 50%;
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--time-sobre-principal) 22%, transparent);
+.logo {
+  width: 92px;
+  height: auto;
 }
 
-/* Selinho de câmera quando ainda não há foto. */
-.semFoto {
-  position: absolute;
-  right: -3px;
-  bottom: -3px;
-  display: grid;
-  place-items: center;
-  width: 22px;
-  height: 22px;
-  border-radius: 50%;
-  background: var(--ouro);
-  color: var(--verde);
-  box-shadow: 0 0 0 2px var(--time-principal);
-}
-
-.quem {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.nomeLinha {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-}
-
-.nome {
-  overflow: hidden;
-  font-size: 1.0625rem;
-  font-weight: 700;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.etiqueta {
-  flex: none;
-  padding: 2px 7px;
-  border-radius: 6px;
-  background: color-mix(in srgb, var(--time-sobre-principal) 18%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-sobre-principal) 35%, transparent);
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-}
-
-.time {
-  overflow: hidden;
-  font-size: 0.8125rem;
-  opacity: 0.85;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-}
-
-.acoes {
-  flex: none;
-  display: flex;
-  gap: 8px;
-}
-
-.acao {
+.sino {
   position: relative;
   display: grid;
   place-items: center;
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  border: 0;
-  background: color-mix(in srgb, var(--time-sobre-principal) 16%, transparent);
-  color: inherit;
-  cursor: pointer;
-}
-
-.acao svg {
-  width: 20px;
-  height: 20px;
+  background: rgba(244, 235, 217, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(244, 235, 217, 0.18);
+  color: var(--ouro);
 }
 
 .ponto {
@@ -116,114 +68,360 @@
   height: 8px;
   border-radius: 50%;
   background: var(--ouro);
-  box-shadow: 0 0 0 2px var(--time-principal);
+  box-shadow: 0 0 0 2px var(--verde);
 }
 
-/* ---------- Meus jogos ---------- */
+.saudacao {
+  margin: 26px 0 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--ouro);
+}
 
-.secaoTopo {
+.nome {
+  margin: 4px 0 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2rem;
+  line-height: 1.1;
+  text-wrap: balance;
+}
+
+.timeLinha {
   display: flex;
-  align-items: flex-start;
+  align-items: center;
+  gap: 8px;
+  margin-top: 10px;
+  font-size: 0.875rem;
+}
+
+.nivel {
+  padding: 2px 8px;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px var(--ouro);
+  color: var(--ouro);
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+/* ---------- Página: o cartão da temporada sobe sobre o verde ---------- */
+
+.pagina {
+  margin-top: -44px;
+  position: relative;
+}
+
+.rotulo,
+.rotuloOuro {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.rotulo {
+  color: var(--acento);
+}
+
+.rotuloOuro {
+  color: var(--ouro);
+}
+
+/* ---------- Sua temporada ---------- */
+
+.temporada {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 18px 16px 16px;
+  border-radius: 16px;
+  background: var(--superficie-forte);
+  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.06), 0 14px 30px -18px rgba(30, 42, 34, 0.45);
+}
+
+.temporadaTopo {
+  display: flex;
+  align-items: baseline;
   justify-content: space-between;
+}
+
+.temporadaTopo a {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  color: var(--titulo);
+  text-underline-offset: 3px;
+}
+
+.destaque {
+  display: flex;
+  align-items: center;
   gap: 12px;
 }
 
-.secaoTopo h2 {
-  margin: 0;
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: var(--texto);
+.destaque > strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 3.5rem;
+  line-height: 0.9;
+  color: var(--titulo);
 }
 
-.secaoTopo p {
-  margin: 2px 0 0;
+.destaque div {
+  display: flex;
+  flex-direction: column;
+}
+
+.destaque span {
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+.destaque small {
   font-size: 0.8125rem;
   color: color-mix(in srgb, var(--texto) 62%, transparent);
 }
 
-.salvos {
-  flex: none;
-  padding: 5px 10px;
-  border-radius: 999px;
-  background: color-mix(in srgb, var(--time-destaque) 8%, white);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-destaque) 45%, transparent);
-  color: var(--time-destaque);
-  font-size: 0.75rem;
-  font-weight: 700;
-  white-space: nowrap;
-}
-
-.placar {
+.ved {
   display: grid;
-  grid-template-columns: 1.3fr repeat(3, 1fr);
-  margin-top: 14px;
-  padding: 16px 6px;
-  border-radius: 16px;
-  background: var(--superficie-forte);
-  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.06), 0 8px 24px -16px rgba(30, 42, 34, 0.35);
+  grid-template-columns: repeat(3, 1fr);
+  padding-top: 14px;
+  border-top: 1px solid var(--borda);
 }
 
-.coluna {
+.ved div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 6px;
-  text-decoration: none;
-  color: inherit;
+  gap: 4px;
 }
 
-.coluna + .coluna {
+.ved div + div {
   box-shadow: inset 1px 0 0 var(--borda);
 }
 
-.coluna strong {
-  font-size: 1.5rem;
-  font-weight: 700;
+.ved strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.75rem;
   line-height: 1;
 }
 
-.coluna span {
+.ved span {
   font-size: 0.75rem;
-  color: color-mix(in srgb, var(--texto) 60%, transparent);
+  color: color-mix(in srgb, var(--texto) 62%, transparent);
 }
 
-/* Tintas dos selos (fixas, não mudam com o time). */
-.pilula {
-  min-width: 22px;
-  padding: 2px 6px;
-  border-radius: 6px;
-  text-align: center;
-  font-size: 0.6875rem !important;
-  font-weight: 700;
-}
+/* Tintas dos selos: fixas, não mudam com o time. */
+.vedV strong { color: #2e8b57; }
+.vedE strong { color: #c98a1c; }
+.vedD strong { color: #b8432f; }
 
-.v strong { color: #2e8b57; }
-.v .pilula { background: color-mix(in srgb, #2e8b57 16%, transparent); color: #2e8b57 !important; }
-.e strong { color: #c98a1c; }
-.e .pilula { background: color-mix(in srgb, #e3a43a 20%, transparent); color: #b07612 !important; }
-.d strong { color: #b8432f; }
-.d .pilula { background: color-mix(in srgb, #b8432f 16%, transparent); color: #b8432f !important; }
-
-.rodapePlacar {
+.regua {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  margin-top: 12px;
+  gap: 8px;
+  padding: 12px;
+  border-radius: 10px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
+}
+
+.reguaTexto {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
   font-size: 0.8125rem;
+}
+
+.reguaTexto span:last-child {
+  text-align: right;
   color: color-mix(in srgb, var(--texto) 70%, transparent);
 }
 
-.rodapePlacar .barra {
+.reguaBarra {
   height: 6px;
   border-radius: 999px;
   background: var(--borda);
   overflow: hidden;
 }
 
-.rodapePlacar .barra span {
+.reguaBarra span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: var(--time-destaque);
+  background: linear-gradient(90deg, var(--ouro-profundo), var(--ouro));
   transition: width 400ms ease;
+}
+
+.reguaNiveis {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--texto) 40%, transparent);
+}
+
+.reguaNiveis .nivelPassado {
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
+}
+
+.reguaNiveis .nivelAtual {
+  color: var(--acento);
+}
+
+/* ---------- Seu último jogo (ingresso) ---------- */
+
+.ingresso {
+  display: flex;
+  border-radius: 14px;
+  background: var(--verde);
+  color: var(--papel);
+  text-decoration: none;
+  overflow: hidden;
+  box-shadow: 0 12px 26px -16px rgba(30, 42, 34, 0.7);
+}
+
+.ingressoCorpo {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 16px;
+}
+
+.confronto {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 6px;
+}
+
+.lado {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.lado > span:last-child {
+  max-width: 100%;
+  overflow: hidden;
+  font-size: 0.75rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  opacity: 0.85;
+}
+
+.placarGrande {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.placarGrande strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 2.25rem;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.placarGrande strong span {
+  font-size: 1.5rem;
+  color: var(--ouro);
+}
+
+.placarGrande > span {
+  margin-top: 4px;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ouro);
+}
+
+.dados {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 12px;
+  margin: 0;
+  padding-top: 12px;
+  border-top: 1px dashed rgba(244, 235, 217, 0.25);
+}
+
+.dados div {
+  min-width: 0;
+}
+
+.dados dt {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ouro);
+}
+
+.dados dd {
+  margin: 2px 0 0;
+  overflow: hidden;
+  font-size: 0.8125rem;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.canhoto {
+  position: relative;
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 92px;
+  background: var(--cartao);
+  color: var(--verde);
+  border-left: 2px dashed color-mix(in srgb, var(--verde) 30%, transparent);
+}
+
+/* Picotes do canhoto */
+.canhoto::before,
+.canhoto::after {
+  content: "";
+  position: absolute;
+  left: -9px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--fundo);
+}
+
+.canhoto::before {
+  top: -8px;
+}
+
+.canhoto::after {
+  bottom: -8px;
+}
+
+.canhoto span {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--ouro-profundo);
+}
+
+.canhoto strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.0625rem;
 }

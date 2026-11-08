@@ -6,7 +6,7 @@ import { conquistaPorId } from "@/lib/dados/conquistas";
 import { estatisticas } from "@/lib/dados/estatisticas";
 import { formatarData, haQuanto, noEstadio, placar } from "@/lib/dados/formato";
 import type { Comentario, IdentidadeDoTime, ItemDoFeed, TorcedorPublico } from "@/lib/dados/tipos";
-import { Avatar, IdentidadeTime, SeloPresenca } from "./Basicos";
+import { Avatar, SeloPresenca } from "./Basicos";
 import { IconeCadeira, IconeComentario, IconeCoracao } from "./Icones";
 import s from "./ui.module.css";
 
@@ -104,15 +104,16 @@ export function ItemFeed({
 
       {item.tipo === "presenca" ? (
         <div className={s.feedPresenca}>
-          <div className={s.feedPlacar}>
-            <SeloPresenca resultado={item.presenca.resultado} tamanho={34} />
-            <IdentidadeTime time={item.presenca.time} tamanho={24} />
-            <strong>{placar(item.presenca).texto}</strong>
+          <div className={s.feedJogo}>
+            <SeloPresenca resultado={item.presenca.resultado} tamanho={32} />
+            <div>
+              <strong>{placar(item.presenca).texto}</strong>
+              <span>
+                {item.presenca.partida.competicao} · {formatarData(item.presenca.partida.data)}
+                {item.presenca.lugar?.setor ? ` · Setor ${item.presenca.lugar.setor}` : ""}
+              </span>
+            </div>
           </div>
-          <p className={s.feedMeta}>
-            {item.presenca.partida.competicao} · {formatarData(item.presenca.partida.data)}
-            {item.presenca.lugar?.setor ? ` · Setor ${item.presenca.lugar.setor}` : ""}
-          </p>
           {item.presenca.frase && <blockquote className={s.feedFrase}>“{item.presenca.frase}”</blockquote>}
           {item.presenca.fotos.length > 0 && (
             <div className={s.feedFotos} data-qtd={Math.min(item.presenca.fotos.length, 3)}>
@@ -128,6 +129,7 @@ export function ItemFeed({
             <IconeCadeira tamanho={24} />
           </span>
           <div>
+            <small>Conquista</small>
             <strong>{conquistaPorId(item.conquistaId)?.nome}</strong>
             <span>{conquistaPorId(item.conquistaId)?.descricao}</span>
           </div>
