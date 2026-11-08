@@ -121,9 +121,9 @@ export default function Inicio() {
                 </Link>
               ) : (
                 <section>
-                  <TituloSecao titulo="Seus jogos recentes" acao={{ rotulo: "Ver coleção", href: "/colecao" }} />
+                  <TituloSecao titulo="Seu último jogo" acao={{ rotulo: "Ver coleção", href: "/colecao" }} />
                   <div className={s.lista}>
-                    {recentes.slice(0, 2).map((p) => (
+                    {recentes.slice(0, 1).map((p) => (
                       <CartaoPartida key={p.id} presenca={p} href={`/colecao/partida/${p.id}`} />
                     ))}
                   </div>
