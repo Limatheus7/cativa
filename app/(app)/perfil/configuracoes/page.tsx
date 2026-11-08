@@ -56,7 +56,7 @@ export default function Configuracoes() {
                 <h2 className={s.rotulo}>Aparência</h2>
                 <Alternar
                   rotulo="Modo escuro"
-                  texto="Também dá para trocar pela lua no topo do Início."
+                  texto="Verde profundo da Cativa no lugar do papel."
                   ligado={tema === "escuro"}
                   onChange={(v) => definirTema(v ? "escuro" : "claro")}
                 />
