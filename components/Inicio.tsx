@@ -63,7 +63,7 @@ export default function Inicio() {
       <h1 className={styles.titulo}>Seu time está com você.</h1>
 
       {/* "Eternize a história": a porta de entrada do app. */}
-      <CartaoMeusJogos time={time} jogos={jogos} onCheguei={() => router.push("/meus-jogos")} />
+      <CartaoMeusJogos time={time} jogos={jogos} onCheguei={() => router.push("/inicio")} />
 
       {proximo && (
         <p className={styles.nivel}>

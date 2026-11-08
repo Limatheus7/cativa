@@ -28,12 +28,12 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
     else router.replace("/meu-time");
   }, [router]);
 
-  // Barra do navegador/celular na cor do time.
+  // Barra do navegador/celular combinando com o cabeçalho em papel.
   useEffect(() => {
     if (!time) return;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
-    if (meta) meta.content = time.corPrincipal;
+    if (meta) meta.content = "#F4EBD9"; // papel: o cabeçalho do app é claro
     return () => {
       if (meta && antes) meta.content = antes;
     };

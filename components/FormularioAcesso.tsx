@@ -29,7 +29,7 @@ export default function FormularioAcesso() {
           e.preventDefault();
           // Protótipo: sem autenticação real ainda (Supabase). Quem já
           // escolheu o time neste aparelho entra direto no app.
-          router.push(carregarTime() ? "/meus-jogos" : "/meu-time");
+          router.push(carregarTime() ? "/inicio" : "/meu-time");
         }}
       >
         <label className={styles.campo}>

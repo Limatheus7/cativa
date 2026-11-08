@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { iniciarPerfil } from "@/lib/dados/loja";
 import base from "./FormularioAcesso.module.css";
 import styles from "./FormularioCadastro.module.css";
 
@@ -83,7 +84,10 @@ export default function FormularioCadastro() {
           e.preventDefault();
           // Protótipo: sem cadastro real ainda (Supabase). Conta criada,
           // o próximo passo é escolher o time.
-          if (tudoCerto) router.push("/meu-time");
+          if (!tudoCerto) return;
+          const campos = new FormData(e.currentTarget);
+          iniciarPerfil(String(campos.get("nome") ?? ""), String(campos.get("apelido") ?? ""));
+          router.push("/meu-time");
         }}
       >
         <label className={base.campo}>

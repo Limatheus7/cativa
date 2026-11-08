@@ -87,7 +87,7 @@ export default function CriarTime() {
   }
 
   /** Salva o time. "Vestir o app" mostra a tela do time; o CTA do cartão já entra no app. */
-  function concluir(destino: "/inicio" | "/meus-jogos" = "/inicio") {
+  function concluir(destino: "/bem-vindo" | "/inicio" = "/bem-vindo") {
     salvarTime({ nome: nome.trim(), iniciais: iniciais.trim(), corPrincipal, corSegunda, padrao, faixas, clube });
     router.push(destino);
   }
@@ -216,7 +216,7 @@ export default function CriarTime() {
           <p className={base.subtitulo}>O app veste o seu time.</p>
 
           <div className={styles.previa}>
-            <CartaoMeusJogos time={camisa} jogos={0} onCheguei={() => concluir("/meus-jogos")} />
+            <CartaoMeusJogos time={camisa} jogos={0} onCheguei={() => concluir("/inicio")} />
           </div>
 
           {!clube && (

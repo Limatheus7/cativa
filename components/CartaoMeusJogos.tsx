@@ -1,17 +1,9 @@
+import { proximoNivel } from "@/lib/dados/estatisticas";
 import Monograma, { type DadosCamisa } from "./Monograma";
 import styles from "./CartaoMeusJogos.module.css";
 
-// Níveis em proposta (apresentação de marca, slide 11).
-export const NIVEIS = [
-  { nome: "Geral", jogos: 1 },
-  { nome: "Arquibancada", jogos: 3 },
-  { nome: "Cadeira Numerada", jogos: 10 },
-  { nome: "Cadeira Cativa", jogos: 25 },
-];
-
-export function proximoNivel(jogos: number) {
-  return NIVEIS.find((n) => n.jogos > jogos) ?? null;
-}
+// Níveis definidos em um só lugar (lib/dados/estatisticas).
+export { NIVEIS, proximoNivel } from "@/lib/dados/estatisticas";
 
 type Props = {
   time: DadosCamisa;
