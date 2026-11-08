@@ -38,10 +38,10 @@ export default function Inicio() {
 
         return (
           <>
-            {/* Cabeçalho Cativa: verde da marca; o time aparece no círculo da sigla. */}
+            {/* Cabeçalho na cor do time; textos, logotipo e detalhes se ajustam para ler bem. */}
             <header className={v.topo}>
               <div className={v.topoLinha}>
-                <img src="/marca/logotipo-cativa-papel.svg" alt="Cativa" width={762} height={185} className={v.logo} />
+                <span role="img" aria-label="Cativa" className={v.logo} />
                 <Link href="/notificacoes" className={v.sino} aria-label={`Notificações${naoLidas ? `, ${naoLidas} novas` : ""}`}>
                   <IconeSino tamanho={20} />
                   {naoLidas > 0 && <span className={v.ponto} />}
@@ -50,7 +50,7 @@ export default function Inicio() {
               <p className={v.saudacao}>{saudacao()}</p>
               <h1 className={v.nome}>{dados.perfil.nome || "Torcedor"}</h1>
               <div className={v.timeLinha}>
-                <Monograma time={time} tamanho={22} />
+                <Monograma time={time} tamanho={22} contorno="color-mix(in srgb, var(--time-sobre-principal) 55%, transparent)" />
                 <span>{time.nome}</span>
                 <span className={v.nivel}>{est.nivel?.nome ?? "Estreante"}</span>
               </div>

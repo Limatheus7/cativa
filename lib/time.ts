@@ -144,6 +144,8 @@ export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda">): Rec
     "--time-destaque": destaque,
     "--time-sobre-destaque": textoSobre(destaque),
     "--time-contorno": contraste(corPrincipal, corSegunda) < 1.6 ? textoSobre(corPrincipal) : "transparent",
+    // Detalhe dourado sobre a cor do time; em camisas claras o ouro some, então vira a cor do texto.
+    "--time-acento": contraste(corPrincipal, "#E6C46B") >= 2.2 ? "#E6C46B" : textoSobre(corPrincipal),
   };
 }
 
