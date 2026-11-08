@@ -1,4 +1,4 @@
-/* Torcida: cabeçalho na cor do time (como o Início), abas sobrepostas, cartões de torcedor. */
+/* Torcida: cabeçalho no verde da marca (o time vira só um detalhe), abas sobrepostas, cartões de torcedor. */
 
 .somenteLeitor {
   position: absolute;
@@ -15,10 +15,10 @@
   position: relative;
   overflow: hidden;
   padding: calc(env(safe-area-inset-top) + 16px) 20px 62px;
-  background: var(--time-principal);
-  color: var(--time-texto-cabecalho);
+  /* Verde da Cativa em qualquer time: cor do time só na fita do sobretítulo e nos escudos. */
+  background: var(--verde);
+  color: var(--papel);
   isolation: isolate;
-  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--time-sobre-principal) 10%, transparent);
 }
 
 .topo::before,
@@ -27,7 +27,7 @@
   position: absolute;
   z-index: -1;
   border-radius: 50%;
-  border: 1.5px solid color-mix(in srgb, var(--time-sobre-principal) 9%, transparent);
+  border: 1.5px solid rgba(244, 235, 217, 0.08);
   pointer-events: none;
 }
 
@@ -68,9 +68,9 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background: color-mix(in srgb, var(--time-sobre-principal) 12%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-sobre-principal) 22%, transparent);
-  color: var(--time-acento);
+  background: rgba(244, 235, 217, 0.08);
+  box-shadow: inset 0 0 0 1px rgba(244, 235, 217, 0.18);
+  color: var(--papel);
 }
 
 .ponto {
@@ -80,17 +80,35 @@
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background: var(--time-acento);
-  box-shadow: 0 0 0 2px var(--time-principal);
+  background: var(--ouro);
+  box-shadow: 0 0 0 2px var(--verde);
 }
 
 .sobretitulo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 24px 0 0;
   font-size: 0.6875rem;
   font-weight: 700;
   letter-spacing: 0.16em;
   text-transform: uppercase;
-  color: var(--time-acento);
+  color: rgba(244, 235, 217, 0.7);
+}
+
+/* Fita curta nas cores do time: o único lugar do cabeçalho com a cor do clube. */
+.fita {
+  display: inline-flex;
+  flex: none;
+  width: 22px;
+  height: 4px;
+  overflow: hidden;
+  border-radius: 2px;
+  box-shadow: 0 0 0 1px rgba(244, 235, 217, 0.25);
+}
+
+.fita span {
+  flex: 1;
 }
 
 .titulo {
@@ -100,7 +118,7 @@
   font-weight: 700;
   font-size: 2.25rem;
   line-height: 1.05;
-  color: var(--time-nome);
+  color: var(--papel);
 }
 
 .descricao {
@@ -119,8 +137,8 @@
   padding: 0 8px 0 14px;
   min-height: 48px;
   border-radius: 12px;
-  background: color-mix(in srgb, var(--time-sobre-principal) 10%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-sobre-principal) 22%, transparent);
+  background: rgba(244, 235, 217, 0.07);
+  box-shadow: inset 0 0 0 1px rgba(244, 235, 217, 0.16);
   color: inherit;
 }
 
@@ -140,18 +158,6 @@
   opacity: 0.6;
 }
 
-.arroba {
-  flex: none;
-  display: grid;
-  place-items: center;
-  width: 28px;
-  height: 22px;
-  border-radius: 5px;
-  box-shadow: inset 0 0 0 1px var(--time-acento);
-  color: var(--time-acento);
-  font-size: 0.8125rem;
-  font-weight: 700;
-}
 
 /* ---------- Página ---------- */
 
@@ -330,7 +336,8 @@
 }
 
 .seguindo {
-  background: color-mix(in srgb, var(--ouro) 25%, var(--superficie));
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
   color: var(--titulo);
 }
 
@@ -469,8 +476,8 @@
   width: 52px;
   height: 52px;
   border-radius: 50%;
-  box-shadow: inset 0 0 0 1.5px var(--ouro);
-  color: var(--ouro);
+  box-shadow: inset 0 0 0 1.5px rgba(244, 235, 217, 0.35);
+  color: var(--papel);
 }
 
 .convite h2 {
@@ -495,8 +502,8 @@
   padding: 0 18px;
   border: 0;
   border-radius: 999px;
-  background: var(--ouro);
-  color: var(--tinta);
+  background: var(--papel);
+  color: var(--verde);
   font: 700 0.875rem var(--font-texto);
   cursor: pointer;
 }

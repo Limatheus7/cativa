@@ -66,7 +66,7 @@ export default function Torcida() {
 
         return (
           <>
-            {/* Cabeçalho na cor do time, como no Início */}
+            {/* Cabeçalho no verde da Cativa; o time aparece só na fita ao lado do sobretítulo. */}
             <header className={v.topo}>
               <div className={v.topoLinha}>
                 <span role="img" aria-label="Cativa" className={v.logo} />
@@ -75,7 +75,14 @@ export default function Torcida() {
                   {naoLidas > 0 && <span className={v.ponto} />}
                 </Link>
               </div>
-              <p className={v.sobretitulo}>Quem vai ao estádio com você</p>
+              <p className={v.sobretitulo}>
+                <span className={v.fita} aria-hidden="true">
+                  {(time.faixas?.length ? time.faixas : [time.corPrincipal, time.corSegunda]).map((c, i) => (
+                    <span key={i} style={{ background: c }} />
+                  ))}
+                </span>
+                Quem vai ao estádio com você
+              </p>
               <h1 className={v.titulo}>Torcida</h1>
               <p className={v.descricao}>Acompanhe quem divide a arquibancada com você e quem torce do outro lado.</p>
               <label className={v.busca}>
@@ -85,9 +92,6 @@ export default function Torcida() {
                 </svg>
                 <span className={v.somenteLeitor}>Buscar torcedores</span>
                 <input type="search" placeholder="Buscar por nome ou @usuário" value={busca} onChange={(e) => setBusca(e.target.value)} />
-                <span className={v.arroba} aria-hidden="true">
-                  @
-                </span>
               </label>
             </header>
 
