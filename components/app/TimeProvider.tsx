@@ -37,7 +37,7 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
     if (!time) return;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
-    const fundo = tema === "escuro" ? "#0F2219" : "#F4EBD9";
+    const fundo = tema === "escuro" ? "#0F2219" : "#FFFFFF";
     if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : fundo;
     return () => {
       if (meta && antes) meta.content = antes;
