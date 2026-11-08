@@ -11,8 +11,7 @@
   --font-texto: var(--font-dm-sans), system-ui, sans-serif;
 
   /* Cores por função, usadas nas telas do app. O modo escuro troca só estas. */
-  /* Teste: fundo branco no app (antes: var(--papel)). */
-  --fundo: #ffffff;
+  --fundo: var(--papel);
   --superficie: var(--cartao);
   --superficie-forte: #ffffff;
   --texto: var(--tinta);
