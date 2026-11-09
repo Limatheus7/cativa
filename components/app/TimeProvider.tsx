@@ -3,7 +3,7 @@
 import { usePathname, useRouter } from "next/navigation";
 import { createContext, useContext, useEffect, useState } from "react";
 import { useTema } from "@/lib/tema";
-import { carregarTime, temaDoTime, type Time } from "@/lib/time";
+import { carregarTime, fundoDoApp, temaDoTime, type Time } from "@/lib/time";
 import styles from "./app.module.css";
 
 const TimeContexto = createContext<Time | null>(null);
@@ -37,7 +37,7 @@ export default function TimeProvider({ children }: { children: React.ReactNode }
     if (!time) return;
     const meta = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
     const antes = meta?.content;
-    const fundo = tema === "escuro" ? "#0F2219" : "#F4EBD9";
+    const fundo = fundoDoApp(time, tema === "escuro");
     if (meta) meta.content = caminho === "/inicio" ? time.corPrincipal : fundo;
     return () => {
       if (meta && antes) meta.content = antes;

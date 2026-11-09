@@ -148,15 +148,37 @@ function corDoNome(corPrincipal: string, corSegunda: string, faixas: string[] = 
   return candidatas.find((c) => contraste(c, corPrincipal) >= 3) ?? textoSobre(corPrincipal);
 }
 
+/** Cor do time que tinge o fundo do app: a principal, ou a segunda quando a principal é clara (ex.: branco). */
+export function tintaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda">): string {
+  return luminancia(time.corPrincipal) > 0.8 ? time.corSegunda : time.corPrincipal;
+}
+
+/** Mistura `pct` (0 a 1) da cor `a` na cor `b`. */
+function misturar(a: string, b: string, pct: number): string {
+  const [ra, rb] = [rgb(a), rgb(b)];
+  return hexDe(ra.map((v, i) => v * pct + rb[i] * (1 - pct)) as [number, number, number]);
+}
+
+// Bases do app (as mesmas de globals.css) e quanto do time entra em cada uma.
+const FUNDO_CLARO = PAPEL;
+const FUNDO_ESCURO = "#0F2219";
+
+/** Cor do fundo do app já tingida com o time, para a barra do navegador combinar com a tela. */
+export function fundoDoApp(time: Pick<Time, "corPrincipal" | "corSegunda">, escuro: boolean): string {
+  return escuro ? misturar(tintaDoTime(time), FUNDO_ESCURO, 0.2) : misturar(tintaDoTime(time), FUNDO_CLARO, 0.1);
+}
+
 export function temaDoTime(time: Pick<Time, "corPrincipal" | "corSegunda" | "faixas">): Record<string, string> {
   const { corPrincipal, corSegunda } = time;
   // Time de cor principal clara (ex.: branco) usa a segunda cor nos destaques.
-  const baseDestaque = luminancia(corPrincipal) > 0.8 ? corSegunda : corPrincipal;
+  const baseDestaque = tintaDoTime(time);
   const destaque = legivelSobrePapel(baseDestaque);
   const letras = contraste(corPrincipal, corSegunda) >= 3 ? corPrincipal : textoSobre(corSegunda);
 
   return {
     "--time-principal": corPrincipal,
+    // Tinta do fundo do app (ver app.module.css).
+    "--time-tinta": baseDestaque,
     "--time-sobre-principal": textoSobre(corPrincipal),
     "--time-segunda": corSegunda,
     "--time-monograma-letras": letras,

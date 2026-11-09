@@ -1,6 +1,10 @@
-/* Casca do app: papel da Cativa. O time aparece nos elementos de identidade
-   (monograma e faixa), não pinta a interface inteira. */
+/* Casca do app: papel da Cativa (ou verde escuro) tingido com a cor do time.
+   A tinta é pouca de propósito: o fundo "veste" o time sem prejudicar a leitura.
+   --time-tinta vem de temaDoTime, no próprio elemento. */
 .app {
+  --fundo: color-mix(in srgb, var(--time-tinta) 10%, #f4ebd9);
+  --borda: color-mix(in srgb, var(--time-tinta) 10%, #d9cdb4);
+
   min-height: 100dvh;
   max-width: 520px;
   margin: 0 auto;
@@ -8,6 +12,13 @@
   flex-direction: column;
   background: var(--fundo);
   color: var(--texto);
+}
+
+:global(:root[data-tema="escuro"]) .app {
+  --fundo: color-mix(in srgb, var(--time-tinta) 20%, #0f2219);
+  --superficie: color-mix(in srgb, var(--time-tinta) 14%, #163025);
+  --superficie-forte: color-mix(in srgb, var(--time-tinta) 14%, #1b3a2c);
+  --borda: color-mix(in srgb, var(--time-tinta) 16%, #2a4a3a);
 }
 
 .conteudo {
