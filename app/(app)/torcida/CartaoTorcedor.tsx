@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import type { CSSProperties } from "react";
+import { temaDoTime } from "@/lib/time";
 import { Avatar, SeloPresenca } from "@/components/cativa/Basicos";
 import { IconeCadeira } from "@/components/cativa/Icones";
 import { chaveDoEstadio } from "@/lib/dados/estadios";
@@ -30,19 +32,27 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
     minhasPresencas.some((m) => m.partida.data === p.partida.data && chaveDoEstadio(m.estadio) === chaveDoEstadio(p.estadio)),
   ).length;
   const primeiro = t.nome.split(" ")[0];
+  const podeVerColecao = t.perfilPublico || seguindo;
   const mando = ultima?.partida.mando === "fora" ? "Visitante" : ultima?.partida.mando === "casa" ? "Mandante" : "Campo neutro";
 
   return (
-    <article className={v.cartao}>
+    // O cartão se veste com as cores do time de quem ele mostra (contraste já resolvido por temaDoTime).
+    <article className={v.cartao} style={temaDoTime(t.time) as CSSProperties}>
+      <div className={v.capa}>
+        <span className={v.capaTime}>
+          {t.time.nome} · {t.cidade}
+        </span>
+        <em className={v.nivel}>{est.nivel?.nome ?? "Estreante"}</em>
+      </div>
+
       <div className={v.cartaoTopo}>
         <Link href={`/torcedor/${t.usuario}`} className={v.quem}>
-          <Avatar nome={t.nome} time={t.time} tamanho={58} />
+          <span className={v.avatarAnel}>
+            <Avatar nome={t.nome} time={t.time} tamanho={64} />
+          </span>
           <div>
             <strong>{t.nome}</strong>
-            <span>
-              @{t.usuario} · {t.time.nome}
-            </span>
-            <em className={v.nivel}>{est.nivel?.nome ?? "Estreante"}</em>
+            <span>@{t.usuario}</span>
           </div>
         </Link>
         {gerenciando ? (
@@ -68,14 +78,29 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
       </div>
 
       <div className={v.numeros}>
-        <div>
-          <strong>{est.total}</strong>
-          <span>Jogos</span>
-        </div>
-        <div>
-          <strong>{est.estadios}</strong>
-          <span>Estádios</span>
-        </div>
+        {/* Jogos e Estádios abrem a coleção da pessoa, se o perfil é público ou você já a acompanha. */}
+        {podeVerColecao ? (
+          <Link href={`/torcedor/${t.usuario}?aba=jogos`} className={v.numeroLink} aria-label={`Ver os ${est.total} jogos de ${primeiro}`}>
+            <strong>{est.total}</strong>
+            <span>Jogos</span>
+          </Link>
+        ) : (
+          <div>
+            <strong>{est.total}</strong>
+            <span>Jogos</span>
+          </div>
+        )}
+        {podeVerColecao ? (
+          <Link href={`/torcedor/${t.usuario}?aba=estadios`} className={v.numeroLink} aria-label={`Ver os ${est.estadios} estádios de ${primeiro}`}>
+            <strong>{est.estadios}</strong>
+            <span>Estádios</span>
+          </Link>
+        ) : (
+          <div>
+            <strong>{est.estadios}</strong>
+            <span>Estádios</span>
+          </div>
+        )}
         <div>
           <strong>{invicta === null ? "—" : `${invicta}%`}</strong>
           <span>Invicta</span>
@@ -84,7 +109,7 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
 
       {ultima && (
         <div className={v.ultima}>
-          <SeloPresenca resultado={ultima.resultado} tamanho={28} />
+          <SeloPresenca resultado={ultima.resultado} tamanho={34} />
           <div>
             <small>Última presença</small>
             <strong>{placar(ultima).texto}</strong>
@@ -95,25 +120,26 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
         </div>
       )}
 
-      <div className={v.juntos}>
-        <IconeCadeira tamanho={22} />
-        <div>
-          <strong>
-            {juntos > 0 ? `Vocês estiveram juntos em ${juntos} ${juntos === 1 ? "jogo" : "jogos"}.` : "Nenhum jogo juntos ainda."}
-          </strong>
-          <span>{meuEstadio ? `Quem sabe no próximo, ${noEstadio(meuEstadio)}.` : "Quem sabe no próximo jogo."}</span>
+      {/* Só aparece quando já houve jogo em comum; sem isso o cartão termina nos números e na última presença. */}
+      {juntos > 0 && (
+        <div className={v.juntos}>
+          <IconeCadeira tamanho={22} />
+          <div>
+            <strong>{`Vocês estiveram juntos em ${juntos} ${juntos === 1 ? "jogo" : "jogos"}.`}</strong>
+            <span>{meuEstadio ? `Quem sabe no próximo, ${noEstadio(meuEstadio)}.` : "Quem sabe no próximo jogo."}</span>
+          </div>
+          <button
+            type="button"
+            onClick={() =>
+              onCombinar(
+                `${primeiro}, bora no próximo jogo${meuEstadio ? ` ${noEstadio(meuEstadio)}` : ""}? Vamos registrar juntos na Cativa.`,
+              )
+            }
+          >
+            Combinar
+          </button>
         </div>
-        <button
-          type="button"
-          onClick={() =>
-            onCombinar(
-              `${primeiro}, bora no próximo jogo${meuEstadio ? ` ${noEstadio(meuEstadio)}` : ""}? Vamos registrar juntos na Cativa.`,
-            )
-          }
-        >
-          Combinar
-        </button>
-      </div>
+      )}
     </article>
   );
 }

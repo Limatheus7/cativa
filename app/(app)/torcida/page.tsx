@@ -1,14 +1,14 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { useTime } from "@/components/app/TimeProvider";
-import { EstadoVazio } from "@/components/cativa/Basicos";
+import Link from "next/link";
+import { Avatar, EstadoVazio } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
-import { IconeCadeira, IconeSino } from "@/components/cativa/Icones";
+import { IconeCadeira } from "@/components/cativa/Icones";
 import { useAbaDaUrl } from "@/components/cativa/useAbaDaUrl";
 import { estadioDeCasa } from "@/lib/dados/estadios";
-import { alternarSeguir, resumoDoTorcedor } from "@/lib/dados/loja";
+import { alternarSeguir } from "@/lib/dados/loja";
 import { TORCEDORES_DEMONSTRACAO } from "@/lib/dados/mock/torcedores";
 import CartaoTorcedor from "./CartaoTorcedor";
 import v from "./torcida.module.css";
@@ -51,7 +51,6 @@ export default function Torcida() {
   return (
     <ComDados>
       {(dados) => {
-        const { naoLidas } = resumoDoTorcedor(dados);
         const termo = semAcento(busca.replace(/^@/, "").trim());
         const combina = (t: (typeof TORCEDORES_DEMONSTRACAO)[number]) =>
           !termo || [t.nome, t.usuario, t.time.nome, t.time.sigla, t.cidade].some((c) => semAcento(c).includes(termo));
@@ -60,9 +59,18 @@ export default function Torcida() {
         const amigos = seguidos.filter((t) => t.time.sigla === time.iniciais);
         const rivais = seguidos.filter((t) => t.time.sigla !== time.iniciais);
         const descobrir = TORCEDORES_DEMONSTRACAO.filter((t) => !dados.seguindo.includes(t.usuario));
-        const lista = (aba === "amigos" ? amigos : aba === "rivais" ? rivais : descobrir).filter(combina);
-        const titulo = aba === "amigos" ? "Quem você acompanha" : aba === "rivais" ? "Do outro lado" : "Torcedores para conhecer";
-        const podeGerenciar = aba !== "descobrir" && (aba === "amigos" ? amigos : rivais).length > 0;
+        // Com algo digitado na busca, procura em todos os torcedores, não só na aba aberta.
+        const lista = termo
+          ? TORCEDORES_DEMONSTRACAO.filter(combina)
+          : aba === "amigos" ? amigos : aba === "rivais" ? rivais : descobrir;
+        const titulo = termo
+          ? "Resultado da busca"
+          : aba === "amigos" ? "Quem você acompanha" : aba === "rivais" ? "Do outro lado" : "Torcedores para conhecer";
+        // Digitando um @, sugere os perfis cujo usuário começa com o que foi digitado.
+        const sugestoes = busca.trim().startsWith("@")
+          ? TORCEDORES_DEMONSTRACAO.filter((t) => semAcento(t.usuario).startsWith(termo)).slice(0, 5)
+          : [];
+        const podeGerenciar = !termo && aba !== "descobrir" && (aba === "amigos" ? amigos : rivais).length > 0;
 
         return (
           <>
@@ -70,10 +78,6 @@ export default function Torcida() {
             <header className={v.topo}>
               <div className={v.topoLinha}>
                 <span role="img" aria-label="Cativa" className={v.logo} />
-                <Link href="/notificacoes" className={v.sino} aria-label={`Notificações${naoLidas ? `, ${naoLidas} novas` : ""}`}>
-                  <IconeSino tamanho={20} />
-                  {naoLidas > 0 && <span className={v.ponto} />}
-                </Link>
               </div>
               <p className={v.sobretitulo}>Quem vai ao estádio com você</p>
               <h1 className={v.titulo}>Torcida</h1>
@@ -84,11 +88,39 @@ export default function Torcida() {
                   <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
                 </svg>
                 <span className={v.somenteLeitor}>Buscar torcedores</span>
-                <input type="search" placeholder="Buscar por nome ou @usuário" value={busca} onChange={(e) => setBusca(e.target.value)} />
+                <input
+                  type="search"
+                  placeholder="Buscar por nome ou @usuário"
+                  value={busca}
+                  onChange={(e) => setBusca(e.target.value)}
+                  autoCapitalize="none"
+                  autoCorrect="off"
+                  spellCheck={false}
+                />
                 <span className={v.arroba} aria-hidden="true">
                   @
                 </span>
               </label>
+              {sugestoes.length > 0 && (
+                <ul className={v.sugestoes} aria-label="Perfis encontrados">
+                  {sugestoes.map((t) => (
+                    <li key={t.usuario}>
+                      <Link href={`/torcedor/${t.usuario}`}>
+                        <Avatar nome={t.nome} time={t.time} tamanho={38} />
+                        <span>
+                          <strong>@{t.usuario}</strong>
+                          <small>
+                            {t.nome} · {t.time.nome}
+                          </small>
+                        </span>
+                        <svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true">
+                          <path d="M9 5l7 7-7 7" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              )}
             </header>
 
             <main className={v.pagina}>
@@ -104,13 +136,21 @@ export default function Torcida() {
                     key={a.valor}
                     type="button"
                     role="tab"
-                    aria-selected={aba === a.valor}
+                    aria-selected={!termo && aba === a.valor}
                     onClick={() => {
                       setAba(a.valor);
+                      setBusca("");
                       setGerenciando(false);
                     }}
                   >
-                    {a.contagem !== undefined ? <strong>{a.contagem}</strong> : <span className={v.pontoAba} aria-hidden="true" />}
+                    {a.contagem !== undefined ? (
+                      <strong>{a.contagem}</strong>
+                    ) : (
+                      <svg className={v.iconeAba} width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+                        <circle cx="11" cy="11" r="6.5" fill="none" stroke="currentColor" strokeWidth="2.2" />
+                        <path d="M16 16l4.5 4.5" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+                      </svg>
+                    )}
                     <span>{a.rotulo}</span>
                   </button>
                 ))}

@@ -49,6 +49,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
+  min-height: 40px;
 }
 
 .logo {
@@ -59,29 +60,6 @@
   background: currentColor;
   -webkit-mask: url(/marca/logotipo-cativa-mascara.svg) center / contain no-repeat;
   mask: url(/marca/logotipo-cativa-mascara.svg) center / contain no-repeat;
-}
-
-.sino {
-  position: relative;
-  display: grid;
-  place-items: center;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: color-mix(in srgb, var(--time-sobre-principal) 12%, transparent);
-  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--time-sobre-principal) 22%, transparent);
-  color: var(--time-acento);
-}
-
-.ponto {
-  position: absolute;
-  top: 8px;
-  right: 9px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background: var(--time-acento);
-  box-shadow: 0 0 0 2px var(--time-principal);
 }
 
 .sobretitulo {
@@ -140,6 +118,62 @@
   opacity: 0.6;
 }
 
+/* Perfis sugeridos ao digitar um @ na busca. */
+.sugestoes {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 6px;
+  border-radius: 14px;
+  background: var(--superficie-forte);
+  color: var(--texto);
+  box-shadow: 0 14px 30px -16px rgba(0, 0, 0, 0.5);
+}
+
+.sugestoes a {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+  border-radius: 10px;
+  color: inherit;
+  text-decoration: none;
+}
+
+.sugestoes a:active,
+.sugestoes a:hover {
+  background: var(--superficie);
+}
+
+.sugestoes li + li {
+  border-top: 1px solid color-mix(in srgb, var(--borda) 60%, transparent);
+}
+
+.sugestoes a > span {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+}
+
+.sugestoes strong {
+  color: var(--titulo);
+  font-size: 0.9375rem;
+}
+
+.sugestoes small {
+  overflow: hidden;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.sugestoes svg {
+  flex: none;
+  color: var(--acento);
+}
+
 .arroba {
   flex: none;
   display: grid;
@@ -194,7 +228,6 @@
 
 .abas button strong {
   font-family: var(--font-titulo);
-  font-style: italic;
   font-size: 1.375rem;
   line-height: 1;
 }
@@ -204,12 +237,14 @@
   color: var(--papel);
 }
 
-.pontoAba {
-  width: 7px;
-  height: 7px;
-  margin: 7px 0 6px;
-  border-radius: 50%;
-  background: var(--acento);
+/* Lupa da aba Descobrir, no lugar do número das outras abas. */
+.iconeAba {
+  display: block;
+  color: var(--acento);
+}
+
+.abas button[aria-selected="true"] .iconeAba {
+  color: var(--ouro);
 }
 
 .secaoTopo {
@@ -245,30 +280,109 @@
 
 /* ---------- Cartão do torcedor ---------- */
 
+/* ---------- Cartão do torcedor ----------
+   Veste as cores do time da pessoa (variáveis --time-* vêm de temaDoTime, no próprio elemento). */
+
 .cartao {
   display: flex;
   flex-direction: column;
-  border-radius: 16px;
+  border-radius: 18px;
   background: var(--superficie-forte);
-  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.05), inset 0 0 0 1px color-mix(in srgb, var(--borda) 70%, transparent);
+  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.05), 0 14px 28px -20px rgba(30, 42, 34, 0.5),
+    inset 0 0 0 1px color-mix(in srgb, var(--borda) 70%, transparent);
   overflow: hidden;
+}
+
+/* Capa na cor do time, com os mesmos círculos do cabeçalho do app. */
+.capa {
+  position: relative;
+  isolation: isolate;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+  height: 64px;
+  padding: 12px 16px 0;
+  background: var(--time-principal);
+  color: var(--time-texto-cabecalho);
+  /* Linha fina na base: camisas brancas não somem contra o cartão. */
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--time-sobre-principal) 14%, transparent);
+  overflow: hidden;
+}
+
+.capa::before,
+.capa::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border: 1.5px solid color-mix(in srgb, var(--time-sobre-principal) 14%, transparent);
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.capa::before {
+  top: -90px;
+  right: -40px;
+  width: 190px;
+  height: 190px;
+}
+
+.capa::after {
+  top: -40px;
+  right: 20px;
+  width: 90px;
+  height: 90px;
+}
+
+.capaTime {
+  min-width: 0;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  opacity: 0.9;
+}
+
+.nivel {
+  padding: 3px 8px;
+  border-radius: 999px;
+  box-shadow: inset 0 0 0 1px var(--time-acento);
+  color: var(--time-acento);
+  font-style: normal;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
 }
 
 .cartaoTopo {
   display: flex;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: 10px;
-  padding: 16px 16px 14px;
+  padding: 0 16px 16px;
 }
 
 .quem {
   flex: 1;
   min-width: 0;
   display: flex;
-  align-items: center;
-  gap: 14px;
+  align-items: flex-end;
+  gap: 12px;
   color: inherit;
   text-decoration: none;
+}
+
+/* A foto sobe e "senta" na borda da capa, com um anel da cor do cartão. */
+.avatarAnel {
+  flex: none;
+  display: grid;
+  margin-top: -32px;
+  padding: 4px;
+  border-radius: 50%;
+  background: var(--superficie-forte);
 }
 
 .quem > div {
@@ -276,15 +390,20 @@
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 3px;
+  gap: 2px;
+  padding-bottom: 2px;
 }
 
 .quem strong {
+  max-width: 100%;
+  overflow: hidden;
   font-family: var(--font-titulo);
   font-style: italic;
   font-size: 1.375rem;
   line-height: 1.1;
   color: var(--titulo);
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .quem > div > span {
@@ -294,19 +413,6 @@
   color: color-mix(in srgb, var(--texto) 65%, transparent);
   white-space: nowrap;
   text-overflow: ellipsis;
-}
-
-.nivel {
-  margin-top: 3px;
-  padding: 2px 7px;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px var(--acento);
-  color: var(--acento);
-  font-style: normal;
-  font-size: 0.625rem;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
 }
 
 .seguir,
@@ -339,48 +445,95 @@
   color: var(--erro);
 }
 
+/* Três números em faixa, sem linhas pesadas. */
 .numeros {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   margin: 0 16px;
   padding: 12px 0;
-  border-top: 1px solid var(--borda);
-  border-bottom: 1px solid var(--borda);
+  border-radius: 12px;
+  background: var(--superficie);
 }
 
 .numeros div {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 2px;
+  gap: 3px;
 }
 
-.numeros div + div {
+.numeros > * + * {
   box-shadow: inset 1px 0 0 var(--borda);
+}
+
+/* Jogos e Estádios clicáveis: levam à coleção da pessoa. */
+.numeroLink {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  color: inherit;
+  text-decoration: none;
+  border-radius: 10px;
+  transition: background 150ms ease;
+}
+
+.numeroLink:hover,
+.numeroLink:active {
+  background: color-mix(in srgb, var(--acento) 10%, transparent);
+}
+
+.numeroLink span {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--acento) 60%, transparent);
+  text-underline-offset: 3px;
 }
 
 .numeros strong {
   font-family: var(--font-titulo);
-  font-style: italic;
   font-size: 1.5rem;
   line-height: 1.1;
   color: var(--titulo);
 }
 
 .numeros span {
-  font-size: 0.75rem;
+  font-size: 0.6875rem;
+  letter-spacing: 0.04em;
   color: color-mix(in srgb, var(--texto) 60%, transparent);
 }
 
+/* Última presença em forma de ingresso: entalhes nas laterais e picote no meio. */
 .ultima {
+  position: relative;
   display: flex;
   align-items: center;
   gap: 12px;
-  margin: 14px 16px 0;
-  padding: 12px;
-  border-radius: 10px;
+  margin: 12px 16px 0;
+  padding: 12px 14px;
+  border-radius: 12px;
   background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda), inset 4px 0 0 var(--time-principal);
+}
+
+.ultima::before,
+.ultima::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 12px;
+  height: 12px;
+  margin-top: -6px;
+  border-radius: 50%;
+  background: var(--superficie-forte);
   box-shadow: inset 0 0 0 1px var(--borda);
+}
+
+.ultima::before {
+  left: -6px;
+}
+
+.ultima::after {
+  right: -6px;
 }
 
 .ultima > div {
@@ -413,6 +566,12 @@
   text-overflow: ellipsis;
 }
 
+/* Sem o rodapé "juntos", o cartão precisa de respiro embaixo. */
+.cartao > .numeros:last-child,
+.cartao > .ultima:last-child {
+  margin-bottom: 16px;
+}
+
 .juntos {
   display: flex;
   align-items: center;
@@ -443,11 +602,13 @@
 
 .juntos button {
   flex: none;
-  padding: 8px 0;
+  min-height: 34px;
+  padding: 0 14px;
   border: 0;
-  background: none;
+  border-radius: 999px;
+  background: color-mix(in srgb, var(--acento) 14%, transparent);
   color: var(--acento);
-  font: 700 0.875rem var(--font-texto);
+  font: 700 0.8125rem var(--font-texto);
   cursor: pointer;
 }
 
