@@ -80,6 +80,8 @@ export type TorcedorPublico = {
   uf: string;
   time: IdentidadeDoTime;
   presencas: Presenca[];
+  /** Perfil público: qualquer um vê a coleção. Privado: só quem acompanha. */
+  perfilPublico: boolean;
   /** Perfis mockados enquanto a rede não está no ar. */
   demonstracao: true;
 };

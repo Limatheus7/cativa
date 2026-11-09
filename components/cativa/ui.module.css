@@ -1337,7 +1337,7 @@
   box-shadow: inset 0 0 0 1px var(--borda);
 }
 
-.placarGeral > div {
+.placarGeral > * {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1346,8 +1346,41 @@
   padding: 12px 4px;
 }
 
-.placarGeral > div + div {
+.placarGeral > * + * {
   box-shadow: inset 1px 0 0 var(--borda);
+}
+
+/* Partidas e estádios clicáveis no perfil de outro torcedor: abrem a coleção dele. */
+.placarBotao {
+  border: 0;
+  background: transparent;
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+  transition: background 150ms ease;
+}
+
+.placarBotao:first-child {
+  border-radius: 12px 0 0 12px;
+}
+
+.placarBotao:last-child {
+  border-radius: 0 12px 12px 0;
+}
+
+.placarBotao:hover,
+.placarBotao:active {
+  background: color-mix(in srgb, var(--acento) 10%, transparent);
+}
+
+.placarBotao span:not([role]) {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--acento) 60%, transparent);
+  text-underline-offset: 3px;
+}
+
+.ancoraColecao {
+  scroll-margin-top: 80px;
 }
 
 .placarGeral strong {

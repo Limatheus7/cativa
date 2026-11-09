@@ -30,6 +30,7 @@ function torcedor(
   uf: string,
   sigla: string,
   jogos: Jogo[],
+  perfilPublico = true,
 ): TorcedorPublico {
   const seu = time(sigla);
   const presencas: Presenca[] = jogos.map((j, i) => {
@@ -57,7 +58,7 @@ function torcedor(
       resultado: resultadoDoPlacar(j.placar[0], j.placar[1]),
     };
   });
-  return { usuario, nome, cidade, uf, time: seu, presencas, demonstracao: true };
+  return { usuario, nome, cidade, uf, time: seu, presencas, perfilPublico, demonstracao: true };
 }
 
 const BR = "Brasileirão";
@@ -71,7 +72,7 @@ export const TORCEDORES_DEMONSTRACAO: TorcedorPublico[] = [
   torcedor("caio.geral", "Caio Menezes", "Belo Horizonte", "MG", "CRU", [
     { data: "2026-07-12", contra: "GRE", mando: "casa", placar: [3, 0], competicao: BR, frase: "Mineirão azul do começo ao fim.", setor: "Amarelo superior" },
     { data: "2026-10-04", contra: "CAM", mando: "neutro", placar: [1, 0], competicao: "Copa do Brasil", frase: "Semana inteira de zoeira garantida.", estadio: "mineirao" },
-  ]),
+  ], false),
   torcedor("bia.tricolor", "Beatriz Lopes", "São Paulo", "SP", "SAO", [
     { data: "2025-11-30", contra: "SAN", mando: "casa", placar: [2, 2], competicao: BR, frase: "Empate com cara de vitória pelo jogo que foi." },
     { data: "2026-05-17", contra: "COR", mando: "casa", placar: [1, 0], competicao: BR, frase: "Morumbis lotado, gol no último minuto." },
@@ -85,7 +86,7 @@ export const TORCEDORES_DEMONSTRACAO: TorcedorPublico[] = [
   torcedor("lu.alvinegra", "Luana Prado", "Rio de Janeiro", "RJ", "BOT", [
     { data: "2026-06-21", contra: "VAS", mando: "casa", placar: [2, 0], competicao: BR, frase: "Dia de sol e de festa no Nilton Santos." },
     { data: "2026-09-27", contra: "FLA", mando: "fora", placar: [1, 1], competicao: BR, frase: "Do lado de lá, mas cantando mais alto." },
-  ]),
+  ], false),
   torcedor("pedro.verdao", "Pedro Almeida", "São Paulo", "SP", "PAL", [
     { data: "2026-08-16", contra: "FLA", mando: "fora", placar: [1, 2], competicao: BR, frase: "Perdemos, mas a viagem ao Rio fica." },
   ]),
