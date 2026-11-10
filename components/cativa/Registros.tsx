@@ -10,37 +10,58 @@ import s from "./ui.module.css";
 
 // ------------------------------------------------------------ MatchCard
 
+const LADO = { casa: "Mandante", fora: "Visitante", neutro: "Campo neutro" } as const;
+
+/** Partida como ingresso limpo: corpo com o placar e canhoto com o selo e a data, separados pelo picote. */
 export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: string }) {
   const pl = placar(presenca);
   const timeCasa = presenca.partida.mando !== "fora" ? presenca.time : presenca.partida.adversario;
   const timeFora = presenca.partida.mando !== "fora" ? presenca.partida.adversario : presenca.time;
+  const [dia, mes, ano] = formatarData(presenca.partida.data).split(" ");
+  const lado = LADO[presenca.partida.mando];
+  // "Visitante" já aparece na linha de baixo; o setor só sobe para o topo quando acrescenta algo.
+  const setor = presenca.lugar?.setor && presenca.lugar.setor !== lado ? presenca.lugar.setor : undefined;
 
   const conteudo = (
     <>
-      <SeloPresenca resultado={presenca.resultado} tamanho={40} />
       <div className={s.partidaCorpo}>
+        <small className={s.partidaCompeticao}>
+          {presenca.partida.final && (
+            <span className={s.partidaSeloFinal}>
+              <IconeEstrela cheia tamanho={9} /> Final
+            </span>
+          )}
+          {presenca.partida.competicao}
+          {setor && <> · {setor}</>}
+        </small>
         <div className={s.partidaPlacar}>
-          <IdentidadeTime time={timeCasa} tamanho={22} />
+          <IdentidadeTime time={timeCasa} tamanho={20} />
           <strong>
             {pl.casa.sigla} {pl.casa.gols} <span>×</span> {pl.fora.gols} {pl.fora.sigla}
           </strong>
-          <IdentidadeTime time={timeFora} tamanho={22} />
+          <IdentidadeTime time={timeFora} tamanho={20} />
         </div>
         <p className={s.partidaMeta}>
-          {formatarData(presenca.partida.data)} · {presenca.estadio.nome}
+          {presenca.estadio.nome} · {lado}
         </p>
-        <p className={s.partidaMeta}>{presenca.partida.competicao}</p>
       </div>
       {presenca.fotos[0] && <img className={s.partidaFoto} src={presenca.fotos[0]} alt="" />}
+      <div className={s.partidaCanhoto}>
+        <SeloPresenca resultado={presenca.resultado} tamanho={24} />
+        <b>{dia}</b>
+        <span>
+          {mes} {ano}
+        </span>
+      </div>
     </>
   );
 
   return href ? (
-    <Link href={href} className={`${s.partida} ${s.partidaLink}`}>
+    <Link href={href} className={`${s.partida} ${s.partidaLink} ${presenca.partida.final ? s.partidaFinal : ""}`}>
       {conteudo}
     </Link>
   ) : (
-    <div className={s.partida}>{conteudo}</div>
+    <div className={`${s.partida} ${presenca.partida.final ? s.partidaFinal : ""}`}>{conteudo}</div>
   );
 }
 

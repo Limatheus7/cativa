@@ -42,6 +42,8 @@ export type Partida = {
   adversario: IdentidadeDoTime;
   golsTime: number;
   golsAdversario: number;
+  /** Jogo que decidiu o título: o ingresso ganha a moldura de final. */
+  final?: boolean;
 };
 
 export type Companhia = { nome: string; usuario?: string };
