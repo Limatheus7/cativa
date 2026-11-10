@@ -73,6 +73,14 @@ export function temaDoIngresso(competicao: string): TemaIngresso {
   return PADRAO;
 }
 
+/** Fases de mata-mata que o torcedor pode marcar no registro ("" = jogo comum). */
+export const FASES = ["Oitavas de final", "Quartas de final", "Semifinal", "Final"] as const;
+
+/** Final ganha borda dourada no ingresso. */
+export function ehFinal(fase?: string) {
+  return fase === "Final";
+}
+
 /** Medidas do ingresso no kit (px). O componente escala tudo a partir daqui. */
 export const LARGURA_INGRESSO = 748;
 export const ALTURA_INGRESSO = 276;

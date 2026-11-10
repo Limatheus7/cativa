@@ -17,7 +17,9 @@ import { IconeCamera, IconeFechar, IconeVoltar } from "./Icones";
 import { AdesivoEstadio, CartaoPartida, Ingresso, SeloConquista } from "./Registros";
 import s from "./ui.module.css";
 
-const COMPETICOES = ["Brasileirão", "Copa do Brasil", "Estadual", "Libertadores", "Sul-Americana", "Série B", "Série C", "Amistoso", "Outra"];
+import { FASES } from "@/lib/dados/ingressos";
+
+const COMPETICOES =["Brasileirão", "Copa do Brasil", "Estadual", "Libertadores", "Sul-Americana", "Série B", "Série C", "Amistoso", "Outra"];
 const UFS = "AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO".split(" ");
 const ETAPAS = ["O jogo", "O estádio", "Companhia e fotos", "A memória", "Confirmar"];
 const MAX_FOTOS = 4;
@@ -62,6 +64,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   const [mando, setMando] = useState<Mando>("casa");
   const [data, setData] = useState(hojeIso());
   const [competicao, setCompeticao] = useState(COMPETICOES[0]);
+  const [fase, setFase] = useState("");
   const [gols, setGols] = useState<[number, number]>([0, 0]);
 
   // Etapa 2: estádio e lugar
@@ -107,6 +110,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     setMando(meuLadoEhOTime ? m : m === "casa" ? "fora" : m === "fora" ? "casa" : "neutro");
     setData(p.partida.data);
     setCompeticao(COMPETICOES.includes(p.partida.competicao) ? p.partida.competicao : "Outra");
+    setFase(p.partida.fase ?? "");
     setGols(meuLadoEhOTime ? [p.partida.golsTime, p.partida.golsAdversario] : [p.partida.golsAdversario, p.partida.golsTime]);
     setEstadio(p.estadio);
     setResultadoManual(null);
@@ -145,7 +149,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   function montar() {
     return {
       time: meuTime,
-      partida: { data, competicao, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1] },
+      partida: { data, competicao, fase: fase || undefined, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1] },
       estadio: estadio!,
       lugar: lugar.setor || lugar.fila || lugar.cadeira ? lugar : undefined,
       companhia,
@@ -283,6 +287,15 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
             <label className={s.campo}>
               <span>Data</span>
               <input type="date" value={data} max={hojeIso()} min="1900-01-01" onChange={(e) => setData(e.target.value)} />
+            </label>
+            <label className={s.campo} style={{ gridColumn: "1 / -1" }}>
+              <span>Fase</span>
+              <select value={fase} onChange={(e) => setFase(e.target.value)}>
+                <option value="">Jogo comum</option>
+                {FASES.map((f) => (
+                  <option key={f}>{f}</option>
+                ))}
+              </select>
             </label>
             <label className={s.campo}>
               <span>Competição</span>

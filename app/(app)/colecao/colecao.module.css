@@ -1,0 +1,254 @@
+/* Coleção: cabeçalho na cor do time, abas-número sobrepostas, filtros em pílula e ingressos com canhoto. */
+
+.somenteLeitor {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* ---------- Cabeçalho ---------- */
+
+.topo {
+  position: relative;
+  overflow: hidden;
+  padding: calc(env(safe-area-inset-top) + 16px) 20px 62px;
+  background: var(--time-principal);
+  color: var(--time-texto-cabecalho);
+  isolation: isolate;
+  box-shadow: inset 0 -1px 0 color-mix(in srgb, var(--time-sobre-principal) 10%, transparent);
+}
+
+.topo::before,
+.topo::after {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  border-radius: 50%;
+  border: 1.5px solid color-mix(in srgb, var(--time-sobre-principal) 9%, transparent);
+  pointer-events: none;
+}
+
+.topo::before {
+  width: 320px;
+  height: 320px;
+  top: -150px;
+  right: -110px;
+}
+
+.topo::after {
+  width: 150px;
+  height: 150px;
+  top: -65px;
+  right: -25px;
+}
+
+.topoLinha {
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+}
+
+.logo {
+  display: block;
+  width: 94px;
+  aspect-ratio: 778 / 201;
+  margin-left: -1px;
+  background: currentColor;
+  -webkit-mask: url(/marca/logotipo-cativa-mascara.svg) center / contain no-repeat;
+  mask: url(/marca/logotipo-cativa-mascara.svg) center / contain no-repeat;
+}
+
+.sobretitulo {
+  margin: 24px 0 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--time-acento);
+}
+
+.titulo {
+  margin: 4px 0 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 2.25rem;
+  line-height: 1.05;
+  color: var(--time-nome);
+}
+
+.descricao {
+  margin: 8px 0 0;
+  font-size: 0.9375rem;
+  line-height: 1.45;
+  opacity: 0.88;
+}
+
+/* ---------- Corpo e abas ---------- */
+
+.pagina {
+  position: relative;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: -36px;
+  padding: 0 18px 32px;
+}
+
+.abas {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  padding: 6px;
+  border-radius: 16px;
+  background: var(--superficie-forte);
+  box-shadow: 0 1px 2px rgba(30, 42, 34, 0.06), 0 14px 30px -18px rgba(30, 42, 34, 0.45);
+}
+
+.abas button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: 58px;
+  border: 0;
+  border-radius: 11px;
+  background: transparent;
+  color: var(--texto);
+  font: 500 0.8125rem var(--font-texto);
+  cursor: pointer;
+}
+
+.abas button strong {
+  font-family: var(--font-titulo);
+  font-size: 1.375rem;
+  line-height: 1;
+}
+
+.abas button[aria-selected="true"] {
+  background: var(--verde);
+  color: var(--papel);
+}
+
+/* ---------- Filtros ---------- */
+
+.filtros {
+  display: flex;
+  gap: 8px;
+  margin: 0 -18px;
+  padding: 2px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filtros::-webkit-scrollbar {
+  display: none;
+}
+
+.filtro {
+  flex: none;
+}
+
+.filtro select {
+  appearance: none;
+  min-height: 36px;
+  padding: 0 30px 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background-color: var(--superficie);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath d='M6 9l6 6 6-6' fill='none' stroke='%23808080' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 11px center;
+  box-shadow: inset 0 0 0 1px var(--borda);
+  color: color-mix(in srgb, var(--texto) 78%, transparent);
+  font: 500 0.8125rem var(--font-texto);
+  cursor: pointer;
+}
+
+.filtro select[data-ativo] {
+  background-color: var(--verde);
+  box-shadow: none;
+  color: var(--papel);
+  font-weight: 700;
+}
+
+.limpar {
+  align-self: center;
+  border: 0;
+  background: transparent;
+  color: var(--titulo);
+  font: 700 0.875rem var(--font-texto);
+  text-decoration: underline;
+  cursor: pointer;
+}
+
+/* ---------- Grupos por ano ---------- */
+
+.ano {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Ingressos ocupam toda a largura da coluna, com respiro menor entre eles. */
+.ano {
+  gap: 8px;
+}
+
+.anoTopo {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.anoTopo h2 {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 700;
+  font-size: 1.5rem;
+  color: var(--titulo);
+}
+
+.anoTopo i {
+  flex: 1;
+  height: 1px;
+  background: var(--borda);
+}
+
+.anoTopo span {
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--texto) 62%, transparent);
+}
+
+/* ---------- Álbum de estádios ---------- */
+
+.albumTopo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 16px;
+  border-radius: 14px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
+}
+
+.albumTopo p {
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
+}
+
+.albumTopo strong {
+  margin-right: 6px;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.5rem;
+  color: var(--titulo);
+}

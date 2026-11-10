@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { formatarData, placar } from "@/lib/dados/formato";
+import { ehFinal } from "@/lib/dados/ingressos";
 import type { StatusConquista } from "@/lib/dados/conquistas";
 import type { Estadio, Presenca } from "@/lib/dados/tipos";
 import { IdentidadeTime, Progresso, SeloPresenca } from "./Basicos";
@@ -12,6 +13,7 @@ import s from "./ui.module.css";
 
 export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: string }) {
   const pl = placar(presenca);
+  const final = ehFinal(presenca.partida.fase);
   const timeCasa = presenca.partida.mando !== "fora" ? presenca.time : presenca.partida.adversario;
   const timeFora = presenca.partida.mando !== "fora" ? presenca.partida.adversario : presenca.time;
 
@@ -29,18 +31,25 @@ export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: s
         <p className={s.partidaMeta}>
           {formatarData(presenca.partida.data)} · {presenca.estadio.nome}
         </p>
-        <p className={s.partidaMeta}>{presenca.partida.competicao}</p>
+        <p className={s.partidaMeta}>
+          {ehFinal(presenca.partida.fase) && (
+            <span className={s.partidaSeloFinal}>
+              <IconeEstrela cheia /> Final
+            </span>
+          )}
+          {presenca.partida.competicao}
+        </p>
       </div>
       {presenca.fotos[0] && <img className={s.partidaFoto} src={presenca.fotos[0]} alt="" />}
     </>
   );
 
   return href ? (
-    <Link href={href} className={`${s.partida} ${s.partidaLink}`}>
+    <Link href={href} className={`${s.partida} ${s.partidaLink} ${final ? s.partidaFinal : ""}`}>
       {conteudo}
     </Link>
   ) : (
-    <div className={s.partida}>{conteudo}</div>
+    <div className={`${s.partida} ${final ? s.partidaFinal : ""}`}>{conteudo}</div>
   );
 }
 

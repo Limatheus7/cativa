@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { Abas, EstadoVazio, Progresso, TituloSecao } from "@/components/cativa/Basicos";
+import { EstadoVazio, Progresso, TituloSecao } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
-import { CabecalhoApp } from "@/components/cativa/Navegacao";
-import { AdesivoEstadio, CartaoPartida, SeloConquista } from "@/components/cativa/Registros";
+import { AdesivoEstadio, Ingresso, SeloConquista } from "@/components/cativa/Registros";
+import v from "./colecao.module.css";
 import { useAbaDaUrl } from "@/components/cativa/useAbaDaUrl";
 import { ESTADIOS, chaveDoEstadio } from "@/lib/dados/estadios";
 import { NIVEIS, NOME_RESULTADO } from "@/lib/dados/estatisticas";
@@ -41,20 +41,38 @@ export default function Colecao() {
             (!filtro.resultado || p.resultado === filtro.resultado),
         );
         const temFiltro = Object.values(filtro).some(Boolean);
+        const porAno = [...filtradas.reduce((m, p) => m.set(p.partida.data.slice(0, 4), [...(m.get(p.partida.data.slice(0, 4)) ?? []), p]), new Map<string, typeof filtradas>())];
+        const desde = anos.length ? anos[anos.length - 1] : "";
 
         return (
           <>
-            <CabecalhoApp titulo="Coleção" sobretitulo="Seu álbum de arquibancada" />
-            <main className={s.pagina}>
-              <Abas<Aba>
-                ativa={aba}
-                onChange={setAba}
-                abas={[
-                  { valor: "partidas", rotulo: "Partidas", contagem: est.total },
-                  { valor: "estadios", rotulo: "Estádios", contagem: est.estadios },
-                  { valor: "conquistas", rotulo: "Conquistas", contagem: conquistas.filter((c) => c.desbloqueada).length },
-                ]}
-              />
+            <header className={v.topo}>
+              <div className={v.topoLinha}>
+                <span role="img" aria-label="Cativa" className={v.logo} />
+              </div>
+              <p className={v.sobretitulo}>Seu álbum de arquibancada</p>
+              <h1 className={v.titulo}>Coleção</h1>
+              <p className={v.descricao}>
+                {est.total === 0
+                  ? "Seus jogos e estádios aparecem aqui."
+                  : `Desde ${desde}: ${est.total} ${est.total === 1 ? "jogo" : "jogos"} em ${est.estadios} ${est.estadios === 1 ? "estádio" : "estádios"}.`}
+              </p>
+            </header>
+            <main className={v.pagina}>
+              <div className={v.abas} role="tablist">
+                {(
+                  [
+                    { valor: "partidas", rotulo: "Ingressos", contagem: est.total },
+                    { valor: "estadios", rotulo: "Estádios", contagem: est.estadios },
+                    { valor: "conquistas", rotulo: "Conquistas", contagem: conquistas.filter((c) => c.desbloqueada).length },
+                  ] as const
+                ).map((a) => (
+                  <button key={a.valor} type="button" role="tab" aria-selected={aba === a.valor} onClick={() => setAba(a.valor)}>
+                    <strong>{a.contagem}</strong>
+                    {a.rotulo}
+                  </button>
+                ))}
+              </div>
 
               {aba === "partidas" &&
                 (est.total === 0 ? (
@@ -65,41 +83,52 @@ export default function Colecao() {
                   />
                 ) : (
                   <>
-                    <div className={s.filtros}>
-                      <Filtro rotulo="Ano" valor={filtro.ano} onChange={(v) => setFiltro({ ...filtro, ano: v })} opcoes={anos.map((a) => [a, a])} />
-                      <Filtro rotulo="Competição" valor={filtro.competicao} onChange={(v) => setFiltro({ ...filtro, competicao: v })} opcoes={competicoes.map((c) => [c, c])} />
-                      <Filtro rotulo="Estádio" valor={filtro.estadio} onChange={(v) => setFiltro({ ...filtro, estadio: v })} opcoes={estadiosUsados} />
+                    <div className={v.filtros}>
+                      <Filtro rotulo="Ano" valor={filtro.ano} onChange={(x) => setFiltro({ ...filtro, ano: x })} opcoes={anos.map((a) => [a, a])} />
                       <Filtro
                         rotulo="Resultado"
                         valor={filtro.resultado}
-                        onChange={(v) => setFiltro({ ...filtro, resultado: v })}
+                        onChange={(x) => setFiltro({ ...filtro, resultado: x })}
                         opcoes={(["V", "E", "D"] as Resultado[]).map((r) => [r, NOME_RESULTADO[r]])}
                       />
+                      <Filtro rotulo="Competição" valor={filtro.competicao} onChange={(x) => setFiltro({ ...filtro, competicao: x })} opcoes={competicoes.map((c) => [c, c])} />
+                      <Filtro rotulo="Estádio" valor={filtro.estadio} onChange={(x) => setFiltro({ ...filtro, estadio: x })} opcoes={estadiosUsados} />
+                      {temFiltro && (
+                        <button type="button" className={v.limpar} onClick={() => setFiltro(SEM_FILTRO)}>
+                          Limpar
+                        </button>
+                      )}
                     </div>
                     {filtradas.length > 0 ? (
-                      <div className={s.lista}>
-                        {filtradas.map((p) => (
-                          <CartaoPartida key={p.id} presenca={p} href={`/colecao/partida/${p.id}`} />
-                        ))}
-                      </div>
+                      porAno.map(([ano, jogos]) => (
+                        <section key={ano} className={v.ano}>
+                          <div className={v.anoTopo}>
+                            <h2>Temporada {ano}</h2>
+                            <i aria-hidden="true" />
+                            <span>
+                              {jogos.length} {jogos.length === 1 ? "jogo" : "jogos"}
+                            </span>
+                          </div>
+                          {jogos.map((p) => (
+                            <Ingresso key={p.id} presenca={p} href={`/colecao/partida/${p.id}`} />
+                          ))}
+                        </section>
+                      ))
                     ) : (
                       <EstadoVazio titulo="Nenhum jogo com esses filtros." acao={{ rotulo: "Limpar filtros", onClick: () => setFiltro(SEM_FILTRO) }} />
-                    )}
-                    {temFiltro && filtradas.length > 0 && (
-                      <button type="button" className={s.botaoTexto} onClick={() => setFiltro(SEM_FILTRO)}>
-                        Limpar filtros
-                      </button>
                     )}
                   </>
                 ))}
 
               {aba === "estadios" && (
                 <>
-                  <div className={s.albumTopo}>
-                    <strong>
-                      {ESTADIOS.filter((e) => visitas.has(e.id)).length} de {ESTADIOS.length}
-                    </strong>
-                    <span>estádios do álbum</span>
+                  <div className={v.albumTopo}>
+                    <p>
+                      <strong>
+                        {ESTADIOS.filter((e) => visitas.has(e.id)).length} de {ESTADIOS.length}
+                      </strong>
+                      estádios colados no álbum
+                    </p>
                     <Progresso valor={ESTADIOS.filter((e) => visitas.has(e.id)).length / ESTADIOS.length} rotulo="Álbum de estádios" />
                   </div>
                   {est.estadios === 0 && <p className={s.textoSuave}>Sua primeira presença cola o primeiro sticker.</p>}
@@ -179,8 +208,8 @@ export default function Colecao() {
 
 function Filtro({ rotulo, valor, opcoes, onChange }: { rotulo: string; valor: string; opcoes: [string, string][]; onChange: (v: string) => void }) {
   return (
-    <label className={s.filtro}>
-      <span className={s.somenteLeitor}>{rotulo}</span>
+    <label className={v.filtro}>
+      <span className={v.somenteLeitor}>{rotulo}</span>
       <select value={valor} onChange={(e) => onChange(e.target.value)} data-ativo={valor ? "" : undefined}>
         <option value="">{rotulo}</option>
         {opcoes.map(([v, r]) => (

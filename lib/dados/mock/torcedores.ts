@@ -21,6 +21,7 @@ type Jogo = {
   frase: string;
   setor?: string;
   estadio?: string;
+  fase?: string;
 };
 
 function torcedor(
@@ -45,6 +46,7 @@ function torcedor(
       partida: {
         data: j.data,
         competicao: j.competicao,
+        fase: j.fase,
         mando: j.mando,
         adversario,
         golsTime: j.placar[0],
@@ -71,7 +73,7 @@ export const TORCEDORES_DEMONSTRACAO: TorcedorPublico[] = [
   ]),
   torcedor("caio.geral", "Caio Menezes", "Belo Horizonte", "MG", "CRU", [
     { data: "2026-07-12", contra: "GRE", mando: "casa", placar: [3, 0], competicao: BR, frase: "Mineirão azul do começo ao fim.", setor: "Amarelo superior" },
-    { data: "2026-10-04", contra: "CAM", mando: "neutro", placar: [1, 0], competicao: "Copa do Brasil", frase: "Semana inteira de zoeira garantida.", estadio: "mineirao" },
+    { data: "2026-10-04", contra: "CAM", mando: "neutro", placar: [1, 0], competicao: "Copa do Brasil", fase: "Final", frase: "Semana inteira de zoeira garantida.", estadio: "mineirao" },
   ], false),
   torcedor("bia.tricolor", "Beatriz Lopes", "São Paulo", "SP", "SAO", [
     { data: "2025-11-30", contra: "SAN", mando: "casa", placar: [2, 2], competicao: BR, frase: "Empate com cara de vitória pelo jogo que foi." },

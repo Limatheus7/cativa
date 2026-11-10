@@ -109,14 +109,25 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
 
       {ultima && (
         <div className={v.ultima}>
-          <SeloPresenca resultado={ultima.resultado} tamanho={34} />
-          <div>
+          <div className={v.ultimaTopo}>
             <small>Última presença</small>
-            <strong>{placar(ultima).texto}</strong>
-            <span>
-              {ultima.estadio.nome} · {formatarData(ultima.partida.data)} · {mando}
-            </span>
+            <SeloPresenca resultado={ultima.resultado} tamanho={22} />
           </div>
+          <strong>{placar(ultima).texto}</strong>
+          <dl>
+            <div>
+              <dt>Estádio</dt>
+              <dd>{ultima.estadio.nome}</dd>
+            </div>
+            <div>
+              <dt>Data</dt>
+              <dd>{formatarData(ultima.partida.data)}</dd>
+            </div>
+            <div>
+              <dt>Mando</dt>
+              <dd>{mando}</dd>
+            </div>
+          </dl>
         </div>
       )}
 

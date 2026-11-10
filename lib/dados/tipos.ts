@@ -38,6 +38,8 @@ export type Partida = {
   /** AAAA-MM-DD */
   data: string;
   competicao: string;
+  /** Fase do mata-mata ("Final", "Semifinal"…). Vazio em jogos comuns. */
+  fase?: string;
   mando: Mando;
   adversario: IdentidadeDoTime;
   golsTime: number;

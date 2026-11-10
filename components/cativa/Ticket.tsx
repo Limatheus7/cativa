@@ -5,8 +5,9 @@ import { useLayoutEffect, useRef, useState } from "react";
 import Monograma from "@/components/Monograma";
 import { NOME_RESULTADO } from "@/lib/dados/estatisticas";
 import { formatarData } from "@/lib/dados/formato";
-import { ALTURA_INGRESSO, LARGURA_INGRESSO, temaDoIngresso } from "@/lib/dados/ingressos";
+import { ALTURA_INGRESSO, LARGURA_INGRESSO, ehFinal, temaDoIngresso } from "@/lib/dados/ingressos";
 import type { Presenca } from "@/lib/dados/tipos";
+import MolduraFinal, { ALTURA_MOLDURA, LARGURA_MOLDURA, MOLDURA } from "./MolduraFinal";
 import s from "./Ticket.module.css";
 
 /**
@@ -15,18 +16,19 @@ import s from "./Ticket.module.css";
  * Camadas: corpo/canhoto (SVG) → taça (PNG recortado pelo corpo) → escudos → textos.
  */
 export default function Ticket({ presenca: p, href }: { presenca: Presenca; href?: string }) {
+  const final = ehFinal(p.partida.fase);
   const caixa = useRef<HTMLElement>(null);
   const [escala, setEscala] = useState(0);
 
   useLayoutEffect(() => {
     const el = caixa.current;
     if (!el) return;
-    const medir = () => setEscala(el.clientWidth / LARGURA_INGRESSO);
+    const medir = () => setEscala(el.clientWidth / (final ? LARGURA_MOLDURA : LARGURA_INGRESSO));
     medir();
     const ro = new ResizeObserver(medir);
     ro.observe(el);
     return () => ro.disconnect();
-  }, []);
+  }, [final]);
 
   const t = temaDoIngresso(p.partida.competicao);
   const emCasa = p.partida.mando !== "fora";
@@ -37,10 +39,11 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
   const lado = p.partida.mando === "casa" ? "EM CASA" : p.partida.mando === "fora" ? "FORA" : "CAMPO NEUTRO";
   const aro = t.crestRing ? `0 0 0 1.5px ${t.crestRing}` : undefined;
 
-  const conteudo = (
+  const deslocamento = final ? `translate(${MOLDURA.lado * escala}px, ${MOLDURA.topo * escala}px) ` : "";
+  const ingresso = (
     <div
       className={s.ingresso}
-      style={{ transform: `scale(${escala})`, visibility: escala ? "visible" : "hidden" }}
+      style={{ transform: `${deslocamento}scale(${escala})`, visibility: escala ? "visible" : "hidden" }}
       aria-hidden={!!href}
     >
       {/* Corpo, canhoto, picote e divisória */}
@@ -87,6 +90,7 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
       {/* Textos */}
       <div className={s.abs} style={{ left: 30, top: 30, fontSize: 15, fontWeight: 500, letterSpacing: ".2em", color: t.accent }}>
         {p.partida.competicao.toUpperCase()} · {lado}
+        {p.partida.fase && ` · ${p.partida.fase.toUpperCase()}`}
       </div>
       <div className={`${s.abs} ${s.nomeTime}`} style={{ left: 68, color: t.teamText }}>
         {casa.nome}
@@ -133,8 +137,23 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
     </div>
   );
 
-  const rotulo = `Ingresso: ${casa.nome} ${golsCasa} × ${golsFora} ${fora.nome}, ${p.partida.competicao}, ${formatarData(p.partida.data)}, ${p.estadio.nome}. Presença Nº ${p.numero}.`;
-  const estilo = { aspectRatio: `${LARGURA_INGRESSO} / ${ALTURA_INGRESSO}` };
+  // Final: a moldura dourada fica em volta do ingresso, na mesma escala.
+  const conteudo = final ? (
+    <>
+      <div
+        className={s.moldura}
+        style={{ width: LARGURA_MOLDURA, height: ALTURA_MOLDURA, transform: `scale(${escala})`, visibility: escala ? "visible" : "hidden" }}
+      >
+        <MolduraFinal />
+      </div>
+      {ingresso}
+    </>
+  ) : (
+    ingresso
+  );
+
+  const rotulo = `${final ? "Ingresso de final" : "Ingresso"}: ${casa.nome} ${golsCasa} × ${golsFora} ${fora.nome}, ${p.partida.competicao}, ${formatarData(p.partida.data)}, ${p.estadio.nome}. Presença Nº ${p.numero}.`;
+  const estilo = { aspectRatio: final ? `${LARGURA_MOLDURA} / ${ALTURA_MOLDURA}` : `${LARGURA_INGRESSO} / ${ALTURA_INGRESSO}` };
 
   return href ? (
     <Link ref={caixa as React.Ref<HTMLAnchorElement>} href={href} className={s.caixa} style={estilo} aria-label={rotulo}>
