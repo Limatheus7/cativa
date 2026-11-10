@@ -654,32 +654,43 @@
   gap: 4px;
 }
 
+/* Selo de resultado em forma de placa (como a placa da cadeira da marca): fundo tingido e letra na cor. */
 .selo {
   flex: none;
   display: grid;
   place-items: center;
-  border-radius: 50%;
-  font-family: var(--font-titulo);
-  font-style: italic;
+  border-radius: 28%;
+  font-family: var(--font-texto);
   font-weight: 700;
+  letter-spacing: 0.02em;
   line-height: 1;
-  box-shadow: 0 0 0 2px var(--fundo), 0 0 0 3px color-mix(in srgb, var(--texto) 15%, transparent);
+  color: var(--c);
+  background: color-mix(in srgb, var(--c) 15%, transparent);
 }
 
 /* Tintas do selo: fixas, não mudam com o time (slide 11). */
 .seloV {
-  background: #2e8b57;
-  color: var(--papel);
+  --c: #2e7d50;
 }
 
 .seloE {
-  background: #e3a43a;
-  color: var(--tinta);
+  --c: #a9791a;
 }
 
 .seloD {
-  background: #b8432f;
-  color: var(--papel);
+  --c: #b4472f;
+}
+
+:global(:root[data-tema="escuro"]) .seloV {
+  --c: #6cc394;
+}
+
+:global(:root[data-tema="escuro"]) .seloE {
+  --c: #e6c46b;
+}
+
+:global(:root[data-tema="escuro"]) .seloD {
+  --c: #e98a72;
 }
 
 .seloNome {

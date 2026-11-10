@@ -33,6 +33,7 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
   ).length;
   const primeiro = t.nome.split(" ")[0];
   const podeVerColecao = t.perfilPublico || seguindo;
+  const [dia, mes, ano] = ultima ? formatarData(ultima.partida.data).split(" ") : [];
   const mando = ultima?.partida.mando === "fora" ? "Visitante" : ultima?.partida.mando === "casa" ? "Mandante" : "Campo neutro";
 
   return (
@@ -107,14 +108,21 @@ export default function CartaoTorcedor({ torcedor: t, seguindo, onSeguir, minhas
         </div>
       </div>
 
+      {/* Última presença como ingresso: corpo com o placar e canhoto com a data, separados pelo picote. */}
       {ultima && (
         <div className={v.ultima}>
-          <SeloPresenca resultado={ultima.resultado} tamanho={34} />
-          <div>
+          <div className={v.ultimaCorpo}>
             <small>Última presença</small>
             <strong>{placar(ultima).texto}</strong>
             <span>
-              {ultima.estadio.nome} · {formatarData(ultima.partida.data)} · {mando}
+              {ultima.estadio.nome} · {mando}
+            </span>
+          </div>
+          <div className={v.canhoto}>
+            <SeloPresenca resultado={ultima.resultado} tamanho={22} />
+            <b>{dia}</b>
+            <span>
+              {mes} {ano}
             </span>
           </div>
         </div>
