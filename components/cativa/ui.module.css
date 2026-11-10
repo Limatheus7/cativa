@@ -988,6 +988,52 @@
   color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 
+/* Final: aro dourado duplo, cantoneiras nos cantos do corpo e o selo "Final" antes da competição. */
+.partidaFinal {
+  --ouro-aro: #c9a043;
+  background: linear-gradient(115deg, color-mix(in srgb, var(--ouro) 16%, var(--superficie)), var(--superficie) 55%,
+      color-mix(in srgb, var(--ouro) 12%, var(--superficie)));
+  box-shadow: inset 0 0 0 1.5px var(--ouro-aro), inset 0 0 0 4px transparent,
+    inset 0 0 0 5px color-mix(in srgb, var(--ouro-aro) 45%, transparent);
+}
+
+.partidaFinal::after {
+  content: "";
+  position: absolute;
+  inset: 7px auto 7px 7px;
+  width: 40px;
+  pointer-events: none;
+  --c: var(--ouro-aro);
+  background:
+    linear-gradient(var(--c), var(--c)) left top / 12px 2px,
+    linear-gradient(var(--c), var(--c)) left top / 2px 12px,
+    linear-gradient(var(--c), var(--c)) left bottom / 12px 2px,
+    linear-gradient(var(--c), var(--c)) left bottom / 2px 12px;
+  background-repeat: no-repeat;
+}
+
+:global(:root[data-tema="escuro"]) .partidaFinal {
+  --ouro-aro: #e6c46b;
+}
+
+.partidaSeloFinal {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  margin-right: 6px;
+  padding: 2px 6px 2px 5px;
+  border-radius: 4px;
+  background: linear-gradient(135deg, #f3d98b, #c9a043);
+  color: #3a2706;
+  letter-spacing: 0.12em;
+  vertical-align: 1px;
+}
+
+.partidaSeloFinal svg {
+  width: 9px;
+  height: 9px;
+}
+
 /* ================================================================ Stickers de estádio */
 
 .album {

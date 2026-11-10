@@ -63,6 +63,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   const [data, setData] = useState(hojeIso());
   const [competicao, setCompeticao] = useState(COMPETICOES[0]);
   const [gols, setGols] = useState<[number, number]>([0, 0]);
+  const [final, setFinal] = useState(false);
 
   // Etapa 2: estádio e lugar
   const [estadio, setEstadio] = useState<EstadioDaPresenca | null>(null);
@@ -108,6 +109,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     setData(p.partida.data);
     setCompeticao(COMPETICOES.includes(p.partida.competicao) ? p.partida.competicao : "Outra");
     setGols(meuLadoEhOTime ? [p.partida.golsTime, p.partida.golsAdversario] : [p.partida.golsAdversario, p.partida.golsTime]);
+    setFinal(!!p.partida.final);
     setEstadio(p.estadio);
     setResultadoManual(null);
     setEtapa(1);
@@ -145,7 +147,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   function montar() {
     return {
       time: meuTime,
-      partida: { data, competicao, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1] },
+      partida: { data, competicao, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1], ...(final && { final: true }) },
       estadio: estadio!,
       lugar: lugar.setor || lugar.fila || lugar.cadeira ? lugar : undefined,
       companhia,
@@ -293,6 +295,14 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
               </select>
             </label>
           </div>
+
+          <label className={s.alternar}>
+            <span>
+              <strong>Foi uma final</strong>
+              <small>O ingresso ganha a moldura dourada de final.</small>
+            </span>
+            <input type="checkbox" role="switch" checked={final} onChange={(e) => setFinal(e.target.checked)} />
+          </label>
 
           <section className={s.bloco}>
             <h3 className={s.rotulo}>Placar</h3>

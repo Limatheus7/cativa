@@ -144,3 +144,20 @@
   font-weight: 600;
   font-size: 30px;
 }
+
+/* ---------- Moldura de final ---------- */
+
+.moldura {
+  position: absolute;
+  left: 0;
+  top: 0;
+  transform-origin: 0 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 5px rgba(230, 196, 107, 0.45));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .brilho {
+    display: none;
+  }
+}

@@ -26,6 +26,11 @@ export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: s
     <>
       <div className={s.partidaCorpo}>
         <small className={s.partidaCompeticao}>
+          {presenca.partida.final && (
+            <span className={s.partidaSeloFinal}>
+              <IconeEstrela cheia tamanho={9} /> Final
+            </span>
+          )}
           {presenca.partida.competicao}
           {setor && <> · {setor}</>}
         </small>
@@ -52,11 +57,11 @@ export function CartaoPartida({ presenca, href }: { presenca: Presenca; href?: s
   );
 
   return href ? (
-    <Link href={href} className={`${s.partida} ${s.partidaLink}`}>
+    <Link href={href} className={`${s.partida} ${s.partidaLink} ${presenca.partida.final ? s.partidaFinal : ""}`}>
       {conteudo}
     </Link>
   ) : (
-    <div className={s.partida}>{conteudo}</div>
+    <div className={`${s.partida} ${presenca.partida.final ? s.partidaFinal : ""}`}>{conteudo}</div>
   );
 }
 
