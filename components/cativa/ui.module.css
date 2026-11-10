@@ -865,58 +865,127 @@
 
 /* ================================================================ Partida e ingresso */
 
+/* Ingresso limpo (mesmo desenho da "Última presença" da Torcida): corpo + canhoto com a data,
+   separados por picote; os furos ficam só nas pontas do picote. */
 .partida {
+  --canhoto: 72px;
+  position: relative;
   display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 14px;
-  border-radius: 10px;
+  align-items: stretch;
+  border-radius: 14px;
   background: var(--superficie);
-  box-shadow: inset 0 0 0 1px var(--borda);
   color: var(--texto);
   text-decoration: none;
+  -webkit-mask: radial-gradient(circle 7px at calc(100% - var(--canhoto)) 0, transparent 98%, #000 100%),
+    radial-gradient(circle 7px at calc(100% - var(--canhoto)) 100%, transparent 98%, #000 100%);
+  -webkit-mask-composite: source-in;
+  mask: radial-gradient(circle 7px at calc(100% - var(--canhoto)) 0, transparent 98%, #000 100%),
+    radial-gradient(circle 7px at calc(100% - var(--canhoto)) 100%, transparent 98%, #000 100%);
+  mask-composite: intersect;
+  transition: background 150ms ease;
 }
 
 .partidaLink:active {
-  background: var(--borda);
+  background: color-mix(in srgb, var(--borda) 70%, var(--superficie));
 }
 
 .partidaCorpo {
   flex: 1;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 13px 14px 13px 16px;
+}
+
+.partidaCompeticao {
+  overflow: hidden;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  color: var(--acento);
 }
 
 .partidaPlacar {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 7px;
 }
 
 .partidaPlacar strong {
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  overflow: hidden;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.1875rem;
+  line-height: 1.2;
+  color: var(--titulo);
   white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 .partidaPlacar strong span {
+  font-style: normal;
+  font-size: 0.85em;
   color: var(--acento);
 }
 
 .partidaMeta {
-  margin: 3px 0 0;
+  margin: 0;
   overflow: hidden;
-  font-size: 0.8125rem;
-  color: color-mix(in srgb, var(--texto) 70%, transparent);
+  font-size: 0.75rem;
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
   white-space: nowrap;
   text-overflow: ellipsis;
 }
 
 .partidaFoto {
   flex: none;
-  width: 52px;
-  height: 52px;
-  border-radius: 6px;
+  align-self: center;
+  width: 44px;
+  height: 44px;
+  margin-right: 12px;
+  border-radius: 8px;
   object-fit: cover;
+}
+
+.partidaCanhoto {
+  position: relative;
+  flex: none;
+  width: var(--canhoto);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: 10px 0;
+}
+
+.partidaCanhoto::before {
+  content: "";
+  position: absolute;
+  left: -1px;
+  top: 10px;
+  bottom: 10px;
+  border-left: 2px dotted color-mix(in srgb, var(--texto) 22%, transparent);
+}
+
+.partidaCanhoto b {
+  margin-top: 4px;
+  font-family: var(--font-titulo);
+  font-size: 1.375rem;
+  line-height: 1;
+  color: var(--titulo);
+}
+
+.partidaCanhoto > span:last-child {
+  font-size: 0.5625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
 }
 
 /* ================================================================ Stickers de estádio */

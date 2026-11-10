@@ -1,0 +1,183 @@
+/* Coleção: mesmo cabeçalho na cor do time e mesmas abas sobrepostas da Torcida,
+   filtros em chips e partidas como ingressos agrupados por temporada. */
+
+.topo {
+  composes: topo from "../torcida/torcida.module.css";
+  padding-bottom: 58px;
+}
+
+.topoLinha {
+  composes: topoLinha from "../torcida/torcida.module.css";
+}
+
+.logo {
+  composes: logo from "../torcida/torcida.module.css";
+}
+
+.sobretitulo {
+  composes: sobretitulo from "../torcida/torcida.module.css";
+}
+
+.titulo {
+  composes: titulo from "../torcida/torcida.module.css";
+}
+
+.descricao {
+  composes: descricao from "../torcida/torcida.module.css";
+}
+
+.pagina {
+  composes: pagina from "../torcida/torcida.module.css";
+}
+
+.abas {
+  composes: abas from "../torcida/torcida.module.css";
+}
+
+/* ---------- Filtros em chips ---------- */
+
+.filtros {
+  display: flex;
+  gap: 8px;
+  margin: 0 -18px;
+  padding: 2px 18px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.filtros::-webkit-scrollbar {
+  display: none;
+}
+
+/* O select nativo fica invisível por cima do chip: no celular abre a lista do sistema. */
+.chip {
+  position: relative;
+  flex: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: 36px;
+  padding: 0 12px 0 14px;
+  border-radius: 999px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
+  color: color-mix(in srgb, var(--texto) 78%, transparent);
+  font: 500 0.8125rem var(--font-texto);
+  white-space: nowrap;
+}
+
+.chip select {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  opacity: 0;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+.chip svg {
+  opacity: 0.6;
+}
+
+.chip:focus-within {
+  outline: 3px solid var(--ouro);
+  outline-offset: 2px;
+}
+
+.chipAtivo {
+  background: var(--verde);
+  box-shadow: none;
+  color: var(--papel);
+  font-weight: 700;
+}
+
+.chipAtivo svg {
+  opacity: 1;
+  color: var(--ouro);
+}
+
+.limpar {
+  flex: none;
+  min-height: 36px;
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--acento);
+  font: 700 0.8125rem var(--font-texto);
+  cursor: pointer;
+}
+
+/* ---------- Temporadas ---------- */
+
+.temporada {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.temporadaTopo {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  margin-top: 4px;
+}
+
+.temporadaTopo h2 {
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.375rem;
+  color: var(--titulo);
+}
+
+/* Fio fino entre o ano e a contagem, como a linha de um álbum. */
+.temporadaTopo::after {
+  content: "";
+  order: 1;
+  flex: 1;
+  align-self: center;
+  height: 1px;
+  background: var(--borda);
+}
+
+.temporadaTopo span {
+  order: 2;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: color-mix(in srgb, var(--texto) 60%, transparent);
+}
+
+.lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* ---------- Álbum de estádios ---------- */
+
+.albumTopo {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 18px;
+  border-radius: 16px;
+  background: var(--superficie);
+}
+
+.albumTopo p {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0;
+  font-size: 0.875rem;
+  color: color-mix(in srgb, var(--texto) 70%, transparent);
+}
+
+.albumTopo strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--titulo);
+}
