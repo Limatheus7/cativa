@@ -7,6 +7,7 @@ import { EstadoVazio, IdentidadeTime, SeloPresenca } from "@/components/cativa/B
 import ComDados from "@/components/cativa/ComDados";
 import { CabecalhoApp } from "@/components/cativa/Navegacao";
 import { Ingresso } from "@/components/cativa/Registros";
+import { FotosExpansiveis } from "@/components/cativa/VisualizadorFotos";
 import { formatarData, numeroPresenca, placar } from "@/lib/dados/formato";
 import { despublicarPresenca, publicarPresenca, removerPresenca } from "@/lib/dados/loja";
 import s from "@/components/cativa/ui.module.css";
@@ -59,13 +60,7 @@ export default function DetalhePartida() {
 
               <Ingresso presenca={p} />
 
-              {p.fotos.length > 0 && (
-                <div className={s.galeria}>
-                  {p.fotos.map((f, i) => (
-                    <img key={i} src={f} alt={`Foto ${i + 1} do jogo`} />
-                  ))}
-                </div>
-              )}
+              {p.fotos.length > 0 && <FotosExpansiveis fotos={p.fotos} className={s.galeria} />}
 
               <dl className={s.resumoLista}>
                 <div>
@@ -73,10 +68,6 @@ export default function DetalhePartida() {
                   <dd>
                     {p.estadio.id ? <Link href={`/colecao/estadio/${p.estadio.id}`}>{p.estadio.nome}</Link> : p.estadio.nome} · {p.estadio.cidade}, {p.estadio.uf}
                   </dd>
-                </div>
-                <div>
-                  <dt>Companhia</dt>
-                  <dd>{p.companhia.length ? p.companhia.map((c) => c.nome).join(", ") : "—"}</dd>
                 </div>
               </dl>
 

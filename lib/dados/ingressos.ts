@@ -44,7 +44,7 @@ const BRASILEIRAO: TemaIngresso = {
   divider: "#E9E4D2",
   dividerOpacity: 0.25,
   crestRing: null,
-  taca: { src: "/ingressos/silhueta-brasileirao.png", left: 134, top: -110, width: 330, height: 500, rotate: 24, opacity: 0.6 },
+  taca: { src: "/ingressos/silhueta-brasileirao.png", left: 188, top: 35, width: 224, height: 340, rotate: 24, opacity: 0.6 },
 };
 
 const LIBERTADORES: TemaIngresso = {

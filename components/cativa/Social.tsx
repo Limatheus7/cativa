@@ -9,6 +9,7 @@ import type { Comentario, IdentidadeDoTime, ItemDoFeed, TorcedorPublico } from "
 import { Avatar, SeloPresenca } from "./Basicos";
 import { IconeCadeira, IconeComentario, IconeCoracao } from "./Icones";
 import s from "./ui.module.css";
+import { FotosExpansiveis } from "./VisualizadorFotos";
 
 // ------------------------------------------------------------ UserProfileSummary
 
@@ -116,11 +117,7 @@ export function ItemFeed({
           </div>
           {item.presenca.frase && <blockquote className={s.feedFrase}>“{item.presenca.frase}”</blockquote>}
           {item.presenca.fotos.length > 0 && (
-            <div className={s.feedFotos} data-qtd={Math.min(item.presenca.fotos.length, 3)}>
-              {item.presenca.fotos.slice(0, 3).map((f, i) => (
-                <img key={i} src={f} alt={`Foto ${i + 1} do jogo`} />
-              ))}
-            </div>
+            <FotosExpansiveis fotos={item.presenca.fotos} className={s.feedFotos} limite={3} dataQtd={Math.min(item.presenca.fotos.length, 3)} />
           )}
         </div>
       ) : (

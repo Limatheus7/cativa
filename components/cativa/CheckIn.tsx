@@ -9,7 +9,7 @@ import { formatarData, numeroPresenca } from "@/lib/dados/formato";
 import { reduzirFoto } from "@/lib/dados/imagens";
 import { publicarPresenca, registrarPresenca, SemEspacoError, type Novidades } from "@/lib/dados/loja";
 import { TORCEDORES_DEMONSTRACAO } from "@/lib/dados/mock/torcedores";
-import type { Companhia, DadosDoTorcedor, EstadioDaPresenca, IdentidadeDoTime, Mando, Presenca, Resultado } from "@/lib/dados/tipos";
+import type { DadosDoTorcedor, EstadioDaPresenca, IdentidadeDoTime, Mando, Presenca, Resultado } from "@/lib/dados/tipos";
 import { CLUBES, buscarClubes } from "@/lib/times";
 import { sugerirIniciais } from "@/lib/time";
 import { IdentidadeTime, SeloPresenca, paraIdentidade } from "./Basicos";
@@ -21,7 +21,7 @@ import { FASES } from "@/lib/dados/ingressos";
 
 const COMPETICOES =["Brasileirão", "Copa do Brasil", "Estadual", "Libertadores", "Sul-Americana", "Série B", "Série C", "Amistoso", "Outra"];
 const UFS = "AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO".split(" ");
-const ETAPAS = ["O jogo", "O estádio", "Companhia e fotos", "A memória", "Confirmar"];
+const ETAPAS = ["O jogo", "O estádio", "Fotos", "A memória", "Confirmar"];
 const MAX_FOTOS = 4;
 
 function hojeIso() {
@@ -73,9 +73,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   const [outroEstadio, setOutroEstadio] = useState({ aberto: false, nome: "", cidade: "", uf: "SP" });
   const [lugar, setLugar] = useState({ setor: "", fila: "", cadeira: "" });
 
-  // Etapa 3: companhia e fotos
-  const [companhia, setCompanhia] = useState<Companhia[]>([]);
-  const [nomeCompanhia, setNomeCompanhia] = useState("");
+  // Etapa 3: fotos
   const [fotos, setFotos] = useState<string[]>([]);
   const [lendoFotos, setLendoFotos] = useState(false);
   const [erroFoto, setErroFoto] = useState("");
@@ -99,7 +97,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   const resultadoDoJogo = resultadoDoPlacar(gols[0], gols[1]);
   const resultado = resultadoManual ?? resultadoDoJogo;
   const rede = useMemo(() => jogosDaRede(dados, meuTime.sigla), [dados, meuTime.sigla]);
-  const amigos = TORCEDORES_DEMONSTRACAO.filter((t) => dados.seguindo.includes(t.usuario));
 
   const sugestaoEstadio = mando === "casa" ? estadioDeCasa(meuTime.sigla) : mando === "fora" ? estadioDeCasa(adversario?.sigla) : undefined;
 
@@ -133,10 +130,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     }
   }
 
-  function adicionarCompanhia(c: Companhia) {
-    if (!c.nome.trim() || companhia.some((x) => (c.usuario ? x.usuario === c.usuario : x.nome === c.nome))) return;
-    setCompanhia((l) => [...l, { ...c, nome: c.nome.trim() }]);
-  }
 
   const etapaValida = [
     !!adversario && !!data && data <= hojeIso(),
@@ -152,7 +145,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
       partida: { data, competicao, fase: fase || undefined, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1] },
       estadio: estadio!,
       lugar: lugar.setor || lugar.fila || lugar.cadeira ? lugar : undefined,
-      companhia,
+      companhia: [],
       fotos,
       frase: frase.trim(),
       resultado,
@@ -178,7 +171,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     setData(hojeIso());
     setEstadio(null);
     setLugar({ setor: "", fila: "", cadeira: "" });
-    setCompanhia([]);
     setFotos([]);
     setFrase("");
     setResultadoManual(null);
@@ -411,54 +403,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
 
       {etapa === 2 && (
         <>
-          <h2 className={s.checkinTitulo}>Quem estava com você?</h2>
-          <section className={s.bloco}>
-            {amigos.length > 0 && (
-              <div className={s.chips}>
-                {amigos.map((a) => {
-                  const marcado = companhia.some((c) => c.usuario === a.usuario);
-                  return (
-                    <button
-                      key={a.usuario}
-                      type="button"
-                      aria-pressed={marcado}
-                      onClick={() =>
-                        marcado ? setCompanhia((l) => l.filter((c) => c.usuario !== a.usuario)) : adicionarCompanhia({ nome: a.nome, usuario: a.usuario })
-                      }
-                    >
-                      {a.nome.split(" ")[0]}
-                    </button>
-                  );
-                })}
-              </div>
-            )}
-            <form
-              className={s.linhaCampo}
-              onSubmit={(e) => {
-                e.preventDefault();
-                adicionarCompanhia({ nome: nomeCompanhia });
-                setNomeCompanhia("");
-              }}
-            >
-              <input placeholder="Nome de quem foi com você" value={nomeCompanhia} onChange={(e) => setNomeCompanhia(e.target.value)} aria-label="Nome de quem foi com você" maxLength={40} />
-              <button type="submit" className={s.botaoPequeno} disabled={!nomeCompanhia.trim()}>
-                Adicionar
-              </button>
-            </form>
-            {companhia.filter((c) => !c.usuario).length > 0 && (
-              <div className={s.chips}>
-                {companhia
-                  .filter((c) => !c.usuario)
-                  .map((c) => (
-                    <button key={c.nome} type="button" aria-pressed onClick={() => setCompanhia((l) => l.filter((x) => x !== c))} aria-label={`Remover ${c.nome}`}>
-                      {c.nome} <IconeFechar tamanho={14} />
-                    </button>
-                  ))}
-              </div>
-            )}
-            {companhia.length === 0 && <p className={s.textoSuave}>Foi sozinho? Também vale. Pode pular.</p>}
-          </section>
-
+          <h2 className={s.checkinTitulo}>Suas fotos do jogo</h2>
           <section className={s.bloco}>
             <h3 className={s.rotulo}>
               Fotos ({fotos.length}/{MAX_FOTOS})
@@ -529,10 +474,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
               <dd>{formatarData(data)}</dd>
             </div>
             <div>
-              <dt>Companhia</dt>
-              <dd>{companhia.length ? companhia.map((c) => c.nome).join(", ") : "—"}</dd>
-            </div>
-            <div>
               <dt>Fotos</dt>
               <dd>{fotos.length || "—"}</dd>
             </div>
@@ -564,7 +505,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
         )}
         {etapa < ETAPAS.length - 1 ? (
           <button type="button" className={s.botao} disabled={!etapaValida} onClick={() => setEtapa(etapa + 1)}>
-            {etapa === 2 && companhia.length === 0 && fotos.length === 0 ? "Pular" : "Continuar"}
+            {etapa === 2 && fotos.length === 0 ? "Pular" : "Continuar"}
           </button>
         ) : (
           <button type="button" className={`${s.botao} ${s.botaoOuro}`} onClick={confirmar}>
