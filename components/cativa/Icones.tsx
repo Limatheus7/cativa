@@ -46,12 +46,15 @@ export const IconeCadeira = (p: P) => (
   </Svg>
 );
 
+/** Ingressos empilhados. O da frente (`.destaque`) ganha dourado na aba ativa. */
 export const IconeColecao = (p: P) => (
   <Svg {...p}>
-    <path d="M4 5.5A1.5 1.5 0 0 1 5.5 4H11v16H5.5A1.5 1.5 0 0 1 4 18.5z" />
-    <path d="M20 5.5A1.5 1.5 0 0 0 18.5 4H13v16h5.5a1.5 1.5 0 0 0 1.5-1.5z" />
-    <circle cx="7.5" cy="9" r="1.6" />
-    <circle cx="16.5" cy="12" r="1.6" />
+    <path d="M7 9V5.5h14v2.9a1.6 1.6 0 0 0 0 3.2V15h-3" />
+    <path
+      className="destaque"
+      d="M3 9h15v3.4a1.6 1.6 0 0 0 0 3.2V19H3v-3.4a1.6 1.6 0 0 0 0-3.2z"
+    />
+    <path d="M7 12.5h6M7 15.5h4" />
   </Svg>
 );
 

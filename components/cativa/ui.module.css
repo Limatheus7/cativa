@@ -461,6 +461,12 @@
   font-weight: 700;
 }
 
+/* Detalhe do ícone que ganha dourado na aba ativa (ex.: ingresso da frente na Coleção). */
+.barraItem[aria-current="page"] :global(.destaque) {
+  fill: var(--ouro);
+  fill-opacity: 0.55;
+}
+
 .barraItem[aria-current="page"]::after {
   content: "";
   width: 4px;
