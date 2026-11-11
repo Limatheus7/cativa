@@ -2150,6 +2150,18 @@
   background: linear-gradient(to top, var(--fundo) 70%, transparent);
 }
 
+/* No registro, o botão desativado fica sólido para não deixar a tela vazar por trás. */
+.checkinAcoes .botao:disabled {
+  opacity: 1;
+  background: color-mix(in srgb, var(--verde) 38%, var(--fundo));
+  color: color-mix(in srgb, var(--papel) 88%, transparent);
+}
+
+:root[data-tema="escuro"] .checkinAcoes .botao:disabled {
+  background: var(--superficie-forte);
+  color: color-mix(in srgb, var(--texto) 55%, transparent);
+}
+
 .botaoVoltar {
   flex: none;
   display: grid;

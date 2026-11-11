@@ -10,29 +10,15 @@ import { reduzirFoto } from "@/lib/dados/imagens";
 import { publicarPresenca, registrarPresenca, SemEspacoError, type Novidades } from "@/lib/dados/loja";
 import { TORCEDORES_DEMONSTRACAO } from "@/lib/dados/mock/torcedores";
 import type { Companhia, DadosDoTorcedor, EstadioDaPresenca, IdentidadeDoTime, Mando, Presenca, Resultado } from "@/lib/dados/tipos";
-import { CLUBES, buscarClubes } from "@/lib/times";
-import { sugerirIniciais } from "@/lib/time";
-import { IdentidadeTime, SeloPresenca, paraIdentidade } from "./Basicos";
+import { SeloPresenca, paraIdentidade } from "./Basicos";
+import EtapaJogo, { COMPETICOES, hojeIso } from "./EtapaJogo";
 import { IconeCamera, IconeFechar, IconeVoltar } from "./Icones";
 import { AdesivoEstadio, CartaoPartida, Ingresso, SeloConquista } from "./Registros";
 import s from "./ui.module.css";
 
-import { FASES } from "@/lib/dados/ingressos";
-
-const COMPETICOES =["Brasileirão", "Copa do Brasil", "Estadual", "Libertadores", "Sul-Americana", "Série B", "Série C", "Amistoso", "Outra"];
 const UFS = "AC AL AM AP BA CE DF ES GO MA MG MS MT PA PB PE PI PR RJ RN RO RR RS SC SE SP TO".split(" ");
 const ETAPAS = ["O jogo", "O estádio", "Companhia e fotos", "A memória", "Confirmar"];
 const MAX_FOTOS = 4;
-
-function hojeIso() {
-  const d = new Date();
-  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-}
-
-function identidadeDeClube(sigla: string): IdentidadeDoTime | null {
-  const c = CLUBES.find((x) => x.sigla === sigla);
-  return c ? { nome: c.nome, sigla: c.sigla, corPrincipal: c.corPrincipal, corSegunda: c.corSegunda, padrao: c.padrao, faixas: c.faixas } : null;
-}
 
 /** Jogos da sua rede que envolvem o seu time: atalho para "selecionar uma partida existente". */
 function jogosDaRede(dados: DadosDoTorcedor, minhaSigla: string) {
@@ -59,8 +45,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
 
   // Etapa 1: o jogo
   const [adversario, setAdversario] = useState<IdentidadeDoTime | null>(null);
-  const [buscaTime, setBuscaTime] = useState("");
-  const [outroTime, setOutroTime] = useState("");
   const [mando, setMando] = useState<Mando>("casa");
   const [data, setData] = useState(hojeIso());
   const [competicao, setCompeticao] = useState(COMPETICOES[0]);
@@ -190,7 +174,6 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     setConcluido({ ...concluido, publicada: true });
   }} />;
 
-  const clubes = buscarClubes(buscaTime).filter((c) => c.sigla !== meuTime.sigla);
   const estadios = buscarEstadios(buscaEstadio).slice(0, buscaEstadio ? 12 : 6);
   const rascunho: Presenca | null =
     adversario && estadio
@@ -211,111 +194,24 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
       </div>
 
       {etapa === 0 && (
-        <>
-          <h2 className={s.checkinTitulo}>Qual foi o jogo?</h2>
-          <p className={s.textoSuave}>Vale jogo de hoje e jogo de anos atrás.</p>
-
-          {rede.length > 0 && (
-            <section className={s.bloco}>
-              <h3 className={s.rotulo}>Jogos da sua torcida</h3>
-              <div className={s.lista}>
-                {rede.slice(0, 3).map(({ p, quem }) => (
-                  <button key={p.id} type="button" className={s.opcaoJogo} onClick={() => usarJogoDaRede(p)}>
-                    <CartaoPartida presenca={p} />
-                    <span>{quem} esteve lá · Usar este jogo</span>
-                  </button>
-                ))}
-              </div>
-            </section>
-          )}
-
-          <section className={s.bloco}>
-            <h3 className={s.rotulo}>{rede.length > 0 ? "Ou cadastre o jogo" : "Contra quem?"}</h3>
-            {adversario ? (
-              <div className={s.escolhido}>
-                <IdentidadeTime time={meuTime} tamanho={32} />
-                <span>×</span>
-                <IdentidadeTime time={adversario} tamanho={32} mostrarNome />
-                <button type="button" className={s.botaoTexto} onClick={() => setAdversario(null)}>
-                  Trocar
-                </button>
-              </div>
-            ) : (
-              <>
-                <label className={s.campo}>
-                  <span className={s.somenteLeitor}>Buscar adversário</span>
-                  <input type="search" placeholder="Buscar adversário por nome ou sigla" value={buscaTime} onChange={(e) => setBuscaTime(e.target.value)} />
-                </label>
-                <div className={s.gradeTimes}>
-                  {clubes.slice(0, buscaTime ? 16 : 8).map((c) => (
-                    <button key={c.sigla} type="button" onClick={() => setAdversario(identidadeDeClube(c.sigla))}>
-                      <IdentidadeTime time={identidadeDeClube(c.sigla)!} tamanho={44} />
-                      <span>{c.nome}</span>
-                    </button>
-                  ))}
-                </div>
-                <form
-                  className={s.linhaCampo}
-                  onSubmit={(e) => {
-                    e.preventDefault();
-                    const nome = outroTime.trim();
-                    if (nome.length < 2) return;
-                    setAdversario({ nome, sigla: sugerirIniciais(nome).slice(0, 3) || "?", corPrincipal: "#1E2A22", corSegunda: "#F4EBD9" });
-                  }}
-                >
-                  <input placeholder="Outro time (digite o nome)" value={outroTime} onChange={(e) => setOutroTime(e.target.value)} aria-label="Nome de outro time" />
-                  <button type="submit" className={s.botaoPequeno} disabled={outroTime.trim().length < 2}>
-                    Usar
-                  </button>
-                </form>
-              </>
-            )}
-          </section>
-
-          <section className={s.bloco}>
-            <h3 className={s.rotulo}>Onde o {meuTime.nome} jogou?</h3>
-            <div className={s.segmentado}>
-              {(["casa", "fora", "neutro"] as const).map((m) => (
-                <button key={m} type="button" aria-pressed={mando === m} onClick={() => setMando(m)}>
-                  {m === "casa" ? "Em casa" : m === "fora" ? "Fora" : "Campo neutro"}
-                </button>
-              ))}
-            </div>
-          </section>
-
-          <div className={s.duasColunas}>
-            <label className={s.campo}>
-              <span>Data</span>
-              <input type="date" value={data} max={hojeIso()} min="1900-01-01" onChange={(e) => setData(e.target.value)} />
-            </label>
-            <label className={s.campo} style={{ gridColumn: "1 / -1" }}>
-              <span>Fase</span>
-              <select value={fase} onChange={(e) => setFase(e.target.value)}>
-                <option value="">Jogo comum</option>
-                {FASES.map((f) => (
-                  <option key={f}>{f}</option>
-                ))}
-              </select>
-            </label>
-            <label className={s.campo}>
-              <span>Competição</span>
-              <select value={competicao} onChange={(e) => setCompeticao(e.target.value)}>
-                {COMPETICOES.map((c) => (
-                  <option key={c}>{c}</option>
-                ))}
-              </select>
-            </label>
-          </div>
-
-          <section className={s.bloco}>
-            <h3 className={s.rotulo}>Placar</h3>
-            <div className={s.placarEntrada}>
-              <Contador rotulo={meuTime.sigla} valor={gols[0]} onChange={(v) => setGols([v, gols[1]])} />
-              <span>×</span>
-              <Contador rotulo={adversario?.sigla ?? "ADV"} valor={gols[1]} onChange={(v) => setGols([gols[0], v])} />
-            </div>
-          </section>
-        </>
+        <EtapaJogo
+          meuTime={meuTime}
+          numero={dados.presencas.length + 1}
+          adversario={adversario}
+          onAdversario={setAdversario}
+          mando={mando}
+          onMando={setMando}
+          data={data}
+          onData={setData}
+          competicao={competicao}
+          onCompeticao={setCompeticao}
+          fase={fase}
+          onFase={setFase}
+          gols={gols}
+          onGols={setGols}
+          rede={rede}
+          onJogoDaRede={usarJogoDaRede}
+        />
       )}
 
       {etapa === 1 && (
@@ -564,30 +460,19 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
         )}
         {etapa < ETAPAS.length - 1 ? (
           <button type="button" className={s.botao} disabled={!etapaValida} onClick={() => setEtapa(etapa + 1)}>
-            {etapa === 2 && companhia.length === 0 && fotos.length === 0 ? "Pular" : "Continuar"}
+            {etapa === 0 && !adversario
+              ? "Escolha o adversário"
+              : etapa === 0 && data > hojeIso()
+                ? "A data ainda não chegou"
+                : etapa === 2 && companhia.length === 0 && fotos.length === 0
+                  ? "Pular"
+                  : "Continuar"}
           </button>
         ) : (
           <button type="button" className={`${s.botao} ${s.botaoOuro}`} onClick={confirmar}>
             Registrar presença
           </button>
         )}
-      </div>
-    </div>
-  );
-}
-
-function Contador({ rotulo, valor, onChange }: { rotulo: string; valor: number; onChange: (v: number) => void }) {
-  return (
-    <div className={s.contador2}>
-      <span>{rotulo}</span>
-      <div>
-        <button type="button" onClick={() => onChange(Math.max(0, valor - 1))} aria-label={`Menos um gol para ${rotulo}`}>
-          −
-        </button>
-        <strong aria-live="polite">{valor}</strong>
-        <button type="button" onClick={() => onChange(Math.min(30, valor + 1))} aria-label={`Mais um gol para ${rotulo}`}>
-          +
-        </button>
       </div>
     </div>
   );
