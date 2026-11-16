@@ -1,5 +1,5 @@
 import { chaveDoEstadio } from "./estadios";
-import type { Presenca } from "./tipos";
+import type { Presenca, Visita } from "./tipos";
 
 // Níveis em proposta (apresentação de marca, slide 11). Podem mudar.
 export const NIVEIS = [
@@ -24,6 +24,9 @@ export type Estatisticas = {
   V: number;
   E: number;
   D: number;
+  /** Visitas ao estádio sem jogo. Não entram em total, V/E/D nem níveis. */
+  visitas: number;
+  /** Estádios distintos, contando jogos e visitas. */
   estadios: number;
   estados: number;
   fora: number;
@@ -37,7 +40,7 @@ export type Estatisticas = {
   ultima: Presenca | null;
 };
 
-export function estatisticas(presencas: Presenca[], hoje = new Date()): Estatisticas {
+export function estatisticas(presencas: Presenca[], hoje = new Date(), visitas: Visita[] = []): Estatisticas {
   const total = presencas.length;
   const conta = (r: "V" | "E" | "D") => presencas.filter((p) => p.resultado === r).length;
   const nivel = nivelAtual(total);
@@ -51,8 +54,9 @@ export function estatisticas(presencas: Presenca[], hoje = new Date()): Estatist
     V: conta("V"),
     E: conta("E"),
     D: conta("D"),
-    estadios: new Set(presencas.map((p) => chaveDoEstadio(p.estadio))).size,
-    estados: new Set(presencas.map((p) => p.estadio.uf)).size,
+    visitas: visitas.length,
+    estadios: new Set([...presencas, ...visitas].map((p) => chaveDoEstadio(p.estadio))).size,
+    estados: new Set([...presencas, ...visitas].map((p) => p.estadio.uf)).size,
     fora: presencas.filter((p) => p.partida.mando === "fora").length,
     comCompanhia: presencas.filter((p) => p.companhia.length > 0).length,
     comFoto: presencas.filter((p) => p.fotos.length > 0).length,

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTime } from "@/components/app/TimeProvider";
 import { FaixaDoTime, paraIdentidade } from "./Basicos";
+import { usePresenca } from "./PresencaProvider";
 import { IconeCadeira, IconeColecao, IconeInicio, IconePerfil, IconeTorcida, IconeVoltar } from "./Icones";
 import s from "./ui.module.css";
 
@@ -26,25 +27,31 @@ function areaAtiva(caminho: string) {
 
 export function BarraNavegacao() {
   const ativa = areaAtiva(usePathname());
+  const { aberta, abrir } = usePresenca();
   return (
     <nav className={s.barra} aria-label="Navegação principal">
-      {ITENS.map(({ href, rotulo, Icone, central }) => (
-        <Link
-          key={href}
-          href={href}
-          className={central ? s.barraCentral : s.barraItem}
-          aria-current={ativa === href ? "page" : undefined}
-        >
-          {central ? (
+      {ITENS.map(({ href, rotulo, Icone, central }) =>
+        central ? (
+          <button
+            key={href}
+            type="button"
+            className={s.barraCentral}
+            aria-haspopup="dialog"
+            aria-expanded={aberta}
+            onClick={(e) => abrir(e.currentTarget)}
+          >
             <span className={s.barraBotaoPresenca}>
               <Icone tamanho={28} />
             </span>
-          ) : (
+            <span>{rotulo}</span>
+          </button>
+        ) : (
+          <Link key={href} href={href} className={s.barraItem} aria-current={ativa === href ? "page" : undefined}>
             <Icone tamanho={24} />
-          )}
-          <span>{rotulo}</span>
-        </Link>
-      ))}
+            <span>{rotulo}</span>
+          </Link>
+        ),
+      )}
     </nav>
   );
 }

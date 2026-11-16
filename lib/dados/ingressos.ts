@@ -76,6 +76,11 @@ export function temaDoIngresso(competicao: string): TemaIngresso {
 /** Fases de mata-mata que o torcedor pode marcar no registro ("" = jogo comum). */
 export const FASES = ["Oitavas de final", "Quartas de final", "Semifinal", "Final"] as const;
 
+/** Competições com fase de mata-mata. Pontos corridos (Brasileirão, Série B) e amistoso não têm. */
+export function temMataMata(competicao: string) {
+  return /copa do brasil|libertadores|sul-americana|estadual|s[ée]rie c|outra/i.test(competicao);
+}
+
 /** Final ganha borda dourada no ingresso. */
 export function ehFinal(fase?: string) {
   return fase === "Final";

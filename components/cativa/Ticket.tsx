@@ -15,7 +15,10 @@ import s from "./Ticket.module.css";
  * 748 × 276 px e escalado para a largura disponível. O tema vem da competição.
  * Camadas: corpo/canhoto (SVG) → taça (PNG recortado pelo corpo) → escudos → textos.
  */
-export default function Ticket({ presenca: p, href }: { presenca: Presenca; href?: string }) {
+/** Partes ainda não escolhidas no registro: o ingresso as mostra em aberto ("?" e "próxima etapa"). */
+export type PreviaDoIngresso = { semAdversario?: boolean; semEstadio?: boolean };
+
+export default function Ticket({ presenca: p, href, previa }: { presenca: Presenca; href?: string; previa?: PreviaDoIngresso }) {
   const final = ehFinal(p.partida.fase);
   const caixa = useRef<HTMLElement>(null);
   const [escala, setEscala] = useState(0);
@@ -37,6 +40,8 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
   const golsCasa = emCasa ? p.partida.golsTime : p.partida.golsAdversario;
   const golsFora = emCasa ? p.partida.golsAdversario : p.partida.golsTime;
   const lado = p.partida.mando === "casa" ? "EM CASA" : p.partida.mando === "fora" ? "FORA" : "CAMPO NEUTRO";
+  const pendenteCasa = !!previa?.semAdversario && !emCasa;
+  const pendenteFora = !!previa?.semAdversario && emCasa;
   const aro = t.crestRing ? `0 0 0 1.5px ${t.crestRing}` : undefined;
 
   const deslocamento = final ? `translate(${MOLDURA.lado * escala}px, ${MOLDURA.topo * escala}px) ` : "";
@@ -80,11 +85,19 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
       )}
 
       {/* Escudos (identidade do time: sigla e cores), acima da taça */}
-      <span className={s.escudo} style={{ left: 138 - 26, boxShadow: aro }}>
-        <Monograma time={{ ...casa, iniciais: casa.sigla }} tamanho={52} />
+      <span className={s.escudo} style={{ left: 138 - 26, boxShadow: pendenteCasa ? undefined : aro }}>
+        {pendenteCasa ? (
+          <span className={s.escudoVazio} style={{ color: t.accent }}>?</span>
+        ) : (
+          <Monograma time={{ ...casa, iniciais: casa.sigla }} tamanho={52} />
+        )}
       </span>
-      <span className={s.escudo} style={{ left: 460 - 26, boxShadow: aro }}>
-        <Monograma time={{ ...fora, iniciais: fora.sigla }} tamanho={52} />
+      <span className={s.escudo} style={{ left: 460 - 26, boxShadow: pendenteFora ? undefined : aro }}>
+        {pendenteFora ? (
+          <span className={s.escudoVazio} style={{ color: t.accent }}>?</span>
+        ) : (
+          <Monograma time={{ ...fora, iniciais: fora.sigla }} tamanho={52} />
+        )}
       </span>
 
       {/* Textos */}
@@ -92,11 +105,11 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
         {p.partida.competicao.toUpperCase()} · {lado}
         {p.partida.fase && ` · ${p.partida.fase.toUpperCase()}`}
       </div>
-      <div className={`${s.abs} ${s.nomeTime}`} style={{ left: 68, color: t.teamText }}>
-        {casa.nome}
+      <div className={`${s.abs} ${s.nomeTime}`} style={{ left: 68, color: pendenteCasa ? t.accent : t.teamText, fontWeight: pendenteCasa ? 600 : undefined }}>
+        {pendenteCasa ? "Adversário" : casa.nome}
       </div>
-      <div className={`${s.abs} ${s.nomeTime}`} style={{ left: 390, color: t.teamText }}>
-        {fora.nome}
+      <div className={`${s.abs} ${s.nomeTime}`} style={{ left: 390, color: pendenteFora ? t.accent : t.teamText, fontWeight: pendenteFora ? 600 : undefined }}>
+        {pendenteFora ? "Adversário" : fora.nome}
       </div>
       <div className={`${s.abs} ${s.placar}`} style={{ color: t.text }}>
         <span className={s.gol}>{golsCasa}</span>
@@ -119,14 +132,18 @@ export default function Ticket({ presenca: p, href }: { presenca: Presenca; href
         ESTÁDIO
       </div>
       <div className={`${s.abs} ${s.valor} ${s.estadio}`} style={{ left: 160, color: t.text }}>
-        {p.estadio.nome}
+        {previa?.semEstadio ? <em className={s.pendente}>próxima etapa</em> : p.estadio.nome}
       </div>
-      <div className={`${s.abs} ${s.rotulo}`} style={{ right: 180, color: t.accent }}>
-        SETOR
-      </div>
-      <div className={`${s.abs} ${s.valor}`} style={{ right: 180, color: t.text }}>
-        {(p.lugar?.setor || "—").toUpperCase()}
-      </div>
+      {!(previa && !p.lugar?.setor) && (
+        <>
+          <div className={`${s.abs} ${s.rotulo}`} style={{ right: 180, color: t.accent }}>
+            SETOR
+          </div>
+          <div className={`${s.abs} ${s.valor}`} style={{ right: 180, color: t.text }}>
+            {(p.lugar?.setor || "—").toUpperCase()}
+          </div>
+        </>
+      )}
 
       <div className={`${s.abs} ${s.presenca}`} style={{ color: t.stubLabel }}>
         PRESENÇA

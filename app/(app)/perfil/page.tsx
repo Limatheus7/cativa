@@ -67,7 +67,14 @@ export default function Perfil() {
                   <strong>{est.estadios}</strong>
                   <span>estádios</span>
                 </div>
+                {est.visitas > 0 && (
+                  <div>
+                    <strong>{est.visitas}</strong>
+                    <span>{est.visitas === 1 ? "visita" : "visitas"}</span>
+                  </div>
+                )}
               </section>
+              {est.visitas > 0 && <p className={s.textoSuave}>Visita conta como estádio, mas fica fora de jogos, vitórias e derrotas.</p>}
               {est.proximo && (
                 <div className={s.proximoNivel}>
                   <Progresso valor={est.progresso} rotulo={`Progresso até ${est.proximo.nome}`} />

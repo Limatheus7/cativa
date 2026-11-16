@@ -471,6 +471,10 @@
 }
 
 .barraCentral {
+  border: 0;
+  background: none;
+  font-family: inherit;
+  cursor: pointer;
   color: var(--texto);
   font-weight: 700;
 }
@@ -1390,7 +1394,8 @@
 
 .placarGeral {
   display: grid;
-  grid-template-columns: 1.2fr repeat(3, 1fr) 1.2fr;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
   border-radius: 12px;
   background: var(--superficie);
   box-shadow: inset 0 0 0 1px var(--borda);
@@ -2408,3 +2413,308 @@
 }
 
 
+
+/* ================================================================ Registro: cartões numerados */
+
+.cartaoPasso {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 14px;
+  border-radius: 14px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--borda) 70%, transparent);
+}
+
+.cartaoPasso > header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.cartaoPasso > header h3 {
+  flex: 1;
+  margin: 0;
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.125rem;
+  color: var(--titulo);
+}
+
+.numeroPasso {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--ouro) 35%, var(--superficie));
+  color: var(--texto);
+  font: 700 0.8125rem var(--font-texto);
+}
+
+.passoOk {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--verde);
+  color: var(--papel);
+}
+
+:global(:root[data-tema="escuro"]) .passoOk {
+  background: var(--ouro);
+  color: var(--verde-escuro);
+}
+
+.adversarioEscolhido {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 12px;
+  border-radius: 12px;
+  background: color-mix(in srgb, var(--ouro) 22%, var(--superficie));
+  box-shadow: inset 0 0 0 1.5px var(--ouro-profundo);
+}
+
+:global(:root[data-tema="escuro"]) .adversarioEscolhido {
+  box-shadow: inset 0 0 0 1.5px var(--ouro);
+}
+
+.adversarioEscolhido > span {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.adversarioEscolhido small {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.adversarioEscolhido strong {
+  font-size: 1.0625rem;
+  color: var(--texto);
+}
+
+.adversarioEscolhido button {
+  min-height: 36px;
+  padding: 0 14px;
+  border: 0;
+  border-radius: 999px;
+  background: var(--superficie-forte);
+  color: var(--titulo);
+  font: 700 0.875rem var(--font-texto);
+  cursor: pointer;
+}
+
+.timeAvulso {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 1.5px dashed var(--acento);
+  border-radius: 50%;
+  color: var(--acento);
+  font: 700 0.8125rem var(--font-texto);
+}
+
+.dicaBusca {
+  margin: 0;
+  font-size: 0.8125rem;
+  color: color-mix(in srgb, var(--texto) 65%, transparent);
+}
+
+/* Fileira de chips que rola de lado, sem quebrar linha. */
+.chipsRolagem {
+  flex-wrap: nowrap;
+  margin: 0 -14px;
+  padding: 0 14px;
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.chipsRolagem::-webkit-scrollbar {
+  display: none;
+}
+
+.chipsRolagem button {
+  flex: none;
+}
+
+/* Chip marcado: verde no claro, ouro no escuro. */
+:global(:root[data-tema="escuro"]) .cartaoPasso .chips button[aria-pressed="true"] {
+  border-color: var(--ouro);
+  background: var(--ouro);
+  color: var(--verde-escuro);
+}
+
+:global(:root[data-tema="escuro"]) .cartaoPasso .segmentado button[aria-pressed="true"] {
+  background: var(--ouro);
+  color: var(--verde-escuro);
+}
+
+.cartaoPasso .segmentado button[aria-pressed="true"] {
+  background: var(--verde);
+  color: var(--papel);
+}
+
+/* ================================================================ Tipo de visita (check-in) */
+
+.opcaoTipo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  border: 0;
+  border-radius: 14px;
+  background: var(--superficie);
+  box-shadow: inset 0 0 0 1px var(--borda);
+  color: inherit;
+  text-align: left;
+  font: inherit;
+  cursor: pointer;
+}
+
+.opcaoTipo[aria-checked="true"] {
+  box-shadow: inset 0 0 0 2px var(--titulo);
+}
+
+.opcaoTipoMarca {
+  display: grid;
+  place-items: center;
+  flex: none;
+  width: 44px;
+  color: var(--titulo);
+}
+
+.opcaoTipoTexto {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.opcaoTipoTexto strong {
+  font-family: var(--font-titulo);
+  font-style: italic;
+  font-size: 1.0625rem;
+  color: var(--titulo);
+}
+
+.opcaoTipoTexto small {
+  font-size: 0.8125rem;
+  line-height: 1.35;
+  color: color-mix(in srgb, var(--texto) 72%, transparent);
+}
+
+.opcaoTipoEtiquetas {
+  display: flex;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.opcaoTipoEtiquetas i {
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: color-mix(in srgb, var(--acento) 22%, transparent);
+  font-style: normal;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--acento);
+}
+
+.opcaoTipoRadio {
+  flex: none;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1.5px var(--borda);
+}
+
+.opcaoTipo[aria-checked="true"] .opcaoTipoRadio {
+  background: radial-gradient(circle, var(--superficie) 0 28%, var(--titulo) 30%);
+  box-shadow: none;
+}
+
+.outrasOpcoes {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  width: 100%;
+  padding: 10px 14px;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  box-shadow: inset 0 0 0 1px var(--borda);
+  color: var(--titulo);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.outrasOpcoes i {
+  width: 8px;
+  height: 8px;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+  transition: transform 0.15s;
+}
+
+.outrasOpcoes[aria-expanded="true"] i {
+  transform: translateY(2px) rotate(-135deg);
+}
+
+.timeDoCoracao {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px dashed var(--borda);
+  font-size: 0.8125rem;
+}
+
+.timeDoCoracao > .timeDoCoracaoTexto {
+  flex: 1;
+}
+
+.timeDoCoracao > :first-child {
+  flex: none;
+}
+
+.timeDoCoracao a {
+  font-weight: 700;
+  color: var(--titulo);
+  text-decoration: underline;
+}
+
+/* Etiqueta "Visita" em listas e no feed */
+.etiquetaVisita {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 2px 8px;
+  border-radius: 4px;
+  background: var(--acento);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}

@@ -161,3 +161,23 @@
     display: none;
   }
 }
+
+/* Prévia do registro: parte ainda em aberto. */
+.escudoVazio {
+  display: grid;
+  place-items: center;
+  width: 52px;
+  height: 52px;
+  border: 2px dashed currentColor;
+  border-radius: 50%;
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-size: 26px;
+  font-weight: 600;
+  box-sizing: border-box;
+}
+
+.pendente {
+  font-style: italic;
+  opacity: 0.6;
+}

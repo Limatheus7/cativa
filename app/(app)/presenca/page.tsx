@@ -1,17 +1,26 @@
 "use client";
 
-import CheckIn from "@/components/cativa/CheckIn";
-import ComDados from "@/components/cativa/ComDados";
-import { CabecalhoApp } from "@/components/cativa/Navegacao";
-import s from "@/components/cativa/ui.module.css";
+import { useRouter } from "next/navigation";
+import { useEffect, useRef } from "react";
+import { usePresenca } from "@/components/cativa/PresencaProvider";
+import Inicio from "../inicio/page";
 
+// /presenca abre a gaveta "Cheguei no estádio" por cima do Início.
+// Ao fechar a gaveta, volta para o Início.
 export default function Presenca() {
-  return (
-    <>
-      <CabecalhoApp titulo="Cheguei no estádio" sobretitulo="Presença" />
-      <main className={s.pagina}>
-        <ComDados>{(dados) => <CheckIn dados={dados} />}</ComDados>
-      </main>
-    </>
-  );
+  const { aberta, abrir } = usePresenca();
+  const router = useRouter();
+  const abriu = useRef(false);
+
+  useEffect(() => {
+    abrir();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    if (aberta) abriu.current = true;
+    else if (abriu.current) router.replace("/inicio");
+  }, [aberta, router]);
+
+  return <Inicio />;
 }

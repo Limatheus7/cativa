@@ -94,6 +94,10 @@ export function ItemFeed({
             <>
               esteve {noEstadio(item.presenca.estadio.nome).split(" ")[0]} <strong>{item.presenca.estadio.nome}</strong>
             </>
+          ) : item.tipo === "visita" ? (
+            <>
+              visitou {noEstadio(item.visita.estadio.nome).split(" ")[0]} <strong>{item.visita.estadio.nome}</strong>
+            </>
           ) : (
             <>
               desbloqueou <strong>{conquistaPorId(item.conquistaId)?.nome}</strong>
@@ -118,6 +122,22 @@ export function ItemFeed({
           {item.presenca.frase && <blockquote className={s.feedFrase}>“{item.presenca.frase}”</blockquote>}
           {item.presenca.fotos.length > 0 && (
             <FotosExpansiveis fotos={item.presenca.fotos} className={s.feedFotos} limite={3} dataQtd={Math.min(item.presenca.fotos.length, 3)} />
+          )}
+        </div>
+      ) : item.tipo === "visita" ? (
+        <div className={s.feedPresenca}>
+          <div className={s.feedJogo}>
+            <div>
+              <span className={s.etiquetaVisita}>Visita</span>
+              <strong>{item.visita.estadio.nome}</strong>
+              <span>
+                {item.visita.motivo ? `${item.visita.motivo === "Tour" ? "Tour guiado" : item.visita.motivo} · sem jogo` : "Sem jogo"} · {formatarData(item.visita.data)}
+              </span>
+            </div>
+          </div>
+          {item.visita.frase && <blockquote className={s.feedFrase}>“{item.visita.frase}”</blockquote>}
+          {item.visita.fotos.length > 0 && (
+            <FotosExpansiveis fotos={item.visita.fotos} className={s.feedFotos} limite={3} dataQtd={Math.min(item.visita.fotos.length, 3)} />
           )}
         </div>
       ) : (

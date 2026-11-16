@@ -5,6 +5,7 @@ import { EstadoVazio, TituloSecao } from "@/components/cativa/Basicos";
 import ComDados from "@/components/cativa/ComDados";
 import { CabecalhoApp } from "@/components/cativa/Navegacao";
 import { AdesivoEstadio, CartaoPartida } from "@/components/cativa/Registros";
+import TicketVisita from "@/components/cativa/TicketVisita";
 import { ESTADIOS, estadioPorId } from "@/lib/dados/estadios";
 import { ordenarPorData } from "@/lib/dados/estatisticas";
 import { formatarData } from "@/lib/dados/formato";
@@ -29,19 +30,21 @@ export default function DetalheEstadio() {
     <ComDados>
       {(dados) => {
         const jogos = ordenarPorData(dados.presencas.filter((p) => p.estadio.id === estadio.id));
-        const primeira = jogos[jogos.length - 1];
+        const visitasAqui = dados.visitas.filter((v) => v.estadio.id === estadio.id).sort((a, b) => b.data.localeCompare(a.data));
+        const total = jogos.length + visitasAqui.length;
+        const datas = [...jogos.map((p) => p.partida.data), ...visitasAqui.map((v) => v.data)].sort();
         return (
           <>
             <CabecalhoApp titulo={estadio.nome} sobretitulo="Estádio" voltar="/colecao?aba=estadios" />
             <main className={s.pagina}>
               {estadio.arte && (
-                <figure className={`${s.poster} ${jogos.length > 0 ? "" : s.posterTrancado}`} style={{ margin: 0 }}>
+                <figure className={`${s.poster} ${total > 0 ? "" : s.posterTrancado}`} style={{ margin: 0 }}>
                   <img src={estadio.arte} alt={`Pôster ilustrado do ${estadio.nome}`} />
                 </figure>
               )}
               <section className={s.estadioTopo}>
                 {!estadio.arte && (
-                  <AdesivoEstadio estadio={estadio} desbloqueado={jogos.length > 0} visitas={jogos.length} indice={ESTADIOS.indexOf(estadio)} />
+                  <AdesivoEstadio estadio={estadio} desbloqueado={total > 0} visitas={total} indice={ESTADIOS.indexOf(estadio)} />
                 )}
                 <div>
                   <p>
@@ -51,15 +54,26 @@ export default function DetalheEstadio() {
                   <dl className={s.resumoLista}>
                     <div>
                       <dt>Suas visitas</dt>
-                      <dd>{jogos.length}</dd>
+                      <dd>{total}</dd>
                     </div>
                     <div>
                       <dt>Primeira presença</dt>
-                      <dd>{primeira ? formatarData(primeira.partida.data) : "—"}</dd>
+                      <dd>{datas[0] ? formatarData(datas[0]) : "—"}</dd>
                     </div>
                   </dl>
                 </div>
               </section>
+
+              {visitasAqui.length > 0 && (
+                <section>
+                  <TituloSecao titulo="Suas visitas aqui" />
+                  <div className={s.lista}>
+                    {visitasAqui.map((v) => (
+                      <TicketVisita key={v.id} visita={v} href={`/colecao/visita/${v.id}`} />
+                    ))}
+                  </div>
+                </section>
+              )}
 
               {jogos.length > 0 ? (
                 <section>
@@ -70,13 +84,13 @@ export default function DetalheEstadio() {
                     ))}
                   </div>
                 </section>
-              ) : (
+              ) : total === 0 ? (
                 <EstadoVazio
                   titulo="Você ainda não esteve aqui."
                   texto="Já foi a um jogo neste estádio? Registre e cole o sticker no seu álbum."
                   acao={{ rotulo: "Registrar presença aqui", href: `/presenca?estadio=${estadio.id}` }}
                 />
-              )}
+              ) : null}
             </main>
           </>
         );

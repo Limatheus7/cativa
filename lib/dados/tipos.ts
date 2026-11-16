@@ -63,6 +63,23 @@ export type Presenca = {
   resultado: Resultado;
 };
 
+/** O que a pessoa fez no estádio numa visita sem jogo. */
+export type MotivoDaVisita = "Tour" | "Museu" | "Show" | "Evento" | "Só passei lá";
+
+/** Visita ao estádio sem jogo (turismo): ganha ingresso e número próprios, mas não entra em jogos, V/E/D nem níveis. */
+export type Visita = {
+  id: string;
+  /** Mesma sequência das presenças: Nº 0007 pode ser uma visita. */
+  numero: number;
+  criadaEm: string;
+  /** AAAA-MM-DD */
+  data: string;
+  estadio: EstadioDaPresenca;
+  motivo?: MotivoDaVisita;
+  fotos: string[];
+  frase: string;
+};
+
 export type Perfil = {
   nome: string;
   usuario: string;
@@ -109,6 +126,8 @@ export type DadosDoTorcedor = {
   versao: 1;
   perfil: Perfil;
   presencas: Presenca[];
+  /** Visitas ao estádio sem jogo. */
+  visitas: Visita[];
   /** @usuario de quem o torcedor acompanha. */
   seguindo: string[];
   /** Presenças próprias compartilhadas no feed. */
@@ -122,4 +141,5 @@ export type DadosDoTorcedor = {
 
 export type ItemDoFeed =
   | { tipo: "presenca"; id: string; data: string; autor: string; presenca: Presenca; curtidasBase: number }
+  | { tipo: "visita"; id: string; data: string; autor: string; visita: Visita; curtidasBase: number }
   | { tipo: "conquista"; id: string; data: string; autor: string; conquistaId: string; curtidasBase: number };

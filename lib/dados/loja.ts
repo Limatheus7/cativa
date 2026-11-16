@@ -9,7 +9,7 @@ import { conquistaPorId, desbloqueadas, statusDasConquistas, type Conquista } fr
 import { chaveDoEstadio } from "./estadios";
 import { estatisticas, nivelAtual, ordenarPorData, type Nivel } from "./estatisticas";
 import { CURTIDAS_DEMONSTRACAO, TORCEDORES_DEMONSTRACAO } from "./mock/torcedores";
-import type { Comentario, DadosDoTorcedor, ItemDoFeed, Notificacao, Perfil, Presenca } from "./tipos";
+import type { Comentario, DadosDoTorcedor, ItemDoFeed, Notificacao, Perfil, Presenca, Visita } from "./tipos";
 
 export type StatusLoja = "carregando" | "pronto" | "erro";
 type Retrato = { status: StatusLoja; dados: DadosDoTorcedor; erro?: string };
@@ -21,6 +21,7 @@ function vazio(): DadosDoTorcedor {
     versao: 1,
     perfil: { nome: "", usuario: "" },
     presencas: [],
+    visitas: [],
     seguindo: [],
     publicadas: [],
     curtidas: [],
@@ -137,16 +138,16 @@ export class SemEspacoError extends Error {}
  */
 export function registrarPresenca(entrada: EntradaPresenca, publicar: boolean) {
   const d = retrato.dados;
-  const antes = estatisticas(d.presencas);
-  const chavesAntes = new Set(d.presencas.map((p) => chaveDoEstadio(p.estadio)));
+  const antes = estatisticas(d.presencas, new Date(), d.visitas);
+  const chavesAntes = new Set([...d.presencas, ...d.visitas].map((p) => chaveDoEstadio(p.estadio)));
   const presenca: Presenca = {
     ...entrada,
     id: novoId(),
-    numero: d.presencas.reduce((m, p) => Math.max(m, p.numero), 0) + 1,
+    numero: proximoNumero(d),
     criadaEm: new Date().toISOString(),
   };
   const presencas = [...d.presencas, presenca];
-  const depois = estatisticas(presencas);
+  const depois = estatisticas(presencas, new Date(), d.visitas);
 
   const jaTinha = new Set(desbloqueadas(antes));
   const conquistas = desbloqueadas(depois)
@@ -180,6 +181,39 @@ export function registrarPresenca(entrada: EntradaPresenca, publicar: boolean) {
     throw new SemEspacoError("Sem espaço no aparelho para guardar essa presença.");
   }
   return { presenca, novidades: { conquistas, nivel, estadioNovo } satisfies Novidades };
+}
+
+/** Presenças e visitas dividem a mesma sequência de números. */
+function proximoNumero(d: DadosDoTorcedor) {
+  return Math.max(0, ...d.presencas.map((p) => p.numero), ...d.visitas.map((v) => v.numero)) + 1;
+}
+
+export type EntradaVisita = Omit<Visita, "id" | "numero" | "criadaEm">;
+
+/** Registra uma visita sem jogo. Vale como estádio novo no álbum, mas não conta jogos nem resultados. */
+export function registrarVisita(entrada: EntradaVisita, publicar: boolean) {
+  const d = retrato.dados;
+  const estadioNovo = ![...d.presencas, ...d.visitas].some((x) => chaveDoEstadio(x.estadio) === chaveDoEstadio(entrada.estadio));
+  const visita: Visita = { ...entrada, id: novoId(), numero: proximoNumero(d), criadaEm: new Date().toISOString() };
+  const avisos: Notificacao[] =
+    estadioNovo && d.config.notificacoes.conquistas
+      ? [{ id: novoId(), tipo: "estadio", titulo: "Sticker novo na coleção", texto: `${visita.estadio.nome} entrou para o seu álbum.`, href: "/colecao?aba=estadios", criadaEm: visita.criadaEm, lida: false }]
+      : [];
+  try {
+    gravar({
+      ...d,
+      visitas: [...d.visitas, visita],
+      publicadas: publicar ? [...d.publicadas, visita.id] : d.publicadas,
+      notificacoes: [...avisos, ...d.notificacoes],
+    });
+  } catch {
+    throw new SemEspacoError("Sem espaço no aparelho para guardar essa visita.");
+  }
+  return { visita, estadioNovo };
+}
+
+export function removerVisita(id: string) {
+  mudar((d) => ({ ...d, visitas: d.visitas.filter((v) => v.id !== id), publicadas: d.publicadas.filter((x) => x !== id) }));
 }
 
 export function publicarPresenca(id: string) {
@@ -277,17 +311,21 @@ export function montarFeed(d: DadosDoTorcedor): ItemDoFeed[] {
   d.presencas
     .filter((p) => d.config.perfilPublico && d.publicadas.includes(p.id))
     .forEach((p) => itens.push({ tipo: "presenca", id: p.id, data: p.partida.data, autor: EU, presenca: p, curtidasBase: 0 }));
+  d.visitas
+    .filter((v) => d.config.perfilPublico && d.publicadas.includes(v.id))
+    .forEach((v) => itens.push({ tipo: "visita", id: v.id, data: v.data, autor: EU, visita: v, curtidasBase: 0 }));
   return itens.sort((a, b) => b.data.localeCompare(a.data) || (a.tipo === "conquista" ? 1 : -1));
 }
 
 // ---------------------------------------------------------------- Leituras prontas
 
 export function resumoDoTorcedor(d: DadosDoTorcedor) {
-  const est = estatisticas(d.presencas);
+  const est = estatisticas(d.presencas, new Date(), d.visitas);
   return {
     est,
     conquistas: statusDasConquistas(est),
     recentes: ordenarPorData(d.presencas),
+    visitas: d.visitas,
     naoLidas: d.notificacoes.filter((n) => !n.lida).length,
   };
 }
