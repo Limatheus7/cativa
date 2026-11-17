@@ -28,13 +28,15 @@ export async function suavizar(src: string, largura: number, altura: number): Pr
   cp.imageSmoothingQuality = "high";
   cp.drawImage(img, sx, sy, sw, sh, 0, 0, pequeno.width, pequeno.height);
 
+  // A saída fica na METADE do tamanho pedido: a foto já é desfocada e o navegador amplia sem
+  // perda visível. Imagens grandes em base64 não são desenhadas pelo WebKit (iPhone) na captura.
   const grande = document.createElement("canvas");
-  grande.width = largura;
-  grande.height = altura;
+  grande.width = Math.round(largura / 2);
+  grande.height = Math.round(altura / 2);
   const cg = grande.getContext("2d")!;
   cg.imageSmoothingQuality = "high";
-  cg.drawImage(pequeno, 0, 0, largura, altura);
-  return grande.toDataURL("image/jpeg", 0.9);
+  cg.drawImage(pequeno, 0, 0, grande.width, grande.height);
+  return grande.toDataURL("image/jpeg", 0.8);
 }
 
 /** Foto em preto e branco com contraste, pixel a pixel (sem `filter` de CSS nem `ctx.filter`). */

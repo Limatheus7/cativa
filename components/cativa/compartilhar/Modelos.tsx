@@ -318,7 +318,7 @@ function ModeloPlacarLed({ presenca: p, opcoes }: ModeloProps) {
 
 // ---------------------------------------------------------------- Jornal do dia seguinte
 
-function ModeloJornal({ presenca: p, opcoes, fotoCinza }: ModeloProps) {
+function ModeloJornal({ presenca: p, opcoes, fotoCinza, filtrosCss }: ModeloProps) {
   const { casa, fora, golsCasa, golsFora } = ladoCasa(p);
   const mostrar = (opcoes ?? OPCOES_PADRAO).setor;
   const manchete = p.frase
@@ -343,7 +343,7 @@ function ModeloJornal({ presenca: p, opcoes, fotoCinza }: ModeloProps) {
       <p className={m.jornalDeck}>
         {casa.nome} {golsCasa} × {golsFora} {fora.nome}, pelo {p.partida.competicao}, no {p.estadio.nome}. E você estava lá{lugar ? `, em ${lugar}` : ""}.
       </p>
-      {p.fotos[0] && <img className={m.jornalFoto} data-foto={0} src={fotoCinza ?? p.fotos[0]} alt="" />}
+      {p.fotos[0] && <img className={m.jornalFoto} data-foto={0} src={fotoCinza ?? p.fotos[0]} alt="" style={filtrosCss ? { filter: "grayscale(1) contrast(1.15)" } : undefined} />}
       <p className={m.jornalCorpo}>
         Em {formatarData(p.partida.data)}, o {p.estadio.nome}, em {p.estadio.cidade}, recebeu {casa.nome} e {fora.nome} pelo {p.partida.competicao}. O placar final foi {golsCasa} a {golsFora}.
         {p.frase ? ` Entre as lembranças do dia, uma frase ficou: “${p.frase}”.` : ""}

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { gerarPng } from "./gerar";
+import { ehWebKit, gerarPng } from "./gerar";
 import { emCinza, suavizar } from "./suavizar";
 import { elementoDoModelo } from "./Modelos";
 import { OPCOES_PADRAO, TAMANHO, idDe, type DadosCompartilhar, type Formato } from "./tipos";
@@ -26,6 +26,8 @@ function chave(d: DadosCompartilhar, modelo: string, escala: number) {
  */
 export async function preparar(d: DadosCompartilhar, modelo: string): Promise<DadosCompartilhar> {
   if (d.tipo !== "jogo" || !d.presenca.fotos[0]) return d;
+  // WebKit: filtros do CSS sobre a foto original (as imagens geradas em canvas não são desenhadas).
+  if ((modelo === "canhoto" || modelo === "jornal") && ehWebKit()) return { ...d, filtrosCss: true };
   try {
     if (modelo === "canhoto") return { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380) };
     if (modelo === "jornal") return { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720) };

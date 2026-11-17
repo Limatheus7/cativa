@@ -85,7 +85,7 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
   const caixa = useRef<HTMLDivElement>(null);
   const miolo = useRef<HTMLDivElement>(null);
   const [tam, setTam] = useState({ w: 0, h: 0 });
-  const [extras, setExtras] = useState<{ src?: string; fundoSuave?: string; fotoCinza?: string }>({});
+  const [extras, setExtras] = useState<{ src?: string; fundoSuave?: string; fotoCinza?: string; filtrosCss?: boolean }>({});
   const { w: mw, h: mh } = TAMANHO[formato];
   const primeira = dados.tipo === "jogo" ? dados.presenca.fotos[0] : undefined;
 
@@ -103,7 +103,7 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
   useEffect(() => {
     let vivo = true;
     preparar(dados, modeloId).then((p) => {
-      if (vivo && p.tipo === "jogo") setExtras({ src: primeira, fundoSuave: p.fundoSuave, fotoCinza: p.fotoCinza });
+      if (vivo && p.tipo === "jogo") setExtras({ src: primeira, fundoSuave: p.fundoSuave, fotoCinza: p.fotoCinza, filtrosCss: p.filtrosCss });
     });
     return () => {
       vivo = false;
@@ -112,7 +112,7 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
   }, [modeloId, primeira]);
 
   const exibir: DadosCompartilhar = useMemo(
-    () => (dados.tipo === "jogo" && extras.src === primeira ? { ...dados, fundoSuave: extras.fundoSuave, fotoCinza: extras.fotoCinza } : dados),
+    () => (dados.tipo === "jogo" && extras.src === primeira ? { ...dados, fundoSuave: extras.fundoSuave, fotoCinza: extras.fotoCinza, filtrosCss: extras.filtrosCss } : dados),
     [dados, extras, primeira],
   );
 

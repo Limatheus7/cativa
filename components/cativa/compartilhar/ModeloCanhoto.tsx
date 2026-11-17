@@ -16,7 +16,7 @@ const ONDA = (() => {
  * "Canhoto sobre a foto" (story 1080 × 1920). Medidas da prancha, sem reinterpretar:
  * foto sangrada com blur, placar em 760, serrilha em 1340 e papel de 1378 até o rodapé.
  */
-export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave }: ModeloProps) {
+export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave, filtrosCss }: ModeloProps) {
   const mostrar = (opcoes ?? OPCOES_PADRAO).setor;
   const setor = p.lugar?.setor?.trim() || "";
   const emCasa = p.partida.mando !== "fora";
@@ -37,7 +37,7 @@ export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave }: Model
 
   return (
     <div className={c.raiz} style={{ width: 1080, height: 1920 }}>
-      {principal && <img className={c.foto} data-foto={0} src={fundoSuave ?? principal} alt="" />}
+      {principal && <img className={c.foto} data-foto={0} src={fundoSuave ?? principal} alt="" style={filtrosCss ? { filter: "blur(3px) saturate(1.1)" } : undefined} />}
       <div className={c.veu} />
       <img className={c.logo} src="/marca/logotipo-cativa-papel.svg" alt="Cativa" />
 

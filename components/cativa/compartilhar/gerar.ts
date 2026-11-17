@@ -23,7 +23,7 @@ async function prontas(el: HTMLElement) {
  * iPhone (qualquer navegador) e Safari usam WebKit, que não desenha as imagens incorporadas
  * na primeira captura: o PNG sai sem as fotos. A solução usual é capturar antes, para aquecer.
  */
-function ehWebKit() {
+export function ehWebKit() {
   const ua = navigator.userAgent;
   const ios = /iP(hone|ad|od)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
   const safari = /safari/i.test(ua) && !/chrome|chromium|crios|fxios|android/i.test(ua);
@@ -44,12 +44,12 @@ export function gerarPng(elemento: React.ReactElement, formato: Formato, escala 
       await prontas(palco);
       const alvo = palco.firstElementChild as HTMLElement;
       const opcoes = { width: w, height: h, cacheBust: true };
-      if (ehWebKit()) {
-        // Duas capturas pequenas e descartadas: depois delas o WebKit já carregou as fotos.
-        for (let i = 0; i < 2; i++) {
-          await toBlob(alvo, { ...opcoes, pixelRatio: 0.1 }).catch(() => null);
-          await quadro();
-        }
+      // Capturas pequenas e descartadas antes da definitiva: a primeira captura pode sair sem as
+      // imagens incorporadas (sempre no WebKit, e em celulares mais lentos). Depois delas, as fotos
+      // já estão carregadas. No WebKit são duas.
+      for (let i = 0; i < (ehWebKit() ? 2 : 1); i++) {
+        await toBlob(alvo, { ...opcoes, pixelRatio: 0.1 }).catch(() => null);
+        await quadro();
       }
       const blob = await toBlob(alvo, { ...opcoes, pixelRatio: escala });
       if (!blob) throw new Error("sem imagem");

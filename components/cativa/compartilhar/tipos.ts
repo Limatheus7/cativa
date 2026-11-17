@@ -54,6 +54,9 @@ export type DadosJogo = {
   opcoes?: Opcoes;
   /** Foto de fundo do Canhoto já recortada e suavizada (preenchido ao gerar a imagem). */
   fundoSuave?: string;
+  /** O WebKit (iPhone/Safari) não desenha na captura as imagens que gero em canvas: nele o desfoque do
+   *  Canhoto e o preto e branco do Jornal usam o filtro do CSS sobre a foto original. */
+  filtrosCss?: boolean;
   /** Foto do Jornal já em preto e branco (preenchido ao gerar a imagem). */
   fotoCinza?: string;
 };
