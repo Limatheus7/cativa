@@ -132,6 +132,58 @@ export type Novidades = {
 
 export class SemEspacoError extends Error {}
 
+// ---------------------------------------------------------------- Espaço no aparelho
+
+/** Lado maior e qualidade JPEG de cada nível de compactação das fotos. */
+const NIVEIS_DE_FOTO = [
+  { lado: 720, qualidade: 0.62 },
+  { lado: 540, qualidade: 0.55 },
+  { lado: 400, qualidade: 0.5 },
+] as const;
+
+/** Reduz uma foto (data URL) para o nível pedido (1 a 3). Mantém a original se não der para abrir. */
+async function reencodarFoto(src: string, nivel: 1 | 2 | 3): Promise<string> {
+  if (!src.startsWith("data:image/")) return src;
+  const { lado, qualidade } = NIVEIS_DE_FOTO[nivel - 1];
+  try {
+    const img = new Image();
+    img.src = src;
+    await img.decode();
+    const escala = Math.min(1, lado / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement("canvas");
+    c.width = Math.max(1, Math.round(img.naturalWidth * escala));
+    c.height = Math.max(1, Math.round(img.naturalHeight * escala));
+    c.getContext("2d")!.drawImage(img, 0, 0, c.width, c.height);
+    const novo = c.toDataURL("image/jpeg", qualidade);
+    c.width = 0;
+    c.height = 0;
+    return novo.length < src.length ? novo : src;
+  } catch {
+    return src;
+  }
+}
+
+/** Reduz uma lista de fotos (as da presença que está sendo registrada, por exemplo). */
+export function reencodarFotos(fotos: string[], nivel: 1 | 2 | 3) {
+  return Promise.all(fotos.map((f) => reencodarFoto(f, nivel)));
+}
+
+/**
+ * Libera espaço no aparelho reduzindo as fotos já guardadas (presenças e visitas). Nenhum registro
+ * é apagado: só ficam com menos resolução. Chamada quando o armazenamento enche.
+ */
+export async function compactarFotosGuardadas(nivel: 1 | 2 | 3) {
+  const d = retrato.dados;
+  const presencas = await Promise.all(d.presencas.map(async (p) => ({ ...p, fotos: await reencodarFotos(p.fotos, nivel) })));
+  const visitas = await Promise.all(d.visitas.map(async (v) => ({ ...v, fotos: await reencodarFotos(v.fotos, nivel) })));
+  try {
+    gravar({ ...retrato.dados, presencas, visitas });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 /**
  * Registra a presença e devolve o que ela destravou (conquistas, nível,
  * sticker de estádio), já gerando as notificações.

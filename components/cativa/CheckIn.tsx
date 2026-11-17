@@ -7,7 +7,7 @@ import { buscarEstadios, estadioDeCasa, estadioPorId } from "@/lib/dados/estadio
 import { NOME_RESULTADO, resultadoDoPlacar } from "@/lib/dados/estatisticas";
 import { formatarData, numeroPresenca } from "@/lib/dados/formato";
 import { reduzirFoto } from "@/lib/dados/imagens";
-import { publicarPresenca, registrarPresenca, registrarVisita, SemEspacoError, useLoja, type Novidades } from "@/lib/dados/loja";
+import { compactarFotosGuardadas, publicarPresenca, reencodarFotos, registrarPresenca, registrarVisita, SemEspacoError, useLoja, type Novidades } from "@/lib/dados/loja";
 import { TORCEDORES_DEMONSTRACAO } from "@/lib/dados/mock/torcedores";
 import type { DadosDoTorcedor, EstadioDaPresenca, IdentidadeDoTime, Mando, MotivoDaVisita, Presenca, Resultado, Visita } from "@/lib/dados/tipos";
 import { CLUBES, buscarClubes } from "@/lib/times";
@@ -192,6 +192,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
   const [frase, setFrase] = useState("");
   const [publicar, setPublicar] = useState(dados.config.perfilPublico);
   const [erro, setErro] = useState("");
+  const registrando = useRef(false);
   const [concluido, setConcluido] = useState<Concluido | null>(null);
   const [confirmandoSaida, setConfirmandoSaida] = useState(false);
 
@@ -288,32 +289,48 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
     : nome === "O estádio" ? !!estadio && dataOk
     : !lendoFotos;
 
-  function montar() {
+  function montar(fotosDaPresenca: string[] = fotos) {
     return {
       time: meuTime,
       partida: { data, competicao, fase: fase || undefined, mando, adversario: adversario!, golsTime: gols[0], golsAdversario: gols[1] },
       estadio: estadio!,
       lugar: lugar.setor || lugar.fila || lugar.cadeira ? lugar : undefined,
       companhia: [],
-      fotos,
+      fotos: fotosDaPresenca,
       frase: frase.trim(),
       resultado,
     };
   }
 
-  function confirmar() {
+  async function confirmar() {
+    if (registrando.current) return;
+    registrando.current = true;
     setErro("");
+    let fotosDoRegistro = fotos;
     try {
-      if (tipo === "visita") {
-        const r = registrarVisita({ data, estadio: estadio!, motivo: motivo ?? undefined, fotos, frase: frase.trim() }, publicar);
-        setConcluido({ tipo: "visita", ...r, publicada: publicar });
-      } else {
-        const r = registrarPresenca(montar(), publicar);
-        setConcluido({ tipo: "jogo", ...r, publicada: publicar });
+      // Se o aparelho estiver cheio, reduz as fotos (as guardadas e as desta presença) e tenta de novo.
+      for (let nivel = 0; nivel <= 3; nivel++) {
+        try {
+          if (tipo === "visita") {
+            const r = registrarVisita({ data, estadio: estadio!, motivo: motivo ?? undefined, fotos: fotosDoRegistro, frase: frase.trim() }, publicar);
+            setConcluido({ tipo: "visita", ...r, publicada: publicar });
+          } else {
+            const r = registrarPresenca(montar(fotosDoRegistro), publicar);
+            setConcluido({ tipo: "jogo", ...r, publicada: publicar });
+          }
+          vibrar(12);
+          return;
+        } catch (e) {
+          if (!(e instanceof SemEspacoError) || nivel === 3) throw e;
+          const proximo = (nivel + 1) as 1 | 2 | 3;
+          await compactarFotosGuardadas(proximo);
+          fotosDoRegistro = await reencodarFotos(fotosDoRegistro, proximo);
+        }
       }
-      vibrar(12);
     } catch (e) {
-      setErro(e instanceof SemEspacoError ? "Não coube no aparelho. Tire uma ou duas fotos e tente de novo." : "Não conseguimos registrar agora. Tente de novo.");
+      setErro(e instanceof SemEspacoError ? "Não coube no aparelho, mesmo reduzindo as fotos. Apague registros antigos de teste (Perfil, Configurações) e tente de novo." : "Não conseguimos registrar agora. Tente de novo.");
+    } finally {
+      registrando.current = false;
     }
   }
 
