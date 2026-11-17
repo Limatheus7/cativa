@@ -18,6 +18,9 @@ import { IconeCamera, IconeFechar } from "./Icones";
 import { usePresenca } from "./PresencaProvider";
 import { AdesivoEstadio, Ingresso, SeloConquista } from "./Registros";
 import TicketVisita from "./TicketVisita";
+import EscolhaModelo, { Miniatura } from "./compartilhar/EscolhaModelo";
+import { modelosDisponiveis } from "./compartilhar/Modelos";
+import type { DadosCompartilhar } from "./compartilhar/tipos";
 import p from "./Presenca.module.css";
 import { FASES, temMataMata } from "@/lib/dados/ingressos";
 
@@ -893,6 +896,7 @@ export default function CheckIn({ dados }: { dados: DadosDoTorcedor }) {
       {aberta && concluido && (
         <Celebracao
           concluido={concluido}
+          dados={dados}
           onFechar={() => {
             fechar();
             zerar();
@@ -918,28 +922,7 @@ function dataDoCarimbo(iso: string) {
   return `${d}·${m}·${a.slice(2)}`;
 }
 
-function Celebracao({ concluido, onFechar, onOutro, onPublicar }: { concluido: Concluido; onFechar: () => void; onOutro: () => void; onPublicar: () => void }) {
-  const visita = concluido.tipo === "visita";
-  const botoes = (href: string, publicada: boolean, rotuloOutro: string) => (
-    <div className={p.botoes}>
-      {publicada ? (
-        <Link href="/inicio" className={p.cta} onClick={onFechar}>
-          Ver na Torcida
-        </Link>
-      ) : (
-        <button type="button" className={p.cta} onClick={onPublicar}>
-          Compartilhar na Torcida
-        </button>
-      )}
-      <Link href={href} className={`${p.cta} ${p.vazado}`} onClick={onFechar}>
-        Ver na coleção
-      </Link>
-      <button type="button" className={p.textoBotao} onClick={onOutro}>
-        {rotuloOutro}
-      </button>
-    </div>
-  );
-
+function Celebracao({ concluido, dados, onFechar, onOutro, onPublicar }: { concluido: Concluido; dados: DadosDoTorcedor; onFechar: () => void; onOutro: () => void; onPublicar: () => void }) {
   if (concluido.tipo === "visita") {
     const { visita: vis, estadioNovo, publicada } = concluido;
     const catalogo = estadioPorId(vis.estadio.id);
@@ -965,13 +948,12 @@ function Celebracao({ concluido, onFechar, onOutro, onPublicar }: { concluido: C
               )}
             </section>
           )}
-          {botoes(`/colecao/visita/${vis.id}`, publicada, "Registrar outro")}
+          <BlocoPoste registro={{ tipo: "visita", visita: vis }} dados={dados} publicada={publicada} onFechar={onFechar} onOutro={onOutro} onPublicar={onPublicar} />
         </div>
       </div>
     );
   }
 
-  void visita;
   const { presenca, novidades, publicada } = concluido;
   return (
     <div className={p.celebracao} role="dialog" aria-modal="true" aria-label="Presença registrada">
@@ -1010,8 +992,79 @@ function Celebracao({ concluido, onFechar, onOutro, onPublicar }: { concluido: C
             </div>
           </section>
         )}
-        {botoes(`/colecao/partida/${presenca.id}`, publicada, "Registrar outro jogo")}
+        <BlocoPoste registro={{ tipo: "jogo", presenca }} dados={dados} publicada={publicada} onFechar={onFechar} onOutro={onOutro} onPublicar={onPublicar} />
       </div>
     </div>
+  );
+}
+
+/** "Poste esse jogo": miniaturas dos modelos, Instagram como ação principal e as demais saídas. */
+function BlocoPoste({ registro, dados, publicada, onFechar, onOutro, onPublicar }: { registro: { tipo: "jogo"; presenca: Presenca } | { tipo: "visita"; visita: Visita }; dados: DadosDoTorcedor; publicada: boolean; onFechar: () => void; onOutro: () => void; onPublicar: () => void }) {
+  const [escolhendo, setEscolhendo] = useState<string | null | false>(false);
+  const dadosImg: DadosCompartilhar = useMemo(() => {
+    if (registro.tipo === "visita") {
+      const v = registro.visita;
+      const ids = new Set([...dados.presencas.map((x) => x.estadio.id ?? x.estadio.nome), ...dados.visitas.map((x) => x.estadio.id ?? x.estadio.nome)]);
+      return { tipo: "visita", visita: v, nEstadios: Math.max(1, ids.size) };
+    }
+    const presenca = registro.presenca;
+    const doEstadio = dados.presencas.filter((x) => x.estadio.nome === presenca.estadio.nome && x.numero <= presenca.numero);
+    const setor = presenca.lugar?.setor?.trim();
+    const nSetor = setor ? doEstadio.filter((x) => x.lugar?.setor?.trim() === setor).length : undefined;
+    return { tipo: "jogo", presenca, nEstadio: Math.max(1, doEstadio.length), nSetor };
+  }, [dados.presencas, dados.visitas, registro]);
+  const href = registro.tipo === "jogo" ? `/colecao/partida/${registro.presenca.id}` : `/colecao/visita/${registro.visita.id}`;
+  const modelos = modelosDisponiveis(dadosImg, "story");
+  const total = modelosDisponiveis(dadosImg, "story").length + modelosDisponiveis(dadosImg, "feed").length;
+  const poderPublicar = dados.config.perfilPublico || !publicada;
+
+  return (
+    <>
+      <section className={p.poste} aria-labelledby="poste-titulo">
+        <div className={p.posteTopo}>
+          <h3 id="poste-titulo">Poste esse jogo</h3>
+          <button type="button" className={p.link} onClick={() => setEscolhendo(null)}>
+            ver todos ({total})
+          </button>
+        </div>
+        <p className={p.suave}>Um modelo pronto para os Stories, com as suas fotos.</p>
+        <div className={p.posteFaixa}>
+          {modelos.map((m) => (
+            <Miniatura key={m.id} d={dadosImg} id={m.id} formato="story" largura={100} rotulo={m.nome} etiqueta={m.etiqueta} onClick={() => setEscolhendo(m.id)} />
+          ))}
+        </div>
+      </section>
+
+      <div className={p.botoes}>
+        <button type="button" className={`${p.cta} ${p.ctaInsta}`} onClick={() => setEscolhendo(modelos[0]?.id ?? null)}>
+          <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
+            <rect x="3" y="3" width="18" height="18" rx="5" />
+            <circle cx="12" cy="12" r="4.2" />
+            <circle cx="17.2" cy="6.8" r="0.8" fill="currentColor" stroke="none" />
+          </svg>{" "}
+          Compartilhar no Instagram
+        </button>
+        {poderPublicar &&
+          (publicada ? (
+            <Link href="/inicio" className={`${p.cta} ${p.vazado}`} onClick={onFechar}>
+              Ver na Torcida
+            </Link>
+          ) : (
+            <button type="button" className={`${p.cta} ${p.vazado}`} onClick={onPublicar}>
+              Compartilhar na Torcida
+            </button>
+          ))}
+        <div className={p.linksLado}>
+          <Link href={href} className={p.textoBotao} onClick={onFechar}>
+            Ver na coleção
+          </Link>
+          <button type="button" className={p.textoBotao} onClick={onOutro}>
+            {registro.tipo === "jogo" ? "Registrar outro jogo" : "Registrar outro"}
+          </button>
+        </div>
+      </div>
+
+      {escolhendo !== false && <EscolhaModelo dados={dadosImg} modeloInicial={escolhendo ?? undefined} onFechar={() => setEscolhendo(false)} />}
+    </>
   );
 }

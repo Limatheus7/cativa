@@ -1,0 +1,63 @@
+.tela {
+  position: fixed;
+  inset: 0;
+  z-index: 110;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  background: #0f2219;
+  color: #f4ebd9;
+  animation: entra 300ms cubic-bezier(0.2, 0.9, 0.25, 1);
+}
+@keyframes entra { from { transform: translateY(40px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+.topo {
+  display: grid;
+  grid-template-columns: 34px 1fr;
+  align-items: center;
+  gap: 4px 12px;
+  padding: 14px 18px 8px;
+}
+.topo h2 { margin: 0; font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-weight: 700; font-size: 22px; }
+.fechar { display: grid; place-items: center; width: 34px; height: 34px; border: 0; border-radius: 50%; background: rgba(244, 235, 217, 0.12); color: inherit; cursor: pointer; }
+.formato { grid-column: 1 / 3; display: grid; grid-template-columns: 1fr 1fr; margin-top: 8px; padding: 3px; border-radius: 999px; background: rgba(244, 235, 217, 0.1); }
+.formato button { padding: 8px; border: 0; border-radius: 999px; background: none; color: inherit; font: inherit; font-size: 13px; font-weight: 600; cursor: pointer; transition: background 200ms ease, color 200ms ease; }
+.formato button[aria-pressed="true"] { background: #e6c46b; color: #12301f; }
+
+.palco { flex: 1 1 0; min-height: 0; overflow: hidden; display: flex; align-items: center; justify-content: center; padding: 8px 18px; }
+.previa { height: 100%; width: auto; max-width: 100%; border-radius: 16px; overflow: hidden; box-shadow: 0 0 0 2px #e6c46b, 0 16px 40px rgba(0, 0, 0, 0.5); background: rgba(244, 235, 217, 0.06); }
+.previa img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+.nome { text-align: center; padding: 4px 18px 8px; }
+.nome strong { display: block; font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-size: 20px; }
+.nome span { font-size: 12.5px; opacity: 0.75; }
+
+.tira { display: flex; gap: 10px; padding: 6px 18px 10px; overflow-x: auto; scrollbar-width: none; }
+.tira::-webkit-scrollbar { display: none; }
+.mini { flex: none; display: flex; flex-direction: column; gap: 4px; padding: 0; border: 0; background: none; color: inherit; font: inherit; text-align: center; cursor: pointer; }
+.miniImg { position: relative; display: block; width: 100%; border-radius: 10px; overflow: hidden; background: rgba(244, 235, 217, 0.08); box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35); }
+.miniImg img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.miniAtiva .miniImg { box-shadow: 0 0 0 2px #e6c46b; }
+.mini small { font-size: 10px; line-height: 1.2; opacity: 0.85; }
+.etiqueta { position: absolute; top: 4px; left: 4px; padding: 1px 6px; border-radius: 3px; background: #e6c46b; color: #12301f; font-family: var(--font-jost), sans-serif; font-size: 8px; letter-spacing: 0.08em; text-transform: uppercase; }
+
+.esqueleto { display: block; width: 100%; height: 100%; min-height: 40px; background: linear-gradient(90deg, rgba(244, 235, 217, 0.05), rgba(244, 235, 217, 0.14), rgba(244, 235, 217, 0.05)); background-size: 200% 100%; animation: brilho 1.2s linear infinite; }
+@keyframes brilho { to { background-position: -200% 0; } }
+
+.erro { display: grid; place-content: center; gap: 10px; height: 100%; padding: 16px; text-align: center; font-size: 13px; }
+.erro p { margin: 0; }
+.erro button { padding: 8px 14px; border: 0; border-radius: 999px; background: #e6c46b; color: #12301f; font: inherit; font-weight: 700; cursor: pointer; }
+
+.rodape { display: flex; flex-direction: column; align-items: stretch; gap: 6px; padding: 10px 18px calc(14px + env(safe-area-inset-bottom)); }
+.aviso { margin: 0; text-align: center; font-size: 12.5px; color: #e6c46b; }
+.principal { padding: 15px; border: 0; border-radius: 12px; background: #e6c46b; color: #12301f; font: inherit; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform 100ms ease, opacity 200ms ease; }
+.principal:active:not(:disabled) { transform: scale(0.98); }
+.principal:disabled { opacity: 0.4; cursor: default; }
+.link { padding: 10px; border: 0; background: none; color: inherit; font: inherit; font-size: 14px; cursor: pointer; opacity: 0.85; }
+
+@media (prefers-reduced-motion: reduce) {
+  .tela { animation: none; }
+  .esqueleto { animation: none; }
+}

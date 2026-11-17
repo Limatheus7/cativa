@@ -829,3 +829,32 @@
 .ingressoTopo {
   margin-bottom: 6px;
 }
+
+/* ---------------------------------------------------------------- Poste esse jogo */
+
+.poste {
+  width: 100%;
+  margin-top: 8px;
+  text-align: left;
+  animation: surgeCima 500ms ease both;
+  animation-delay: 1200ms;
+}
+.posteTopo { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.posteTopo h3 { margin: 0; font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-weight: 700; font-size: 20px; color: var(--titulo); }
+.posteTopo .link { color: var(--acento); font-size: 12.5px; }
+.posteFaixa { display: flex; gap: 10px; margin: 10px -20px 0; padding: 2px 20px 8px; overflow-x: auto; scrollbar-width: none; }
+.posteFaixa::-webkit-scrollbar { display: none; }
+.posteFaixa small { color: var(--texto); font-size: 11px; font-weight: 600; }
+.ctaInsta { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 52px; }
+.ctaInsta svg { color: #e6c46b; }
+:global(:root[data-tema="escuro"]) .ctaInsta svg { color: #12301f; }
+.botoes .textoBotao { display: block; }
+
+@media (prefers-reduced-motion: reduce) {
+  .poste { animation: surge 150ms ease both; animation-delay: 0ms; }
+}
+
+/* "Ver na coleção" e "Registrar outro" lado a lado */
+.linksLado { display: flex; align-items: center; justify-content: center; gap: 22px; margin-top: 2px; }
+.linksLado .textoBotao { padding: 8px 4px; font-size: 14px; }
+.linksLado .textoBotao:first-child { font-weight: 600; color: var(--titulo); opacity: 1; }

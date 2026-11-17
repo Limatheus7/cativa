@@ -1,0 +1,181 @@
+/* Canhoto sobre a foto · 1080 × 1920. Medidas da prancha (medidas-canhoto.png). */
+
+.raiz {
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  background: #0c0f14;
+  color: #fbf5e8;
+  font-family: var(--font-dm-sans), sans-serif;
+  line-height: normal;
+  letter-spacing: normal;
+}
+
+/* O -20 esconde a borda que o blur deixa. */
+.foto {
+  position: absolute;
+  top: -20px;
+  left: -20px;
+  width: 1120px;
+  height: 1380px;
+  max-width: none;
+  object-fit: cover;
+  display: block;
+}
+
+.veu {
+  position: absolute;
+  inset: 0 0 560px 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0.55) 100%);
+}
+
+.logo {
+  position: absolute;
+  left: 80px;
+  top: 96px;
+  height: 60px;
+  width: auto;
+  display: block;
+}
+
+.placar {
+  position: absolute;
+  left: 80px;
+  right: 80px;
+  top: 760px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  color: #fbf5e8;
+}
+
+.competicao {
+  font-family: var(--font-jost), sans-serif;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: #e6c46b;
+  white-space: nowrap;
+}
+
+.linhaPlacar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 36px;
+  margin-top: 20px;
+}
+
+.escudo {
+  display: flex;
+  width: 120px;
+  height: 120px;
+  align-items: center;
+  justify-content: center;
+}
+
+.gols {
+  color: var(--cor-placar, #fbf5e8);
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 250px;
+  line-height: 1;
+}
+
+.vezes {
+  font-family: var(--font-dm-sans), sans-serif;
+  font-weight: 500;
+  font-size: 50px;
+  color: #e6c46b;
+}
+
+.serrilha {
+  position: absolute;
+  left: 0;
+  top: 1340px;
+  display: block;
+}
+
+.papel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 1378px;
+  bottom: 0;
+  box-sizing: border-box;
+  padding: 50px 80px;
+  background: #f4ebd9;
+  color: #1f4d3a;
+}
+
+.linhaNumero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  min-height: 190px;
+}
+
+.rotulo {
+  display: block;
+  font-family: var(--font-jost), sans-serif;
+  font-weight: 600;
+  font-size: 22px;
+  letter-spacing: 0.22em;
+  color: #a9791a;
+}
+
+.numero {
+  font-family: var(--font-fraunces), Georgia, serif;
+  font-style: italic;
+  font-weight: 700;
+  font-size: 88px;
+  line-height: 1.05;
+  color: #1f4d3a;
+}
+
+.miniaturas {
+  display: flex;
+  gap: 16px;
+  margin-left: auto;
+}
+.miniaturas img {
+  width: 150px;
+  height: 190px;
+  border-radius: 16px;
+  object-fit: cover;
+  display: block;
+}
+
+.dados {
+  display: grid;
+  grid-template-columns: 1.1fr 1fr 1fr;
+  gap: 20px;
+  align-items: start;
+  margin-top: 40px;
+  padding-top: 28px;
+  border-top: 2px dashed #cdbfa6;
+}
+.dadosDois {
+  grid-template-columns: 1fr 1fr;
+}
+
+.dados .rotulo {
+  font-size: 20px;
+}
+
+.valor {
+  margin-top: 6px;
+  font-family: var(--font-dm-sans), sans-serif;
+  font-weight: 500;
+  font-size: 32px;
+  color: #1f4d3a;
+}
+
+.logoVerde {
+  justify-self: end;
+  height: 40px;
+  width: auto;
+  display: block;
+}
