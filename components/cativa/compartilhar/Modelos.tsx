@@ -13,7 +13,8 @@ import ModeloCanhoto from "./ModeloCanhoto";
 import ModeloLivre from "./ModeloLivre";
 import m1 from "./Modelos.module.css";
 import m2 from "./ModelosExtra.module.css";
-import { OPCOES_PADRAO, TAMANHO, assinaturaDe, type DadosCompartilhar, type DadosJogo, type InfoModelo, type ModeloProps, type ModeloVisitaProps } from "./tipos";
+import { corDeFundo } from "./ModeloLivre";
+import { ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, assinaturaDe, type DadosCompartilhar, type DadosJogo, type InfoModelo, type ModeloProps, type ModeloVisitaProps } from "./tipos";
 
 const m = { ...m1, ...m2 };
 
@@ -151,7 +152,7 @@ function ModeloRoseta({ presenca: p, opcoes }: ModeloProps) {
         </p>
       </div>
       <Fotos fotos={p.fotos} className={m.rosetaFotos} />
-      <div className={m.rodapeAssinatura} data-edit="assinatura">{assinaturaDe(opcoes)}</div>
+      <div className={m.rodapeAssinatura}>{assinaturaDe(opcoes)}</div>
     </div>
   );
 }
@@ -182,7 +183,7 @@ function ModeloPolaroides({ presenca: p, formato, opcoes }: ModeloProps) {
         <Ingresso presenca={p} />
       </div>
       {p.frase && <p className={m.fraseGrande}>“{p.frase}”</p>}
-      <div className={m.rodapeVerde} data-edit="assinatura">ESSE JOGO SÓ ACONTECEU UMA VEZ{assinatura ? ` · ${assinatura.toUpperCase()}` : ""}</div>
+      <div className={m.rodapeVerde}>ESSE JOGO SÓ ACONTECEU UMA VEZ{assinatura ? ` · ${assinatura.toUpperCase()}` : ""}</div>
     </div>
   );
 }
@@ -268,7 +269,7 @@ function ModeloAlbum({ presenca: p, opcoes }: ModeloProps) {
           <strong>{mostrar ? `Nº ${p.numero}` : p.estadio.uf}</strong>
           <small>{dataCarimbo(p.partida.data)}</small>
         </div>
-        <div className={m.rodapeVerde} data-edit="assinatura">CADA JOGO É ÚNICO{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
+        <div className={m.rodapeVerde}>CADA JOGO É ÚNICO{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
       </div>
     </div>
   );
@@ -445,7 +446,7 @@ function ModeloMapa({ presenca: p, opcoes }: ModeloProps) {
         </span>
       </div>
       <Fotos fotos={p.fotos.slice(0, 3)} className={m.mapaFotos} />
-      <div className={m.rodapeAssinatura} data-edit="assinatura">NENHUM OUTRO LUGAR VIU ESSE JOGO ASSIM{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
+      <div className={m.rodapeAssinatura}>NENHUM OUTRO LUGAR VIU ESSE JOGO ASSIM{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
     </div>
   );
 }
@@ -764,6 +765,20 @@ export function modelosDisponiveis(d: DadosCompartilhar, formato: "story" | "fee
 /** Modelos que já têm a assinatura no próprio rodapé; nos demais ela entra como uma etiqueta embaixo. */
 const ASSINATURA_PROPRIA = new Set(["roseta", "polaroides", "album", "mapa", "feed-ingresso"]);
 
+/** Cor do texto da assinatura: "escuro" quando o fundo daquela arte é claro. */
+function tomDaAssinatura(id: string, d: DadosCompartilhar): "claro" | "escuro" {
+  if (["canhoto", "jornal", "visita", "feed-visita"].includes(id)) return "escuro";
+  if (d.tipo !== "jogo") return "claro";
+  const cor = d.presenca.time.corPrincipal;
+  if (id === "livre" || id === "feed-livre") {
+    const estilo = { ...ESTILO_PADRAO, ...(d.opcoes?.estilo ?? {}) };
+    return luz(corDeFundo(estilo, cor)) > 0.55 && estilo.listras !== "faixas" ? "escuro" : "claro";
+  }
+  if (id === "postal") return luz(escurecer(cor, luz(cor) > 0.5 ? 0.45 : 0.1)) > 0.55 ? "escuro" : "claro";
+  if (id === "fotocabine") return luz(escurecer(cor, luz(cor) > 0.6 ? 0.5 : 0.18)) > 0.55 ? "escuro" : "claro";
+  return "claro";
+}
+
 export function elementoDoModelo(id: string, d: DadosCompartilhar) {
   const info = MODELOS.find((x) => x.id === id)!;
   const a = aplicarOpcoes(d);
@@ -771,10 +786,16 @@ export function elementoDoModelo(id: string, d: DadosCompartilhar) {
   const o = d.opcoes ?? OPCOES_PADRAO;
   const assinatura = assinaturaDe(d.opcoes);
   const estilo = { position: "relative", width: w, height: h, ...(o.corPlacar ? { ["--cor-placar" as string]: o.corPlacar } : {}) } as React.CSSProperties;
+  // Enquadre de cada foto: o CSS usa estas variáveis no object-position de data-foto="0..3".
+  (d.enquadres ?? []).slice(0, 4).forEach((q, i) => {
+    (estilo as Record<string, string>)[`--foto-${i}-pos`] = `${q.x}% ${q.y}%`;
+  });
   return (
-    <div style={estilo}>
+    <div className={m.quadro} style={estilo}>
       {info.render(a, info.formato)}
-      {assinatura && !ASSINATURA_PROPRIA.has(id) && <div className={m.marcaTag} data-edit="assinatura">{assinatura}</div>}
+      {assinatura && !ASSINATURA_PROPRIA.has(id) && (
+        <div className={`${m.marcaTag} ${tomDaAssinatura(id, d) === "escuro" ? m.marcaTagEscura : ""}`}>{assinatura}</div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 /* Modelos adicionais (escala 1080). Mesclado com Modelos.module.css em Modelos.tsx. */
 
-.marcaTag { position: absolute; left: 50%; bottom: 16px; transform: translateX(-50%); padding: 8px 22px; border-radius: 999px; background: rgba(10, 18, 14, 0.55); font-family: var(--font-jost), sans-serif; font-weight: 600; font-size: 24px; letter-spacing: 0.16em; color: #f4ebd9; white-space: nowrap; }
+.marcaTag { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font-family: var(--font-jost), sans-serif; font-weight: 500; font-size: 28px; letter-spacing: 0.08em; color: #f4ebd9; opacity: 0.9; text-shadow: 0 1px 8px rgba(0, 0, 0, 0.35); pointer-events: none; }
+.marcaTagEscura { color: #12301f; opacity: 0.7; text-shadow: none; }
 
 /* ---- Retrospectiva azul */
 .retroAzul { background: radial-gradient(circle at 20% 15%, #1b56c2 0%, #0f3d91 60%); }
@@ -110,3 +111,9 @@
 .visitaSelo strong { font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-size: 110px; line-height: 1; color: #e6c46b; }
 .visitaSelo span { font-size: 24px; }
 .visitaFrase { position: relative; margin: 30px 0 0; text-align: center; font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-weight: 700; font-size: 54px; }
+
+/* Enquadre das fotos: a posição escolhida em "Editar imagem" (object-position por foto) */
+.quadro img[data-foto="0"], .quadro [data-foto="0"] img { object-position: var(--foto-0-pos, 50% 50%); }
+.quadro img[data-foto="1"], .quadro [data-foto="1"] img { object-position: var(--foto-1-pos, 50% 50%); }
+.quadro img[data-foto="2"], .quadro [data-foto="2"] img { object-position: var(--foto-2-pos, 50% 50%); }
+.quadro img[data-foto="3"], .quadro [data-foto="3"] img { object-position: var(--foto-3-pos, 50% 50%); }

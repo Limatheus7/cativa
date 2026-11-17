@@ -17,7 +17,7 @@ function chave(d: DadosCompartilhar, modelo: string, escala: number) {
   const base = d.tipo === "jogo"
     ? `${resumoFotos(d.presenca.fotos)}|${d.presenca.frase}|${d.presenca.partida.golsTime}-${d.presenca.partida.golsAdversario}|${d.presenca.lugar?.setor ?? ""}|${d.nEstadio}`
     : `${resumoFotos(d.visita.fotos)}|${d.visita.frase}|${d.nEstadios}`;
-  return `${idDe(d)}|${modelo}|${escala}|${JSON.stringify(o)}|${base}`;
+  return `${idDe(d)}|${modelo}|${escala}|${JSON.stringify(o)}|${JSON.stringify(d.enquadres ?? [])}|${base}`;
 }
 
 /**
@@ -30,8 +30,8 @@ export async function preparar(d: DadosCompartilhar, modelo: string): Promise<Da
   // confiável. O Canhoto e o Jornal usam a foto original, sem desfoque nem preto e branco.
   if ((modelo === "canhoto" || modelo === "jornal") && ehWebKit()) return d;
   try {
-    if (modelo === "canhoto") return { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380) };
-    if (modelo === "jornal") return { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720) };
+    if (modelo === "canhoto") return { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380, d.enquadres?.[0]) };
+    if (modelo === "jornal") return { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720, d.enquadres?.[0]) };
   } catch {
     // sem o tratamento, o modelo usa a foto original
   }

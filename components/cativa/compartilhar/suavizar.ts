@@ -6,7 +6,7 @@
  * `ctx.filter` (o Safari não tem): reduz a foto e amplia com suavização, o que dá um
  * desfoque leve parecido com blur(3px) em qualquer navegador.
  */
-export async function suavizar(src: string, largura: number, altura: number): Promise<string> {
+export async function suavizar(src: string, largura: number, altura: number, foco: { x: number; y: number } = { x: 50, y: 50 }): Promise<string> {
   const img = new Image();
   img.src = src;
   await img.decode();
@@ -17,8 +17,8 @@ export async function suavizar(src: string, largura: number, altura: number): Pr
   let sh = img.naturalHeight;
   if (sw / sh > proporcao) sw = sh * proporcao;
   else sh = sw / proporcao;
-  const sx = (img.naturalWidth - sw) / 2;
-  const sy = (img.naturalHeight - sh) / 2;
+  const sx = ((img.naturalWidth - sw) * foco.x) / 100;
+  const sy = ((img.naturalHeight - sh) * foco.y) / 100;
 
   // Passa por um tamanho menor (1/4) e volta: é isso que suaviza.
   const pequeno = document.createElement("canvas");
@@ -40,7 +40,7 @@ export async function suavizar(src: string, largura: number, altura: number): Pr
 }
 
 /** Foto em preto e branco com contraste, pixel a pixel (sem `filter` de CSS nem `ctx.filter`). */
-export async function emCinza(src: string, largura: number, altura: number): Promise<string> {
+export async function emCinza(src: string, largura: number, altura: number, foco: { x: number; y: number } = { x: 50, y: 50 }): Promise<string> {
   const img = new Image();
   img.src = src;
   await img.decode();
@@ -54,7 +54,7 @@ export async function emCinza(src: string, largura: number, altura: number): Pro
   canvas.height = altura;
   const ctx = canvas.getContext("2d")!;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, (img.naturalWidth - sw) / 2, (img.naturalHeight - sh) / 2, sw, sh, 0, 0, largura, altura);
+  ctx.drawImage(img, ((img.naturalWidth - sw) * foco.x) / 100, ((img.naturalHeight - sh) * foco.y) / 100, sw, sh, 0, 0, largura, altura);
   const dados = ctx.getImageData(0, 0, largura, altura);
   const px = dados.data;
   for (let i = 0; i < px.length; i += 4) {

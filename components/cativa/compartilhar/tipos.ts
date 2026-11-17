@@ -17,36 +17,41 @@ export type Estilo = {
 
 export const ESTILO_PADRAO: Estilo = { fundo: "time", listras: "verticais", forma: "arredondada" };
 
+/** Em que ponto a foto é enquadrada (como o object-position do CSS): 0 a 100, 50 = centro. */
+export type Enquadre = { x: number; y: number };
+export const ENQUADRE_CENTRO: Enquadre = { x: 50, y: 50 };
+
 /** Escolhas da tela "Seu story". */
 export type Opcoes = {
   /** Usar as fotos do jogo. */
   fotos: boolean;
   /** Mostrar o setor (e fila e cadeira) e o número da presença nos textos. */
   setor: boolean;
-  /** Mostrar a assinatura na imagem. */
-  marca: boolean;
-  /** Texto da assinatura. Por enquanto "cativa.app" (ainda não há Instagram). */
-  assinatura: string;
   /** Cor do placar ("" = a padrão do modelo). */
   corPlacar: string;
   /** Só vale para o modelo "Seu estilo". */
   estilo: Estilo;
 };
 
-export const ASSINATURA_PADRAO = "cativa.app";
+/**
+ * Assinatura que vai em TODAS as artes (fixa, sem opção de desligar): o perfil do Instagram.
+ * Para trocar, é só mudar este texto.
+ */
+export const ASSINATURA = "@cativapp";
 
-export const OPCOES_PADRAO: Opcoes = { fotos: true, setor: true, marca: true, assinatura: ASSINATURA_PADRAO, corPlacar: "", estilo: ESTILO_PADRAO };
+export const OPCOES_PADRAO: Opcoes = { fotos: true, setor: true, corPlacar: "", estilo: ESTILO_PADRAO };
 
-/** Texto da assinatura a desenhar, ou "" quando está desligada. */
-export function assinaturaDe(o?: Opcoes) {
-  const op = o ?? OPCOES_PADRAO;
-  return op.marca ? op.assinatura.trim() || ASSINATURA_PADRAO : "";
+/** Texto da assinatura a desenhar: sempre o mesmo, em todas as artes. */
+export function assinaturaDe(_opcoes?: Opcoes) {
+  return ASSINATURA;
 }
 
 /** Tudo o que um modelo de jogo precisa. Só dados que o registro realmente tem. */
 export type DadosJogo = {
   tipo: "jogo";
   presenca: Presenca;
+  /** Enquadre de cada foto (mesma ordem de presenca.fotos). Vazio = todas centralizadas. */
+  enquadres?: Enquadre[];
   /** Quantas vezes a pessoa esteve nesse estádio, contando esta (nunca inventado). */
   nEstadio: number;
   /** Quantas vezes no mesmo setor desse estádio, contando esta. Só existe com setor. */
@@ -65,6 +70,7 @@ export type DadosJogo = {
 export type DadosVisita = {
   tipo: "visita";
   visita: Visita;
+  enquadres?: Enquadre[];
   /** Quantos estádios diferentes a pessoa já tem, contando este. */
   nEstadios: number;
   opcoes?: Opcoes;

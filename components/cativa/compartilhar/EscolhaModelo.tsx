@@ -8,7 +8,7 @@ import e2 from "./EscolhaExtra.module.css";
 import { abrirStoriesDoInstagram, compartilharImagem, ehIOS, salvarImagem } from "./compartilhar";
 import { elementoDoModelo, modelosDisponiveis } from "./Modelos";
 import { FUNDOS, corDeFundo } from "./ModeloLivre";
-import { ASSINATURA_PADRAO, ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, type DadosCompartilhar, type Estilo, type Formato, type Opcoes } from "./tipos";
+import { ENQUADRE_CENTRO, ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, type DadosCompartilhar, type Enquadre, type Estilo, type Formato, type Opcoes } from "./tipos";
 import { escalaMiniatura, preparar, useImagem } from "./useImagem";
 
 const e = { ...e1, ...e2 };
@@ -98,19 +98,20 @@ function Chave({ rotulo, detalhe, ligada, desabilitada, onChange }: { rotulo: st
 }
 
 /** O que foi tocado no modelo, na edição ao vivo. */
-type Alvo = { k: "foto"; i: number } | { k: "nova" } | { k: "placar" } | { k: "assinatura" } | null;
+type Alvo = { k: "foto"; i: number } | { k: "nova" } | { k: "placar" } | null;
 
 /**
  * O modelo ao vivo, em escala, para editar em cima dele: tocar numa foto, no placar ou na
- * assinatura seleciona esse elemento. Os elementos editáveis têm data-foto / data-edit.
+ * placar seleciona esse elemento. A assinatura é fixa e não é editável. Os elementos editáveis têm data-foto / data-edit.
  */
 function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: DadosCompartilhar; modeloId: string; formato: Formato; alvo: Alvo; onAlvo: (a: Alvo) => void }) {
   const caixa = useRef<HTMLDivElement>(null);
   const miolo = useRef<HTMLDivElement>(null);
   const [tam, setTam] = useState({ w: 0, h: 0 });
-  const [extras, setExtras] = useState<{ src?: string; fundoSuave?: string; fotoCinza?: string; filtrosCss?: boolean }>({});
+  const [extras, setExtras] = useState<{ src?: string; foco?: string; fundoSuave?: string; fotoCinza?: string; filtrosCss?: boolean }>({});
   const { w: mw, h: mh } = TAMANHO[formato];
   const primeira = dados.tipo === "jogo" ? dados.presenca.fotos[0] : undefined;
+  const foco0 = JSON.stringify(dados.enquadres?.[0] ?? null);
 
   useEffect(() => {
     const el = caixa.current;
@@ -126,17 +127,17 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
   useEffect(() => {
     let vivo = true;
     preparar(dados, modeloId).then((p) => {
-      if (vivo && p.tipo === "jogo") setExtras({ src: primeira, fundoSuave: p.fundoSuave, fotoCinza: p.fotoCinza, filtrosCss: p.filtrosCss });
+      if (vivo && p.tipo === "jogo") setExtras({ src: primeira, foco: foco0, fundoSuave: p.fundoSuave, fotoCinza: p.fotoCinza, filtrosCss: p.filtrosCss });
     });
     return () => {
       vivo = false;
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [modeloId, primeira]);
+  }, [modeloId, primeira, foco0]);
 
   const exibir: DadosCompartilhar = useMemo(
-    () => (dados.tipo === "jogo" && extras.src === primeira ? { ...dados, fundoSuave: extras.fundoSuave, fotoCinza: extras.fotoCinza, filtrosCss: extras.filtrosCss } : dados),
-    [dados, extras, primeira],
+    () => (dados.tipo === "jogo" && extras.src === primeira && extras.foco === foco0 ? { ...dados, fundoSuave: extras.fundoSuave, fotoCinza: extras.fotoCinza, filtrosCss: extras.filtrosCss } : dados),
+    [dados, extras, primeira, foco0],
   );
 
   const escala = tam.w && tam.h ? Math.min((tam.w - 36) / mw, (tam.h - 12) / mh) : 0;
@@ -146,7 +147,7 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
     const raiz = miolo.current;
     if (!raiz) return;
     raiz.querySelectorAll("[data-sel]").forEach((n) => n.removeAttribute("data-sel"));
-    const seletor = alvo?.k === "foto" ? `[data-foto="${alvo.i}"]` : alvo?.k === "placar" ? '[data-edit="placar"]' : alvo?.k === "assinatura" ? '[data-edit="assinatura"]' : null;
+    const seletor = alvo?.k === "foto" ? `[data-foto="${alvo.i}"]` : alvo?.k === "placar" ? '[data-edit="placar"]' : null;
     if (seletor) raiz.querySelector(seletor)?.setAttribute("data-sel", "");
   });
 
@@ -158,13 +159,12 @@ function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: Dados
     }
     if (el.dataset.foto !== undefined) onAlvo({ k: "foto", i: Number(el.dataset.foto) });
     else if (el.dataset.edit === "placar") onAlvo({ k: "placar" });
-    else if (el.dataset.edit === "assinatura") onAlvo({ k: "assinatura" });
   }
 
   return (
     <div ref={caixa} className={e.vivoCaixa}>
       {escala > 0 && modeloId && (
-        <div className={e.vivo} style={{ width: mw * escala, height: mh * escala }} onClick={aoTocar} role="group" aria-label="Modelo editável. Toque numa foto, no placar ou na assinatura.">
+        <div className={e.vivo} style={{ width: mw * escala, height: mh * escala }} onClick={aoTocar} role="group" aria-label="Modelo editável. Toque numa foto ou no placar.">
           <div ref={miolo} style={{ width: mw, height: mh, transform: `scale(${escala})`, transformOrigin: "0 0" }}>
             {elementoDoModelo(modeloId, exibir)}
           </div>
@@ -184,6 +184,8 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   // Fotos desta imagem: começam as do registro; trocar aqui não muda o registro.
   const originais = base.tipo === "jogo" ? base.presenca.fotos : base.visita.fotos;
   const [fotos, setFotos] = useState<string[]>(originais);
+  // Enquadre de cada foto (mesma ordem de "fotos"): ajusta o corte quando a cabeça fica de fora.
+  const [enquadres, setEnquadres] = useState<Enquadre[]>(() => originais.map(() => ENQUADRE_CENTRO));
   const [alvo, setAlvo] = useState<Alvo>(null);
   // As ações de foto usam "sel" (índice, "nova" ou nada), derivado do alvo tocado no modelo.
   const sel: number | "nova" | null = alvo?.k === "foto" ? alvo.i : alvo?.k === "nova" ? "nova" : null;
@@ -195,8 +197,8 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   const dados = useMemo<DadosCompartilhar>(() => {
     const comFotos: DadosCompartilhar =
       base.tipo === "jogo" ? { ...base, presenca: { ...base.presenca, fotos } } : { ...base, visita: { ...base.visita, fotos } };
-    return { ...comFotos, opcoes };
-  }, [base, fotos, opcoes]);
+    return { ...comFotos, opcoes, enquadres };
+  }, [base, fotos, opcoes, enquadres]);
 
   const lista = modelosDisponiveis(dados, formato);
   const [id, setId] = useState(modeloInicial ?? lista[0]?.id);
@@ -217,6 +219,8 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
       const o = localStorage.getItem(CHAVE_OPCOES);
       if (o) {
         const salvo = JSON.parse(o);
+        delete salvo.marca; // a assinatura agora é fixa
+        delete salvo.assinatura;
         setOpcoes({ ...OPCOES_PADRAO, ...salvo, estilo: { ...ESTILO_PADRAO, ...salvo.estilo } });
       }
     } catch {}
@@ -255,14 +259,17 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   // ---- Fotos
   function colocar(foto: string) {
     setFotos((l) => (sel === "nova" ? [...l, foto].slice(0, MAX_FOTOS) : l.map((f, i) => (i === sel ? foto : f))));
+    setEnquadres((q) => (sel === "nova" ? [...q, ENQUADRE_CENTRO].slice(0, MAX_FOTOS) : q.map((v, i) => (i === sel ? ENQUADRE_CENTRO : v))));
     setSel(null);
   }
   function remover(i: number) {
     setFotos((l) => l.filter((_, j) => j !== i));
+    setEnquadres((q) => q.filter((_, j) => j !== i));
     setSel(null);
   }
   function tornarPrincipal(i: number) {
     setFotos((l) => [l[i], ...l.filter((_, j) => j !== i)]);
+    setEnquadres((q) => [q[i] ?? ENQUADRE_CENTRO, ...q.filter((_, j) => j !== i)]);
     setSel(0);
   }
   async function daGaleria(arquivos: FileList | null) {
@@ -278,6 +285,9 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
       setLendo(false);
       if (galeria.current) galeria.current.value = "";
     }
+  }
+  function reposicionar(i: number, parcial: Partial<Enquadre>) {
+    setEnquadres((q) => fotos.map((_, j) => (j === i ? { ...(q[j] ?? ENQUADRE_CENTRO), ...parcial } : (q[j] ?? ENQUADRE_CENTRO))));
   }
   const disponiveisDoJogo = originais.filter((f) => !fotos.includes(f));
 
@@ -389,7 +399,7 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
     ];
 
     const titulo =
-      alvo?.k === "foto" ? `Foto ${alvo.i + 1}` : alvo?.k === "nova" ? "Adicionar foto" : alvo?.k === "placar" ? "Placar" : alvo?.k === "assinatura" ? "Assinatura" : "Editar imagem";
+      alvo?.k === "foto" ? `Foto ${alvo.i + 1}` : alvo?.k === "nova" ? "Adicionar foto" : alvo?.k === "placar" ? "Placar" : "Editar imagem";
 
     return (
       <div className={e.tela} role="dialog" aria-modal="true" aria-label="Editar imagem">
@@ -406,7 +416,7 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
         <div className={e.painel}>
           {alvo === null && (
             <>
-              <p className={e.dica}>Toque no que quer mudar direto no modelo: uma foto, o placar ou a assinatura.</p>
+              <p className={e.dica}>Toque no que quer mudar direto no modelo: uma foto ou o placar.</p>
               <div className={e.opcoesChips}>
                 {fotos.length < MAX_FOTOS && (
                   <button type="button" onClick={() => setAlvo({ k: "nova" })}>
@@ -476,6 +486,27 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
                   </button>
                 </div>
               )}
+              {alvo.k === "foto" && (
+                <>
+                  <h3 className={e.secao}>Reposicionar</h3>
+                  <p className={e.dica}>A foto é cortada para caber. Mova o ponto para mostrar o que ficou de fora.</p>
+                  <div className={e.opcoesChips} role="group" aria-label="Posição vertical">
+                    {([["Topo", 0], ["Centro", 50], ["Base", 100]] as const).map(([rot, y]) => (
+                      <button key={rot} type="button" aria-pressed={Math.round(enquadres[alvo.i]?.y ?? 50) === y} onClick={() => reposicionar(alvo.i, { y })}>
+                        {rot}
+                      </button>
+                    ))}
+                  </div>
+                  <label className={e.deslizante}>
+                    <span>Vertical</span>
+                    <input type="range" min={0} max={100} value={enquadres[alvo.i]?.y ?? 50} onChange={(ev) => reposicionar(alvo.i, { y: Number(ev.target.value) })} aria-label="Posição vertical da foto" />
+                  </label>
+                  <label className={e.deslizante}>
+                    <span>Horizontal</span>
+                    <input type="range" min={0} max={100} value={enquadres[alvo.i]?.x ?? 50} onChange={(ev) => reposicionar(alvo.i, { x: Number(ev.target.value) })} aria-label="Posição horizontal da foto" />
+                  </label>
+                </>
+              )}
               <h3 className={e.secao}>{alvo.k === "nova" ? "Adicionar" : "Trocar por"}</h3>
               <div className={e.trocas}>
                 <button type="button" className={e.galeria} onClick={() => galeria.current?.click()} disabled={lendo}>
@@ -511,17 +542,6 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
                   />
                 ))}
               </div>
-            </>
-          )}
-
-          {alvo?.k === "assinatura" && (
-            <>
-              <Chave rotulo="Mostrar a assinatura" ligada={opcoes.marca} onChange={(v) => mudarOpcao("marca", v)} />
-              <label className={e.campoAssinatura}>
-                <span>Texto da assinatura</span>
-                <input value={opcoes.assinatura} maxLength={24} disabled={!opcoes.marca} placeholder={ASSINATURA_PADRAO} onChange={(ev) => mudarOpcao("assinatura", ev.target.value)} />
-              </label>
-              <p className={e.dica}>Por enquanto a assinatura é o {ASSINATURA_PADRAO}. Quando o Cativa tiver Instagram, ela passa a ser o seu perfil.</p>
             </>
           )}
         </div>
