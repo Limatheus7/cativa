@@ -54,3 +54,7 @@
 .vivo { position: relative; overflow: hidden; border-radius: 14px; box-shadow: 0 0 0 2px #e6c46b, 0 16px 40px rgba(0, 0, 0, 0.5); }
 .vivo [data-foto], .vivo [data-edit] { cursor: pointer; outline: 8px dashed rgba(230, 196, 107, 0.85); outline-offset: -12px; }
 .vivo [data-sel] { outline: 12px solid #e6c46b; outline-offset: -12px; }
+
+/* Abrir os Stories do Instagram depois de gerar a imagem */
+.stories { padding: 13px; border: 1.5px solid #e6c46b; border-radius: 12px; background: rgba(230, 196, 107, 0.12); color: #e6c46b; font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer; }
+.stories:active { transform: scale(0.98); }

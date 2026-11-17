@@ -42,3 +42,23 @@ export async function compartilharImagem(d: DadosCompartilhar, modelo: string, f
 export async function salvarImagem(d: DadosCompartilhar, modelo: string, formato: Formato) {
   baixar(await pngDoModelo(d, modelo, formato, 1), nomeDoArquivo(d));
 }
+
+/**
+ * Abre a câmera de Stories do Instagram (iPhone e Android). Um site não consegue mandar a imagem
+ * para dentro do Story (isso só existe para apps nativos): a imagem salva aparece como a primeira
+ * da galeria do Stories. Devolve false se o Instagram não abriu (app não instalado, por exemplo).
+ */
+export function abrirStoriesDoInstagram(): Promise<boolean> {
+  return new Promise((ok) => {
+    let saiu = false;
+    const aoMudar = () => {
+      if (document.hidden) saiu = true;
+    };
+    document.addEventListener("visibilitychange", aoMudar);
+    window.location.href = "instagram://story-camera";
+    setTimeout(() => {
+      document.removeEventListener("visibilitychange", aoMudar);
+      ok(saiu);
+    }, 1800);
+  });
+}

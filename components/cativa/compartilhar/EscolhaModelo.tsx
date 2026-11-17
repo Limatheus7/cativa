@@ -5,7 +5,7 @@ import { reduzirFoto } from "@/lib/dados/imagens";
 import { IconeCamera, IconeFechar, IconeVoltar } from "../Icones";
 import e1 from "./EscolhaModelo.module.css";
 import e2 from "./EscolhaExtra.module.css";
-import { compartilharImagem, salvarImagem } from "./compartilhar";
+import { abrirStoriesDoInstagram, compartilharImagem, salvarImagem } from "./compartilhar";
 import { elementoDoModelo, modelosDisponiveis } from "./Modelos";
 import { FUNDOS, corDeFundo } from "./ModeloLivre";
 import { ASSINATURA_PADRAO, ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, type DadosCompartilhar, type Estilo, type Formato, type Opcoes } from "./tipos";
@@ -180,6 +180,8 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   const [ocupado, setOcupado] = useState(false);
   const [aviso, setAviso] = useState("");
   const [tentativa, setTentativa] = useState(0);
+  // Depois de gerar/compartilhar a imagem, oferece abrir direto os Stories do Instagram.
+  const [imagemPronta, setImagemPronta] = useState(false);
   const toque = useRef<number | null>(null);
 
   // Lembra o formato e os ajustes da última vez (as fotos não são guardadas).
@@ -261,12 +263,18 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
     setAviso("");
     try {
       const r = await compartilharImagem(dados, atual.id, formato);
-      if (r === "baixado") setAviso("Imagem salva. Abra o Instagram e escolha da galeria.");
+      if (r !== "cancelado") setImagemPronta(true);
+      if (r === "baixado") setAviso("Imagem salva. Toque em “Abrir Stories do Instagram” e escolha a imagem na galeria.");
     } catch {
       setAviso("Não deu para gerar a imagem agora.");
     } finally {
       setOcupado(false);
     }
+  }
+  async function abrirStories() {
+    setAviso("");
+    const abriu = await abrirStoriesDoInstagram();
+    if (!abriu) setAviso("Não consegui abrir o Instagram. Abra o app e escolha a imagem na galeria.");
   }
   async function salvar() {
     if (!atual || ocupado) return;
@@ -489,6 +497,11 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
               <button type="button" className={`${e.principal} ${e.comIcone}`} onClick={postar} disabled={!atual || ocupado || !url}>
                 <IconeCamera /> {ocupado ? "Gerando…" : formato === "story" ? "Compartilhar nos Stories" : "Compartilhar no Feed"}
               </button>
+          {imagemPronta && formato === "story" && (
+            <button type="button" className={e.stories} onClick={abrirStories}>
+              Abrir Stories do Instagram
+            </button>
+          )}
               <button type="button" className={e.link} onClick={salvar} disabled={!atual || ocupado}>
                 Salvar imagem
               </button>
@@ -551,6 +564,11 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
         <button type="button" className={`${e.principal} ${e.comIcone}`} onClick={postar} disabled={!atual || ocupado || !url}>
           <IconeCamera /> {ocupado ? "Gerando…" : formato === "story" ? "Compartilhar nos Stories" : "Compartilhar no Feed"}
         </button>
+          {imagemPronta && formato === "story" && (
+            <button type="button" className={e.stories} onClick={abrirStories}>
+              Abrir Stories do Instagram
+            </button>
+          )}
         <div className={e.linhaLinks}>
           <button type="button" className={e.link} onClick={salvar} disabled={!atual || ocupado}>
             Salvar imagem
