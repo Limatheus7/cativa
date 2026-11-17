@@ -19,6 +19,17 @@ async function prontas(el: HTMLElement) {
   await new Promise((r) => setTimeout(r, 60));
 }
 
+/**
+ * iPhone (qualquer navegador) e Safari usam WebKit, que não desenha as imagens incorporadas
+ * na primeira captura: o PNG sai sem as fotos. A solução usual é capturar antes, para aquecer.
+ */
+function ehWebKit() {
+  const ua = navigator.userAgent;
+  const ios = /iP(hone|ad|od)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+  const safari = /safari/i.test(ua) && !/chrome|chromium|crios|fxios|android/i.test(ua);
+  return ios || safari;
+}
+
 /** Gera o PNG do modelo. `escala` 1 = tamanho cheio (1080 de largura); menor serve para miniaturas. */
 export function gerarPng(elemento: React.ReactElement, formato: Formato, escala = 1): Promise<Blob> {
   const tarefa = fila.then(async () => {
@@ -32,7 +43,15 @@ export function gerarPng(elemento: React.ReactElement, formato: Formato, escala 
       flushSync(() => raiz.render(elemento));
       await prontas(palco);
       const alvo = palco.firstElementChild as HTMLElement;
-      const blob = await toBlob(alvo, { width: w, height: h, pixelRatio: escala, cacheBust: true });
+      const opcoes = { width: w, height: h, cacheBust: true };
+      if (ehWebKit()) {
+        // Duas capturas pequenas e descartadas: depois delas o WebKit já carregou as fotos.
+        for (let i = 0; i < 2; i++) {
+          await toBlob(alvo, { ...opcoes, pixelRatio: 0.1 }).catch(() => null);
+          await quadro();
+        }
+      }
+      const blob = await toBlob(alvo, { ...opcoes, pixelRatio: escala });
       if (!blob) throw new Error("sem imagem");
       return blob;
     } finally {
