@@ -68,3 +68,14 @@ img {
   outline: 3px solid var(--ouro);
   outline-offset: 3px;
 }
+
+/* iPhone: o Safari aproxima a tela sozinho ao focar um campo com fonte menor que 16px e não
+   volta depois. Só nele, os campos de texto passam a 16px. O zoom manual (acessibilidade)
+   continua liberado: o viewport não trava a escala. */
+@supports (-webkit-touch-callout: none) {
+  input,
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
