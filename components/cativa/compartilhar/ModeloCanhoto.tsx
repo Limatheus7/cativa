@@ -37,7 +37,7 @@ export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave }: Model
 
   return (
     <div className={c.raiz} style={{ width: 1080, height: 1920 }}>
-      {principal && <img className={c.foto} src={fundoSuave ?? principal} alt="" />}
+      {principal && <img className={c.foto} data-foto={0} src={fundoSuave ?? principal} alt="" />}
       <div className={c.veu} />
       <img className={c.logo} src="/marca/logotipo-cativa-papel.svg" alt="Cativa" />
 
@@ -45,7 +45,7 @@ export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave }: Model
         <div className={c.competicao} style={{ fontSize: fonte }}>
           {linha}
         </div>
-        <div className={c.linhaPlacar}>
+        <div className={c.linhaPlacar} data-edit="placar">
           <span className={c.escudo}>
             <IdentidadeTime time={casa} tamanho={120} />
           </span>
@@ -75,7 +75,7 @@ export default function ModeloCanhoto({ presenca: p, opcoes, fundoSuave }: Model
           {miniaturas.length > 0 && (
             <div className={c.miniaturas}>
               {miniaturas.map((f, i) => (
-                <img key={i} src={f} alt="" />
+                <img key={i} src={f} alt="" data-foto={i + 1} />
               ))}
             </div>
           )}

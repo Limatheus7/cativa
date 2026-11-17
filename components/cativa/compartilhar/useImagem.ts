@@ -20,30 +20,27 @@ function chave(d: DadosCompartilhar, modelo: string, escala: number) {
   return `${idDe(d)}|${modelo}|${escala}|${JSON.stringify(o)}|${base}`;
 }
 
+/**
+ * Prepara as fotos que os filtros do CSS não conseguem tratar na captura: o fundo suave do Canhoto
+ * e a foto em preto e branco do Jornal. Usado na geração do PNG e na edição ao vivo.
+ */
+export async function preparar(d: DadosCompartilhar, modelo: string): Promise<DadosCompartilhar> {
+  if (d.tipo !== "jogo" || !d.presenca.fotos[0]) return d;
+  try {
+    if (modelo === "canhoto") return { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380) };
+    if (modelo === "jornal") return { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720) };
+  } catch {
+    // sem o tratamento, o modelo usa a foto original
+  }
+  return d;
+}
+
 /** PNG do modelo. `escala` 1 = 1080 de largura; use menos para miniaturas. */
 export function pngDoModelo(d: DadosCompartilhar, modelo: string, formato: Formato, escala = 1) {
   const k = chave(d, modelo, escala);
   let p = cache.get(k);
   if (!p) {
-    p = (async () => {
-      // O fundo do Canhoto é suavizado antes (sem filtro CSS, que a captura não aplica).
-      let dados = d;
-      if (modelo === "canhoto" && d.tipo === "jogo" && d.presenca.fotos[0]) {
-        try {
-          dados = { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380) };
-        } catch {
-          dados = d;
-        }
-      }
-      if (modelo === "jornal" && d.tipo === "jogo" && d.presenca.fotos[0]) {
-        try {
-          dados = { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720) };
-        } catch {
-          dados = d;
-        }
-      }
-      return gerarPng(elementoDoModelo(modelo, dados), formato, escala);
-    })();
+    p = preparar(d, modelo).then((dados) => gerarPng(elementoDoModelo(modelo, dados), formato, escala));
     p.catch(() => cache.delete(k));
     cache.set(k, p);
   }

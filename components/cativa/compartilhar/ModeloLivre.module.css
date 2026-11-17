@@ -107,6 +107,15 @@
 
 .arredondada .celula { border-radius: 28px; }
 .reta .celula { border-radius: 0; }
+
+/* Horizontal: fotos largas empilhadas, cada uma ocupa a largura toda. */
+.horizontal { display: flex; flex-direction: column; justify-content: center; gap: 22px; }
+.horizontal .celula { flex: 1 1 0; max-height: 600px; width: 100%; border-radius: 28px; }
+
+/* Quadrado: lado fixo por quantidade de fotos. */
+.quadrados { display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 24px; }
+.quadrados span { display: block; position: relative; overflow: hidden; border-radius: 28px; }
+.quadrados img { position: absolute; inset: 0; width: 100%; height: 100%; max-width: none; object-fit: cover; display: block; }
 .polaroide .celula {
   overflow: visible;
   background: #fbf5e8;

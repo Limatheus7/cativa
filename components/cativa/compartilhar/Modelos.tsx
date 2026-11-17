@@ -83,7 +83,7 @@ function Fotos({ fotos, className }: { fotos: string[]; className?: string }) {
   return (
     <div className={`${m.fotos} ${m[`fotos${l.length}`]} ${className ?? ""}`}>
       {l.map((f, i) => (
-        <div key={i} className={m.celula}>
+        <div key={i} className={m.celula} data-foto={i}>
           <img src={f} alt="" />
         </div>
       ))}
@@ -94,7 +94,7 @@ function Fotos({ fotos, className }: { fotos: string[]; className?: string }) {
 function Placar({ p, tamanho, escudo }: { p: Presenca; tamanho: number; escudo: number }) {
   const { casa, fora, golsCasa, golsFora } = ladoCasa(p);
   return (
-    <div className={m.placar} style={{ fontSize: tamanho }}>
+    <div className={m.placar} style={{ fontSize: tamanho }} data-edit="placar">
       <IdentidadeTime time={casa} tamanho={escudo} />
       <span>{golsCasa}</span>
       <i>×</i>
@@ -133,7 +133,7 @@ function ModeloRoseta({ presenca: p, opcoes }: ModeloProps) {
           <small>
             {casa.sigla} × {fora.sigla}
           </small>
-          <div className={m.rosetaPlacar}>
+          <div className={m.rosetaPlacar} data-edit="placar">
             <span>{golsCasa}</span>
             <i>×</i>
             <span>{golsFora}</span>
@@ -151,7 +151,7 @@ function ModeloRoseta({ presenca: p, opcoes }: ModeloProps) {
         </p>
       </div>
       <Fotos fotos={p.fotos} className={m.rosetaFotos} />
-      <div className={m.rodapeAssinatura}>{assinaturaDe(opcoes)}</div>
+      <div className={m.rodapeAssinatura} data-edit="assinatura">{assinaturaDe(opcoes)}</div>
     </div>
   );
 }
@@ -172,7 +172,7 @@ function ModeloPolaroides({ presenca: p, formato, opcoes }: ModeloProps) {
       </div>
       <div className={`${m.polaroides} ${feed ? `${m.polaroidesFeed} ${m[`polFeed${polaroides.length}`] ?? ""}` : m[`pol${polaroides.length}`] ?? ""}`}>
         {polaroides.map((f, i) => (
-          <figure key={i} style={{ transform: `rotate(${giros[i]}deg)` }}>
+          <figure key={i} data-foto={i} style={{ transform: `rotate(${giros[i]}deg)` }}>
             <i className={m.fita} aria-hidden="true" />
             <img src={f} alt="" />
           </figure>
@@ -182,7 +182,7 @@ function ModeloPolaroides({ presenca: p, formato, opcoes }: ModeloProps) {
         <Ingresso presenca={p} />
       </div>
       {p.frase && <p className={m.fraseGrande}>“{p.frase}”</p>}
-      <div className={m.rodapeVerde}>ESSE JOGO SÓ ACONTECEU UMA VEZ{assinatura ? ` · ${assinatura.toUpperCase()}` : ""}</div>
+      <div className={m.rodapeVerde} data-edit="assinatura">ESSE JOGO SÓ ACONTECEU UMA VEZ{assinatura ? ` · ${assinatura.toUpperCase()}` : ""}</div>
     </div>
   );
 }
@@ -252,7 +252,7 @@ function ModeloAlbum({ presenca: p, opcoes }: ModeloProps) {
             </div>
           )}
           {p.fotos.slice(0, arte ? 3 : 4).map((f, i) => (
-            <div key={i} className={m.albumCelula}>
+            <div key={i} className={m.albumCelula} data-foto={i}>
               <img src={f} alt="" />
             </div>
           ))}
@@ -268,7 +268,7 @@ function ModeloAlbum({ presenca: p, opcoes }: ModeloProps) {
           <strong>{mostrar ? `Nº ${p.numero}` : p.estadio.uf}</strong>
           <small>{dataCarimbo(p.partida.data)}</small>
         </div>
-        <div className={m.rodapeVerde}>CADA JOGO É ÚNICO{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
+        <div className={m.rodapeVerde} data-edit="assinatura">CADA JOGO É ÚNICO{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
       </div>
     </div>
   );
@@ -286,7 +286,7 @@ function ModeloPlacarLed({ presenca: p, opcoes }: ModeloProps) {
         <Logo />
         <span className={m.aoVivo}>● AO VIVO</span>
       </div>
-      <div className={m.ledPainel}>
+      <div className={m.ledPainel} data-edit="placar">
         <small>
           {p.partida.competicao.toUpperCase()} · {p.estadio.nome.toUpperCase()}
         </small>
@@ -343,7 +343,7 @@ function ModeloJornal({ presenca: p, opcoes, fotoCinza }: ModeloProps) {
       <p className={m.jornalDeck}>
         {casa.nome} {golsCasa} × {golsFora} {fora.nome}, pelo {p.partida.competicao}, no {p.estadio.nome}. E você estava lá{lugar ? `, em ${lugar}` : ""}.
       </p>
-      {p.fotos[0] && <img className={m.jornalFoto} src={fotoCinza ?? p.fotos[0]} alt="" />}
+      {p.fotos[0] && <img className={m.jornalFoto} data-foto={0} src={fotoCinza ?? p.fotos[0]} alt="" />}
       <p className={m.jornalCorpo}>
         Em {formatarData(p.partida.data)}, o {p.estadio.nome}, em {p.estadio.cidade}, recebeu {casa.nome} e {fora.nome} pelo {p.partida.competicao}. O placar final foi {golsCasa} a {golsFora}.
         {p.frase ? ` Entre as lembranças do dia, uma frase ficou: “${p.frase}”.` : ""}
@@ -373,7 +373,7 @@ function ModeloPostal({ presenca: p, opcoes }: ModeloProps) {
         <Logo cor={claro ? "verde" : "papel"} />
       </div>
       <div className={m.postalFoto}>
-        {foto && <img src={foto} alt="" />}
+        {foto && <img src={foto} alt="" data-foto={p.fotos[0] ? 0 : undefined} />}
         <div className={m.postalLegenda}>
           <em>Lembranças do</em>
           <strong>{p.estadio.nome}</strong>
@@ -445,7 +445,7 @@ function ModeloMapa({ presenca: p, opcoes }: ModeloProps) {
         </span>
       </div>
       <Fotos fotos={p.fotos.slice(0, 3)} className={m.mapaFotos} />
-      <div className={m.rodapeAssinatura}>NENHUM OUTRO LUGAR VIU ESSE JOGO ASSIM{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
+      <div className={m.rodapeAssinatura} data-edit="assinatura">NENHUM OUTRO LUGAR VIU ESSE JOGO ASSIM{assinaturaDe(opcoes) ? ` · ${assinaturaDe(opcoes).toUpperCase()}` : ""}</div>
     </div>
   );
 }
@@ -516,7 +516,7 @@ function ModeloFotocabine({ presenca: p, opcoes }: ModeloProps) {
       <div className={m.cabineMiolo}>
         <div className={m.cabineTira}>
           {p.fotos.slice(0, 4).map((f, i) => (
-            <img key={i} src={f} alt="" />
+            <img key={i} src={f} alt="" data-foto={i} />
           ))}
         </div>
         <div className={m.cabineTexto}>
@@ -774,7 +774,7 @@ export function elementoDoModelo(id: string, d: DadosCompartilhar) {
   return (
     <div style={estilo}>
       {info.render(a, info.formato)}
-      {assinatura && !ASSINATURA_PROPRIA.has(id) && <div className={m.marcaTag}>{assinatura}</div>}
+      {assinatura && !ASSINATURA_PROPRIA.has(id) && <div className={m.marcaTag} data-edit="assinatura">{assinatura}</div>}
     </div>
   );
 }

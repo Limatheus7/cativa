@@ -56,7 +56,7 @@ function listrasCss(estilo: Estilo, claro: boolean, faixas: string[]) {
   }
 }
 
-function Fotos({ fotos, forma }: { fotos: string[]; forma: Estilo["forma"] }) {
+function Fotos({ fotos, forma, feed }: { fotos: string[]; forma: Estilo["forma"]; feed: boolean }) {
   const f = fotos.slice(0, 4);
   if (!f.length) return null;
   if (forma === "circulo") {
@@ -64,7 +64,20 @@ function Fotos({ fotos, forma }: { fotos: string[]; forma: Estilo["forma"] }) {
     return (
       <div className={`${l.circulos} ${f.length === 4 ? l.circulos4 : ""}`}>
         {f.map((src, i) => (
-          <span key={i} style={{ width: d, height: d }}>
+          <span key={i} data-foto={i} style={{ width: d, height: d }}>
+            <img src={src} alt="" />
+          </span>
+        ))}
+      </div>
+    );
+  }
+  if (forma === "quadrado") {
+    // Lado do quadrado por quantidade de fotos (story / feed).
+    const lado = (feed ? { 1: 420, 2: 400, 3: 290, 4: 210 } : { 1: 640, 2: 440, 3: 400, 4: 400 })[f.length as 1 | 2 | 3 | 4];
+    return (
+      <div className={l.quadrados} style={{ maxWidth: feed ? 936 : f.length >= 3 ? 880 : 936 }}>
+        {f.map((src, i) => (
+          <span key={i} data-foto={i} style={{ width: lado, height: lado }}>
             <img src={src} alt="" />
           </span>
         ))}
@@ -74,7 +87,7 @@ function Fotos({ fotos, forma }: { fotos: string[]; forma: Estilo["forma"] }) {
   return (
     <div className={`${l.fotos} ${l[`n${f.length}`]} ${l[forma]}`}>
       {f.map((src, i) => (
-        <div key={i} className={l.celula} style={forma === "polaroide" ? { transform: `rotate(${[-2.5, 2, -1.5, 2.5][i]}deg)` } : undefined}>
+        <div key={i} className={l.celula} data-foto={i} style={forma === "polaroide" ? { transform: `rotate(${[-2.5, 2, -1.5, 2.5][i]}deg)` } : undefined}>
           <img src={src} alt="" />
         </div>
       ))}
@@ -121,7 +134,7 @@ export default function ModeloLivre({ presenca: p, formato, opcoes }: ModeloProp
           <div className={l.competicao} style={{ fontSize: fonte }}>
             {linha}
           </div>
-          <div className={l.linhaPlacar} style={{ gap: feed ? 24 : 36 }}>
+          <div className={l.linhaPlacar} data-edit="placar" style={{ gap: feed ? 24 : 36 }}>
             <IdentidadeTime time={casa} tamanho={feed ? 96 : 120} />
             <span className={l.gols} style={{ fontSize: feed ? 170 : 230 }}>
               {golsCasa}
@@ -136,7 +149,7 @@ export default function ModeloLivre({ presenca: p, formato, opcoes }: ModeloProp
 
         <div className={l.area}>
           {p.fotos.length > 0 ? (
-            <Fotos fotos={p.fotos} forma={estilo.forma} />
+            <Fotos fotos={p.fotos} forma={estilo.forma} feed={feed} />
           ) : (
             <div className={l.semFoto}>{numeroPresenca(p.numero)}</div>
           )}

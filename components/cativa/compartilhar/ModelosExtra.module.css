@@ -51,7 +51,7 @@
 .postal { padding: 64px; }
 .postalFoto { position: relative; margin: 40px 10px 0; padding: 22px; background: #fbf5e8; box-shadow: 0 24px 50px rgba(0, 0, 0, 0.4); transform: rotate(-1.5deg); flex: 1; min-height: 0; display: flex; }
 .postalFoto img { width: 100%; height: 100%; object-fit: cover; }
-.postalLegenda { position: absolute; left: 50px; bottom: 60px; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
+.postalLegenda { pointer-events: none; position: absolute; left: 50px; bottom: 60px; color: #fff; text-shadow: 0 2px 10px rgba(0, 0, 0, 0.6); }
 .postalLegenda em { display: block; font-family: var(--font-fraunces), Georgia, serif; font-size: 46px; }
 .postalLegenda strong { font-family: var(--font-fraunces), Georgia, serif; font-style: italic; font-weight: 800; font-size: 120px; line-height: 1; }
 .postalCarimbo { position: absolute; right: -10px; bottom: -50px; display: grid; place-content: center; width: 200px; height: 200px; border: 4px solid #e6c46b; border-radius: 50%; background: rgba(15, 30, 20, 0.85); color: #e6c46b; text-align: center; transform: rotate(-12deg); }

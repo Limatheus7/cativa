@@ -12,7 +12,7 @@ export type Estilo = {
   /** "time" segue as cores do time escolhido no perfil. */
   fundo: "time" | "verde" | "noite" | "papel" | "azul";
   listras: "nenhuma" | "verticais" | "horizontais" | "diagonais" | "faixas";
-  forma: "arredondada" | "polaroide" | "circulo" | "reta";
+  forma: "arredondada" | "polaroide" | "circulo" | "reta" | "horizontal" | "quadrado";
 };
 
 export const ESTILO_PADRAO: Estilo = { fundo: "time", listras: "verticais", forma: "arredondada" };

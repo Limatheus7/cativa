@@ -6,10 +6,10 @@ import { IconeCamera, IconeFechar, IconeVoltar } from "../Icones";
 import e1 from "./EscolhaModelo.module.css";
 import e2 from "./EscolhaExtra.module.css";
 import { compartilharImagem, salvarImagem } from "./compartilhar";
-import { modelosDisponiveis } from "./Modelos";
+import { elementoDoModelo, modelosDisponiveis } from "./Modelos";
 import { FUNDOS, corDeFundo } from "./ModeloLivre";
-import { ASSINATURA_PADRAO, ESTILO_PADRAO, OPCOES_PADRAO, type DadosCompartilhar, type Estilo, type Formato, type Opcoes } from "./tipos";
-import { escalaMiniatura, useImagem } from "./useImagem";
+import { ASSINATURA_PADRAO, ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, type DadosCompartilhar, type Estilo, type Formato, type Opcoes } from "./tipos";
+import { escalaMiniatura, preparar, useImagem } from "./useImagem";
 
 const e = { ...e1, ...e2 };
 const CHAVE_FORMATO = "cativa:formato-compartilhar";
@@ -74,19 +74,97 @@ function Chave({ rotulo, detalhe, ligada, desabilitada, onChange }: { rotulo: st
   );
 }
 
-type Aba = "fotos" | "cores" | "mostrar";
+/** O que foi tocado no modelo, na edição ao vivo. */
+type Alvo = { k: "foto"; i: number } | { k: "nova" } | { k: "placar" } | { k: "assinatura" } | null;
+
+/**
+ * O modelo ao vivo, em escala, para editar em cima dele: tocar numa foto, no placar ou na
+ * assinatura seleciona esse elemento. Os elementos editáveis têm data-foto / data-edit.
+ */
+function PrevisaoViva({ dados, modeloId, formato, alvo, onAlvo }: { dados: DadosCompartilhar; modeloId: string; formato: Formato; alvo: Alvo; onAlvo: (a: Alvo) => void }) {
+  const caixa = useRef<HTMLDivElement>(null);
+  const miolo = useRef<HTMLDivElement>(null);
+  const [tam, setTam] = useState({ w: 0, h: 0 });
+  const [extras, setExtras] = useState<{ src?: string; fundoSuave?: string; fotoCinza?: string }>({});
+  const { w: mw, h: mh } = TAMANHO[formato];
+  const primeira = dados.tipo === "jogo" ? dados.presenca.fotos[0] : undefined;
+
+  useEffect(() => {
+    const el = caixa.current;
+    if (!el) return;
+    const medir = () => setTam({ w: el.clientWidth, h: el.clientHeight });
+    medir();
+    const ro = new ResizeObserver(medir);
+    ro.observe(el);
+    return () => ro.disconnect();
+  }, []);
+
+  // Fundo suave do Canhoto e foto em P&B do Jornal: tratados antes, como na imagem final.
+  useEffect(() => {
+    let vivo = true;
+    preparar(dados, modeloId).then((p) => {
+      if (vivo && p.tipo === "jogo") setExtras({ src: primeira, fundoSuave: p.fundoSuave, fotoCinza: p.fotoCinza });
+    });
+    return () => {
+      vivo = false;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [modeloId, primeira]);
+
+  const exibir: DadosCompartilhar = useMemo(
+    () => (dados.tipo === "jogo" && extras.src === primeira ? { ...dados, fundoSuave: extras.fundoSuave, fotoCinza: extras.fotoCinza } : dados),
+    [dados, extras, primeira],
+  );
+
+  const escala = tam.w && tam.h ? Math.min((tam.w - 36) / mw, (tam.h - 12) / mh) : 0;
+
+  // Destaca o elemento selecionado.
+  useEffect(() => {
+    const raiz = miolo.current;
+    if (!raiz) return;
+    raiz.querySelectorAll("[data-sel]").forEach((n) => n.removeAttribute("data-sel"));
+    const seletor = alvo?.k === "foto" ? `[data-foto="${alvo.i}"]` : alvo?.k === "placar" ? '[data-edit="placar"]' : alvo?.k === "assinatura" ? '[data-edit="assinatura"]' : null;
+    if (seletor) raiz.querySelector(seletor)?.setAttribute("data-sel", "");
+  });
+
+  function aoTocar(ev: React.MouseEvent) {
+    const el = (ev.target as HTMLElement).closest<HTMLElement>("[data-foto],[data-edit]");
+    if (!el) {
+      onAlvo(null);
+      return;
+    }
+    if (el.dataset.foto !== undefined) onAlvo({ k: "foto", i: Number(el.dataset.foto) });
+    else if (el.dataset.edit === "placar") onAlvo({ k: "placar" });
+    else if (el.dataset.edit === "assinatura") onAlvo({ k: "assinatura" });
+  }
+
+  return (
+    <div ref={caixa} className={e.vivoCaixa}>
+      {escala > 0 && modeloId && (
+        <div className={e.vivo} style={{ width: mw * escala, height: mh * escala }} onClick={aoTocar} role="group" aria-label="Modelo editável. Toque numa foto, no placar ou na assinatura.">
+          <div ref={miolo} style={{ width: mw, height: mh, transform: `scale(${escala})`, transformOrigin: "0 0" }}>
+            {elementoDoModelo(modeloId, exibir)}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
 
 /** Telas "Escolha seu modelo" e "Editar imagem": prévia, formato, ajustes e compartilhar. */
 export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial = "escolha", onFechar }: { dados: DadosCompartilhar; modeloInicial?: string; passoInicial?: "escolha" | "editar"; onFechar: () => void }) {
   const [formato, setFormato] = useState<Formato>("story");
   const [opcoes, setOpcoes] = useState<Opcoes>(OPCOES_PADRAO);
   const [passo, setPasso] = useState<"escolha" | "editar">(passoInicial);
-  const [aba, setAba] = useState<Aba>("fotos");
 
   // Fotos desta imagem: começam as do registro; trocar aqui não muda o registro.
   const originais = base.tipo === "jogo" ? base.presenca.fotos : base.visita.fotos;
   const [fotos, setFotos] = useState<string[]>(originais);
-  const [sel, setSel] = useState<number | "nova" | null>(null);
+  const [alvo, setAlvo] = useState<Alvo>(null);
+  // As ações de foto usam "sel" (índice, "nova" ou nada), derivado do alvo tocado no modelo.
+  const sel: number | "nova" | null = alvo?.k === "foto" ? alvo.i : alvo?.k === "nova" ? "nova" : null;
+  const setSel = (v: number | "nova" | null) => setAlvo(v === null ? null : v === "nova" ? { k: "nova" } : { k: "foto", i: v });
   const [lendo, setLendo] = useState(false);
   const [erroFoto, setErroFoto] = useState("");
   const galeria = useRef<HTMLInputElement>(null);
@@ -232,11 +310,10 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
     </div>
   );
 
-  // ================================================================ Editar imagem
+  // ================================================================ Editar imagem (em cima do modelo)
   if (passo === "editar") {
     const ehLivre = atual?.id === "livre" || atual?.id === "feed-livre";
     const time = dados.tipo === "jogo" ? dados.presenca.time : null;
-    const idLivre = formato === "story" ? "livre" : "feed-livre";
     const FUNDOS_OPC: { v: Estilo["fundo"]; rot: string }[] = [
       { v: "time", rot: time ? `Cores do ${time.nome}` : "Time" },
       { v: "verde", rot: "Verde" },
@@ -256,97 +333,39 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
       { v: "polaroide", rot: "Polaroide" },
       { v: "circulo", rot: "Círculo" },
       { v: "reta", rot: "Reta" },
+      { v: "horizontal", rot: "Horizontal" },
+      { v: "quadrado", rot: "Quadrado" },
     ];
+
+    const titulo =
+      alvo?.k === "foto" ? `Foto ${alvo.i + 1}` : alvo?.k === "nova" ? "Adicionar foto" : alvo?.k === "placar" ? "Placar" : alvo?.k === "assinatura" ? "Assinatura" : "Editar imagem";
 
     return (
       <div className={e.tela} role="dialog" aria-modal="true" aria-label="Editar imagem">
         <header className={e.topo}>
-          <button type="button" className={e.fechar} onClick={() => setPasso("escolha")} aria-label="Voltar">
+          <button type="button" className={e.fechar} onClick={() => (alvo ? setAlvo(null) : setPasso("escolha"))} aria-label="Voltar">
             <IconeVoltar />
           </button>
-          <h2>Editar imagem</h2>
+          <h2>{titulo}</h2>
         </header>
-        <div className={`${e.palco} ${e.palcoEditar}`}>{previa}</div>
 
-        <div className={e.abas} role="tablist" aria-label="O que editar">
-          {([["fotos", "Fotos"], ["cores", "Cores"], ["mostrar", "Mostrar"]] as const).map(([k, r]) => (
-            <button key={k} type="button" role="tab" aria-selected={aba === k} onClick={() => setAba(k)}>
-              {r}
-            </button>
-          ))}
-        </div>
+        <PrevisaoViva dados={dados} modeloId={atual?.id ?? ""} formato={formato} alvo={alvo} onAlvo={setAlvo} />
 
         <div className={e.painel}>
-          {aba === "fotos" && (
+          {alvo === null && (
             <>
-              <p className={e.dica}>Toque numa foto para trocar, tornar principal ou remover.</p>
-              <div className={e.fotosEdit}>
-                {fotos.map((f, i) => (
-                  <button key={f.slice(-20) + i} type="button" className={e.fotoEdit} aria-pressed={sel === i} aria-label={`Foto ${i + 1}${i === 0 ? ", principal" : ""}`} onClick={() => setSel(sel === i ? null : i)}>
-                    <img src={f} alt="" />
-                    <b>{i + 1}</b>
-                  </button>
-                ))}
+              <p className={e.dica}>Toque no que quer mudar direto no modelo: uma foto, o placar ou a assinatura.</p>
+              <div className={e.opcoesChips}>
                 {fotos.length < MAX_FOTOS && (
-                  <button type="button" className={`${e.fotoEdit} ${e.fotoNova}`} aria-pressed={sel === "nova"} onClick={() => setSel(sel === "nova" ? null : "nova")}>
-                    <IconeCamera />
-                    <span>Adicionar</span>
+                  <button type="button" onClick={() => setAlvo({ k: "nova" })}>
+                    + Adicionar foto
                   </button>
                 )}
+                <button type="button" aria-pressed={opcoes.setor} onClick={() => mudarOpcao("setor", !opcoes.setor)}>
+                  Setor e presença
+                </button>
               </div>
-
-              {sel !== null && (
-                <div className={e.acoesFoto}>
-                  {typeof sel === "number" && (
-                    <div className={e.opcoesChips}>
-                      {sel > 0 && (
-                        <button type="button" onClick={() => tornarPrincipal(sel)}>
-                          Tornar principal
-                        </button>
-                      )}
-                      <button type="button" onClick={() => remover(sel)}>
-                        Remover
-                      </button>
-                    </div>
-                  )}
-                  <h3 className={e.secao}>{sel === "nova" ? "Adicionar" : "Trocar por"}</h3>
-                  <div className={e.trocas}>
-                    <button type="button" className={e.galeria} onClick={() => galeria.current?.click()} disabled={lendo}>
-                      <IconeCamera />
-                      <span>{lendo ? "Abrindo…" : "Galeria"}</span>
-                    </button>
-                    {disponiveisDoJogo.map((f, i) => (
-                      <button key={f.slice(-20) + i} type="button" className={e.troca} onClick={() => colocar(f)} aria-label={`Usar a foto ${i + 1} do jogo`}>
-                        <img src={f} alt="" />
-                      </button>
-                    ))}
-                  </div>
-                  <input ref={galeria} type="file" accept="image/*" hidden onChange={(ev) => daGaleria(ev.target.files)} />
-                </div>
-              )}
-              {erroFoto && <p className={e.avisoErro}>{erroFoto}</p>}
-              <p className={e.dica}>A foto só fica no story. Não muda as fotos do seu registro.</p>
-            </>
-          )}
-
-          {aba === "cores" && (
-            <>
-              <h3 className={e.secao}>Cor do placar</h3>
-              <div className={e.cores} role="group" aria-label="Cor do placar">
-                {CORES_PLACAR.map((c) => (
-                  <button
-                    key={c.v || "padrao"}
-                    type="button"
-                    className={`${e.cor} ${c.v ? "" : e.corPadrao}`}
-                    aria-pressed={opcoes.corPlacar === c.v}
-                    aria-label={c.rot}
-                    title={c.rot}
-                    style={c.v ? { background: c.v } : undefined}
-                    onClick={() => mudarOpcao("corPlacar", c.v)}
-                  />
-                ))}
-              </div>
-              {ehLivre ? (
+              {ehLivre && (
                 <>
                   <h3 className={e.secao}>Fundo</h3>
                   <div className={e.cores} role="group" aria-label="Fundo">
@@ -382,29 +401,73 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
                     ))}
                   </div>
                 </>
-              ) : (
-                lista.some((m) => m.id === idLivre) && (
-                  <button type="button" className={e.irLivre} onClick={() => setId(idLivre)}>
-                    Mudar fundo, listras e formato das fotos no modelo “Seu estilo”
-                  </button>
-                )
+              )}
+              {!ehLivre && lista.some((m) => m.id === (formato === "story" ? "livre" : "feed-livre")) && (
+                <button type="button" className={e.irLivre} onClick={() => setId(formato === "story" ? "livre" : "feed-livre")}>
+                  Mudar fundo, listras e formato das fotos no modelo “Seu estilo”
+                </button>
               )}
             </>
           )}
 
-          {aba === "mostrar" && (
+          {(alvo?.k === "foto" || alvo?.k === "nova") && (
             <>
-              <Chave rotulo="Mostrar o setor e a presença" ligada={opcoes.setor} onChange={(v) => mudarOpcao("setor", v)} />
+              {alvo.k === "foto" && (
+                <div className={e.opcoesChips}>
+                  {alvo.i > 0 && (
+                    <button type="button" onClick={() => tornarPrincipal(alvo.i)}>
+                      Tornar principal
+                    </button>
+                  )}
+                  <button type="button" onClick={() => remover(alvo.i)}>
+                    Remover
+                  </button>
+                </div>
+              )}
+              <h3 className={e.secao}>{alvo.k === "nova" ? "Adicionar" : "Trocar por"}</h3>
+              <div className={e.trocas}>
+                <button type="button" className={e.galeria} onClick={() => galeria.current?.click()} disabled={lendo}>
+                  <IconeCamera />
+                  <span>{lendo ? "Abrindo…" : "Galeria"}</span>
+                </button>
+                {disponiveisDoJogo.map((f, i) => (
+                  <button key={f.slice(-20) + i} type="button" className={e.troca} onClick={() => colocar(f)} aria-label={`Usar a foto ${i + 1} do jogo`}>
+                    <img src={f} alt="" />
+                  </button>
+                ))}
+              </div>
+              <input ref={galeria} type="file" accept="image/*" hidden onChange={(ev) => daGaleria(ev.target.files)} />
+              {erroFoto && <p className={e.avisoErro}>{erroFoto}</p>}
+              <p className={e.dica}>A foto só fica no story. Não muda as fotos do seu registro.</p>
+            </>
+          )}
+
+          {alvo?.k === "placar" && (
+            <>
+              <h3 className={e.secao}>Cor do placar</h3>
+              <div className={e.cores} role="group" aria-label="Cor do placar">
+                {CORES_PLACAR.map((c) => (
+                  <button
+                    key={c.v || "padrao"}
+                    type="button"
+                    className={`${e.cor} ${c.v ? "" : e.corPadrao}`}
+                    aria-pressed={opcoes.corPlacar === c.v}
+                    aria-label={c.rot}
+                    title={c.rot}
+                    style={c.v ? { background: c.v } : undefined}
+                    onClick={() => mudarOpcao("corPlacar", c.v)}
+                  />
+                ))}
+              </div>
+            </>
+          )}
+
+          {alvo?.k === "assinatura" && (
+            <>
               <Chave rotulo="Mostrar a assinatura" ligada={opcoes.marca} onChange={(v) => mudarOpcao("marca", v)} />
               <label className={e.campoAssinatura}>
-                <span>Assinatura</span>
-                <input
-                  value={opcoes.assinatura}
-                  maxLength={24}
-                  disabled={!opcoes.marca}
-                  placeholder={ASSINATURA_PADRAO}
-                  onChange={(ev) => mudarOpcao("assinatura", ev.target.value)}
-                />
+                <span>Texto da assinatura</span>
+                <input value={opcoes.assinatura} maxLength={24} disabled={!opcoes.marca} placeholder={ASSINATURA_PADRAO} onChange={(ev) => mudarOpcao("assinatura", ev.target.value)} />
               </label>
               <p className={e.dica}>Por enquanto a assinatura é o {ASSINATURA_PADRAO}. Quando o Cativa tiver Instagram, ela passa a ser o seu perfil.</p>
             </>
@@ -417,12 +480,20 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
               {aviso}
             </p>
           )}
-          <button type="button" className={`${e.principal} ${e.comIcone}`} onClick={postar} disabled={!atual || ocupado || !url}>
-            <IconeCamera /> {ocupado ? "Gerando…" : formato === "story" ? "Compartilhar nos Stories" : "Compartilhar no Feed"}
-          </button>
-          <button type="button" className={e.link} onClick={salvar} disabled={!atual || ocupado}>
-            Salvar imagem
-          </button>
+          {alvo ? (
+            <button type="button" className={e.principal} onClick={() => setAlvo(null)}>
+              Pronto
+            </button>
+          ) : (
+            <>
+              <button type="button" className={`${e.principal} ${e.comIcone}`} onClick={postar} disabled={!atual || ocupado || !url}>
+                <IconeCamera /> {ocupado ? "Gerando…" : formato === "story" ? "Compartilhar nos Stories" : "Compartilhar no Feed"}
+              </button>
+              <button type="button" className={e.link} onClick={salvar} disabled={!atual || ocupado}>
+                Salvar imagem
+              </button>
+            </>
+          )}
         </footer>
       </div>
     );
