@@ -26,8 +26,9 @@ function chave(d: DadosCompartilhar, modelo: string, escala: number) {
  */
 export async function preparar(d: DadosCompartilhar, modelo: string): Promise<DadosCompartilhar> {
   if (d.tipo !== "jogo" || !d.presenca.fotos[0]) return d;
-  // WebKit: filtros do CSS sobre a foto original (as imagens geradas em canvas não são desenhadas).
-  if ((modelo === "canhoto" || modelo === "jornal") && ehWebKit()) return { ...d, filtrosCss: true };
+  // WebKit (iPhone): sem filtros e sem imagens geradas em canvas, que a captura não desenha de forma
+  // confiável. O Canhoto e o Jornal usam a foto original, sem desfoque nem preto e branco.
+  if ((modelo === "canhoto" || modelo === "jornal") && ehWebKit()) return d;
   try {
     if (modelo === "canhoto") return { ...d, fundoSuave: await suavizar(d.presenca.fotos[0], 1120, 1380) };
     if (modelo === "jornal") return { ...d, fotoCinza: await emCinza(d.presenca.fotos[0], 936, 720) };
