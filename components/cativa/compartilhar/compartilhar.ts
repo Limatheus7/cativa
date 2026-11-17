@@ -4,7 +4,15 @@ import { numeroPresenca } from "@/lib/dados/formato";
 import { pngDoModelo } from "./useImagem";
 import { numeroDe, type DadosCompartilhar, type Formato } from "./tipos";
 
-export type ResultadoCompartilhar = "compartilhado" | "baixado" | "cancelado";
+export type ResultadoCompartilhar =
+  | { resultado: "compartilhado" | "baixado" | "cancelado" }
+  /** iPhone sem folha de compartilhar: mostra a imagem para segurar o dedo e salvar nas Fotos. */
+  | { resultado: "mostrar"; url: string };
+
+export function ehIOS() {
+  const ua = navigator.userAgent;
+  return /iP(hone|ad|od)/.test(ua) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
+}
 
 function baixar(blob: Blob, nome: string) {
   const url = URL.createObjectURL(blob);
@@ -17,30 +25,48 @@ function baixar(blob: Blob, nome: string) {
   setTimeout(() => URL.revokeObjectURL(url), 2000);
 }
 
-const nomeDoArquivo = (d: DadosCompartilhar) => `cativa-presenca-${numeroPresenca(numeroDe(d)).replace(/\D/g, "")}.png`;
+const nomeDoArquivo = (d: DadosCompartilhar) => `cativa-presenca-${numeroPresenca(numeroDe(d)).replace(/D/g, "")}.png`;
 
-/** Abre a folha de compartilhar do sistema (Stories, Feed…). Sem suporte a arquivo, baixa a imagem. */
-export async function compartilharImagem(d: DadosCompartilhar, modelo: string, formato: Formato): Promise<ResultadoCompartilhar> {
-  const blob = await pngDoModelo(d, modelo, formato, 1);
-  const nome = nomeDoArquivo(d);
-  const arquivo = new File([blob], nome, { type: "image/png" });
-  if (navigator.canShare?.({ files: [arquivo] })) {
-    try {
-      await navigator.share({ files: [arquivo] });
-      return "compartilhado";
-    } catch (e) {
-      // Fechar a folha de compartilhamento não é erro.
-      if (e instanceof DOMException && e.name === "AbortError") return "cancelado";
-      throw e;
-    }
+/** Abre a folha de compartilhar do sistema. Devolve null se o aparelho não compartilha arquivos. */
+async function folha(arquivo: File): Promise<ResultadoCompartilhar | null> {
+  if (!navigator.canShare?.({ files: [arquivo] })) return null;
+  try {
+    await navigator.share({ files: [arquivo] });
+    return { resultado: "compartilhado" };
+  } catch (e) {
+    // Fechar a folha de compartilhamento não é erro.
+    if (e instanceof DOMException && e.name === "AbortError") return { resultado: "cancelado" };
+    throw e;
   }
-  baixar(blob, nome);
-  return "baixado";
 }
 
-/** Sempre baixa o arquivo, sem abrir a folha de compartilhamento. */
-export async function salvarImagem(d: DadosCompartilhar, modelo: string, formato: Formato) {
-  baixar(await pngDoModelo(d, modelo, formato, 1), nomeDoArquivo(d));
+/**
+ * Sem folha de compartilhar: no iPhone um arquivo baixado vai para o app Arquivos, não para as Fotos.
+ * Por isso lá mostramos a imagem para segurar e salvar. Nos demais aparelhos, baixa o arquivo.
+ */
+function entregar(blob: Blob, nome: string): ResultadoCompartilhar {
+  if (ehIOS()) return { resultado: "mostrar", url: URL.createObjectURL(blob) };
+  baixar(blob, nome);
+  return { resultado: "baixado" };
+}
+
+/** Abre a folha de compartilhar do sistema (Stories, Feed…). */
+export async function compartilharImagem(d: DadosCompartilhar, modelo: string, formato: Formato): Promise<ResultadoCompartilhar> {
+  const blob = await pngDoModelo(d, modelo, formato, 1, 3);
+  const nome = nomeDoArquivo(d);
+  return (await folha(new File([blob], nome, { type: "image/png" }))) ?? entregar(blob, nome);
+}
+
+/**
+ * Salvar a imagem. No iPhone, a folha de compartilhar tem "Salvar imagem", que vai para as Fotos
+ * (um download iria para o app Arquivos). Nos demais aparelhos, baixa o arquivo.
+ */
+export async function salvarImagem(d: DadosCompartilhar, modelo: string, formato: Formato): Promise<ResultadoCompartilhar> {
+  const blob = await pngDoModelo(d, modelo, formato, 1, 3);
+  const nome = nomeDoArquivo(d);
+  if (ehIOS()) return (await folha(new File([blob], nome, { type: "image/png" }))) ?? entregar(blob, nome);
+  baixar(blob, nome);
+  return { resultado: "baixado" };
 }
 
 /**

@@ -5,7 +5,7 @@ import { reduzirFoto } from "@/lib/dados/imagens";
 import { IconeCamera, IconeFechar, IconeVoltar } from "../Icones";
 import e1 from "./EscolhaModelo.module.css";
 import e2 from "./EscolhaExtra.module.css";
-import { abrirStoriesDoInstagram, compartilharImagem, salvarImagem } from "./compartilhar";
+import { abrirStoriesDoInstagram, compartilharImagem, ehIOS, salvarImagem } from "./compartilhar";
 import { elementoDoModelo, modelosDisponiveis } from "./Modelos";
 import { FUNDOS, corDeFundo } from "./ModeloLivre";
 import { ASSINATURA_PADRAO, ESTILO_PADRAO, OPCOES_PADRAO, TAMANHO, type DadosCompartilhar, type Estilo, type Formato, type Opcoes } from "./tipos";
@@ -36,10 +36,33 @@ function Miniatura({ d, id, formato, largura, rotulo, selecionada, etiqueta, onC
   etiqueta?: string;
   onClick?: () => void;
 }) {
-  const { url } = useImagem(d, id, formato, escalaMiniatura(formato, largura * 2));
+  // Só gera a miniatura quando ela aparece na tela (a tira rola para o lado).
+  const botao = useRef<HTMLButtonElement>(null);
+  const [visivel, setVisivel] = useState(false);
+  useEffect(() => {
+    const el = botao.current;
+    if (!el || visivel) return;
+    if (typeof IntersectionObserver === "undefined") {
+      setVisivel(true);
+      return;
+    }
+    const obs = new IntersectionObserver(
+      (itens) => {
+        if (itens.some((i) => i.isIntersecting)) {
+          setVisivel(true);
+          obs.disconnect();
+        }
+      },
+      { rootMargin: "120px" },
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [visivel]);
+  const { url } = useImagem(d, visivel ? id : null, formato, escalaMiniatura(formato, largura * 2));
   const alt = formato === "story" ? 16 / 9 : 5 / 4;
   return (
     <button
+      ref={botao}
       type="button"
       className={`${e.mini} ${selecionada ? e.miniAtiva : ""}`}
       style={{ width: largura }}
@@ -182,6 +205,8 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   const [tentativa, setTentativa] = useState(0);
   // Depois de gerar/compartilhar a imagem, oferece abrir direto os Stories do Instagram.
   const [imagemPronta, setImagemPronta] = useState(false);
+  // iPhone sem folha de compartilhar: mostra a imagem para segurar o dedo e salvar nas Fotos.
+  const [verImagem, setVerImagem] = useState<string | null>(null);
   const toque = useRef<number | null>(null);
 
   // Lembra o formato e os ajustes da última vez (as fotos não são guardadas).
@@ -204,7 +229,7 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
 
   const indice = Math.max(0, lista.findIndex((m) => m.id === id));
   const atual = lista[indice];
-  const { url, erro } = useImagem(dados, atual?.id ?? null, formato, 0.4, tentativa);
+  const { url, erro } = useImagem(dados, atual?.id ?? null, formato, 0.4, tentativa, 2);
 
   function trocarFormato(f: Formato) {
     setFormato(f);
@@ -263,8 +288,9 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
     setAviso("");
     try {
       const r = await compartilharImagem(dados, atual.id, formato);
-      if (r !== "cancelado") setImagemPronta(true);
-      if (r === "baixado") setAviso("Imagem salva. Toque em “Abrir Stories do Instagram” e escolha a imagem na galeria.");
+      if (r.resultado !== "cancelado") setImagemPronta(true);
+      if (r.resultado === "mostrar") setVerImagem(r.url);
+      if (r.resultado === "baixado") setAviso("Imagem baixada. Depois toque em “Abrir Stories do Instagram” e escolha a imagem.");
     } catch {
       setAviso("Não deu para gerar a imagem agora.");
     } finally {
@@ -279,9 +305,15 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   async function salvar() {
     if (!atual || ocupado) return;
     setOcupado(true);
+    setAviso(ehIOS() ? "Na próxima tela, toque em “Salvar imagem” para ir para as Fotos." : "");
     try {
-      await salvarImagem(dados, atual.id, formato);
-      setAviso("Imagem salva.");
+      const r = await salvarImagem(dados, atual.id, formato);
+      if (r.resultado === "mostrar") {
+        setVerImagem(r.url);
+        setAviso("");
+      } else if (r.resultado === "baixado") setAviso("Imagem salva.");
+      else if (r.resultado === "cancelado") setAviso("");
+      else setAviso("Pronto. A imagem foi para onde você escolheu.");
     } catch {
       setAviso("Não deu para gerar a imagem agora.");
     } finally {
@@ -301,6 +333,17 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   }, [onFechar, passo]);
 
   const alt = formato === "story" ? 16 / 9 : 5 / 4;
+  const sobreposicao = verImagem && (
+    <div className={e.salvarFoto} role="dialog" aria-modal="true" aria-label="Salvar a imagem nas Fotos">
+      <p>
+        Segure o dedo na imagem e toque em <strong>“Salvar na Galeria”</strong> (ou “Adicionar às Fotos”).
+      </p>
+      <img src={verImagem} alt="Imagem pronta para salvar" />
+      <button type="button" onClick={() => setVerImagem(null)}>
+        Pronto
+      </button>
+    </div>
+  );
   const previa = (
     <div className={e.previa} style={{ aspectRatio: `1 / ${alt}` }}>
       {url ? (
@@ -350,6 +393,7 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
 
     return (
       <div className={e.tela} role="dialog" aria-modal="true" aria-label="Editar imagem">
+        {sobreposicao}
         <header className={e.topo}>
           <button type="button" className={e.fechar} onClick={() => (alvo ? setAlvo(null) : setPasso("escolha"))} aria-label="Voltar">
             <IconeVoltar />
@@ -515,6 +559,7 @@ export default function EscolhaModelo({ dados: base, modeloInicial, passoInicial
   // ================================================================ Escolha seu modelo
   return (
     <div className={e.tela} role="dialog" aria-modal="true" aria-label="Escolha seu modelo">
+      {sobreposicao}
       <header className={e.topo}>
         <button type="button" className={e.fechar} onClick={onFechar} aria-label="Fechar">
           <IconeFechar tamanho={16} />

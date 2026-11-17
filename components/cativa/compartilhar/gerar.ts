@@ -2,11 +2,45 @@
 
 import { createRoot } from "react-dom/client";
 import { flushSync } from "react-dom";
-import { toCanvas } from "html-to-image";
+import { getFontEmbedCSS, toCanvas } from "html-to-image";
 import { TAMANHO, type Formato } from "./tipos";
 
 // Uma captura por vez: cada uma monta o modelo fora da tela, espera fontes e fotos e tira o PNG.
-let fila: Promise<unknown> = Promise.resolve();
+// A fila tem prioridade: a imagem final e a prévia grande passam à frente das miniaturas.
+type Pendente = { prioridade: number; ordem: number; rodar: () => void };
+const pendentes: Pendente[] = [];
+let ocupada = false;
+let contador = 0;
+
+function proxima() {
+  if (ocupada || !pendentes.length) return;
+  pendentes.sort((a, b) => b.prioridade - a.prioridade || a.ordem - b.ordem);
+  ocupada = true;
+  pendentes.shift()!.rodar();
+}
+
+function agendar<T>(prioridade: number, trabalho: () => Promise<T>): Promise<T> {
+  return new Promise<T>((ok, falha) => {
+    pendentes.push({
+      prioridade,
+      ordem: contador++,
+      rodar: () => {
+        trabalho()
+          .then(ok, falha)
+          .finally(() => {
+            ocupada = false;
+            proxima();
+          });
+      },
+    });
+    proxima();
+  });
+}
+
+// As fontes incorporadas são calculadas uma vez por modelo (era a cada captura, o que pesava muito).
+const fontes = new Map<string, Promise<string>>();
+// Fotos já reduzidas: original + tamanho + fator → data URL. Evita decodificar e recodificar a cada captura.
+const reduzidas = new Map<string, string>();
 
 const quadro = () => new Promise<void>((ok) => requestAnimationFrame(() => requestAnimationFrame(() => ok())));
 
@@ -46,6 +80,15 @@ async function reduzirFotos(raiz: HTMLElement, fator: number) {
     const rw = img.offsetWidth || img.getBoundingClientRect().width;
     const rh = img.offsetHeight || img.getBoundingClientRect().height;
     if (!rw || !rh) continue;
+    const chave = `${original.length}:${original.slice(-40)}|${Math.round(rw)}x${Math.round(rh)}|${fator}`;
+    const pronta = reduzidas.get(chave);
+    if (pronta) {
+      if (img.src !== pronta) {
+        img.src = pronta;
+        await img.decode().catch(() => undefined);
+      }
+      continue;
+    }
     try {
       const base = new Image();
       base.src = original;
@@ -53,6 +96,7 @@ async function reduzirFotos(raiz: HTMLElement, fator: number) {
       // Escala para a foto cobrir a área onde aparece (object-fit: cover), nunca ampliando.
       const s = Math.min(1, Math.max(rw / base.naturalWidth, rh / base.naturalHeight) * fator);
       if (s >= 0.999) {
+        reduzidas.set(chave, original);
         if (img.src !== original) img.src = original;
         continue;
       }
@@ -63,7 +107,9 @@ async function reduzirFotos(raiz: HTMLElement, fator: number) {
       if (!ctx) continue;
       ctx.imageSmoothingQuality = "high";
       ctx.drawImage(base, 0, 0, c.width, c.height);
-      img.src = c.toDataURL("image/jpeg", 0.75);
+      const nova = c.toDataURL("image/jpeg", 0.75);
+      reduzidas.set(chave, nova);
+      img.src = nova;
       await img.decode().catch(() => undefined);
       c.width = 0;
       c.height = 0;
@@ -131,8 +177,8 @@ function fotosAusentes(canvas: HTMLCanvasElement, alvo: HTMLElement) {
 // ---------------------------------------------------------------- Captura
 
 /** Gera o PNG do modelo. `escala` 1 = tamanho cheio (1080 de largura); menor serve para miniaturas. */
-export function gerarPng(elemento: React.ReactElement, formato: Formato, escala = 1): Promise<Blob> {
-  const tarefa = fila.then(async () => {
+export function gerarPng(elemento: React.ReactElement, formato: Formato, escala = 1, modelo = "geral", prioridade = 0): Promise<Blob> {
+  return agendar(prioridade, async () => {
     const { w, h } = TAMANHO[formato];
     const palco = document.createElement("div");
     palco.setAttribute("aria-hidden", "true");
@@ -143,11 +189,17 @@ export function gerarPng(elemento: React.ReactElement, formato: Formato, escala 
       flushSync(() => raiz.render(elemento));
       await prontas(palco);
       const alvo = palco.firstElementChild as HTMLElement;
-      const opcoes = { width: w, height: h, cacheBust: true };
+      let css = fontes.get(modelo);
+      if (!css) {
+        css = getFontEmbedCSS(alvo, { cacheBust: false }).catch(() => "");
+        fontes.set(modelo, css);
+      }
+      const opcoes = { width: w, height: h, cacheBust: false, fontEmbedCSS: await css };
 
-      // Capturas pequenas e descartadas antes da definitiva: a primeira captura pode sair sem as
-      // imagens incorporadas (sempre no WebKit, e em celulares mais lentos). No WebKit são duas.
-      for (let i = 0; i < (ehWebKit() ? 2 : 1); i++) {
+      // No WebKit, uma captura pequena e descartada antes da definitiva: a primeira captura pode
+      // sair sem as imagens incorporadas. Nos demais, a conferência do resultado já cobre.
+      // Miniaturas e prévias (escala menor) pulam o aquecimento: a conferência abaixo já refaz se precisar.
+      for (let i = 0; i < (ehWebKit() && escala >= 0.5 ? 1 : 0); i++) {
         const c = await toCanvas(alvo, { ...opcoes, pixelRatio: 0.1 }).catch(() => null);
         if (c) {
           c.width = 0;
@@ -157,7 +209,9 @@ export function gerarPng(elemento: React.ReactElement, formato: Formato, escala 
       }
 
       // Tentativas: fotos até 1,5× o tamanho em que aparecem; se não aparecerem (iPhone), cada vez menores.
-      const fatores = [1.5, 1, 0.6, 0.35];
+      // As fotos só precisam da resolução com que aparecem no tamanho gerado: miniaturas, bem menos.
+      const base = Math.min(1.5, Math.max(0.3, escala * 2));
+      const fatores = [base, base * 0.7, base * 0.45, base * 0.3];
       let ultimo: Blob | null = null;
       for (let t = 0; t < fatores.length; t++) {
         await reduzirFotos(alvo, fatores[t]);
@@ -177,6 +231,4 @@ export function gerarPng(elemento: React.ReactElement, formato: Formato, escala 
       palco.remove();
     }
   });
-  fila = tarefa.catch(() => undefined);
-  return tarefa;
 }

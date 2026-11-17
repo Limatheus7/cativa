@@ -39,11 +39,11 @@ export async function preparar(d: DadosCompartilhar, modelo: string): Promise<Da
 }
 
 /** PNG do modelo. `escala` 1 = 1080 de largura; use menos para miniaturas. */
-export function pngDoModelo(d: DadosCompartilhar, modelo: string, formato: Formato, escala = 1) {
+export function pngDoModelo(d: DadosCompartilhar, modelo: string, formato: Formato, escala = 1, prioridade = 0) {
   const k = chave(d, modelo, escala);
   let p = cache.get(k);
   if (!p) {
-    p = preparar(d, modelo).then((dados) => gerarPng(elementoDoModelo(modelo, dados), formato, escala));
+    p = preparar(d, modelo).then((dados) => gerarPng(elementoDoModelo(modelo, dados), formato, escala, modelo, prioridade));
     p.catch(() => cache.delete(k));
     cache.set(k, p);
   }
@@ -51,7 +51,7 @@ export function pngDoModelo(d: DadosCompartilhar, modelo: string, formato: Forma
 }
 
 /** URL da imagem (para <img>), ou null enquanto gera. `erro` vira true se a geração falhar. */
-export function useImagem(d: DadosCompartilhar, modelo: string | null, formato: Formato, escala: number, tentativa = 0) {
+export function useImagem(d: DadosCompartilhar, modelo: string | null, formato: Formato, escala: number, tentativa = 0, prioridade = 0) {
   const [estado, setEstado] = useState<{ url: string | null; erro: boolean }>({ url: null, erro: false });
   const k = modelo ? chave(d, modelo, escala) : "";
 
@@ -64,7 +64,7 @@ export function useImagem(d: DadosCompartilhar, modelo: string | null, formato: 
     }
     let vivo = true;
     setEstado({ url: null, erro: false });
-    pngDoModelo(d, modelo, formato, escala).then(
+    pngDoModelo(d, modelo, formato, escala, prioridade).then(
       (blob) => {
         const url = URL.createObjectURL(blob);
         urls.set(k, url);
